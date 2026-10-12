@@ -1,385 +1,322 @@
 import React, { useState } from 'react';
 import {
-  Gavel,
   Scale,
+  Gavel,
   Briefcase,
-  Banknote,
-  Lightbulb,
+  Building,
+  Landmark,
   FileCheck,
-  Leaf,
-  ShieldCheck,
   Percent,
   Users,
-  Home,
-  FileSearch,
-  UserCheck,
-  Globe,
-  Building,
-  Laptop
+  ArrowRight,
+  ArrowUpRight,
+  X,
+  Compass,
+  CheckCircle2
 } from "lucide-react";
 import '../styles/PracticeAreas.css';
 import { useTheme } from './ThemeContext';
 
-const PracticeAreas = () => {
-  const [selectedArea, setSelectedArea] = useState(null);
-  const { isDarkTheme } = useTheme();
-  
-  const areas = [
+const PRACTICE_AREAS = [
   {
+    id: "civil-constitutional",
+    num: "01",
     icon: Scale,
-    title: "Civil Law Practice",
-    description:
-      "Our civil law practice covers a comprehensive range of matters concerning private rights, obligations, and disputes between individuals, corporations, and institutions. We assist and represent clients before civil courts, tribunals, and regulatory bodies in the following areas:",
+    tag: "High Courts & Supreme Court",
+    title: "Civil & Constitutional Law",
+    shortDesc: "Writs under Articles 32 & 226, private rights enforcement, civil appeals, and commercial contract litigation.",
+    statutes: "Constitution of India, CPC 1908, Specific Relief Act",
     points: [
-      "All Kinds of Writs under Articles 32 and 226 of the Indian Constitution",
-      "Contractual disputes, breach of contract, and recovery suits",
-      "Property ownership, transfer, tenancy, and possession matters",
-      "Real estate, land acquisition, and construction-related disputes",
-      "Family and matrimonial disputes, including divorce and custody",
-      "Banking, finance, and insurance-related claims and recoveries",
-      "Employment and labour law disputes",
-      "Consumer protection cases before consumer commissions",
-      "Enforcement of decrees, judgments, and arbitral awards",
-      "Compliance and dispute resolution with government or regulatory authorities"
+      "Writs of Mandamus, Certiorari, and Quo Warranto under Articles 32 & 226",
+      "High-stakes commercial breach of contract and specific performance suits",
+      "Property title disputes, easements, partition deeds, and appellate advocacy",
+      "Injunction petitions, declaratory decrees, and Supreme Court Special Leave Petitions (SLPs)"
     ]
   },
   {
-    icon: Gavel,
-    title: "Criminal Law Practice",
-    description:
-      "Our criminal law practice provides expert representation and advisory services under the BNS, BNSS, BSA, special statutes, and corporate regulations, assisting clients in all stages of proceedings, including defense, compliance, and litigation.",
+    id: "arbitration",
+    num: "02",
+    icon: Landmark,
+    tag: "Domestic & International ADR",
+    title: "Commercial Arbitration & Mediation",
+    shortDesc: "Expedited dispute resolution engineered to preserve enterprise valuation and enforce contractual mandates.",
+    statutes: "Arbitration & Conciliation Act 1996, SIAC, LCIA, ICC Rules",
     points: [
-  "We handle all criminal law documents, from FIR quashes and bail applications to appeals and compounding agreements",
-  "Defense in criminal trials, appeals, and bail matters",
-  "Corporate criminal liability and directors’ responsibilities",
-  "Economic offences under Prevention of Corruption Act, FEMA, and PMLA",
-  "Representation before police, CBI, ED, SFIO, and other agencies",
-  "Victim representation and filing complaints before courts",
-  "Many more services"
+      "Representation in complex domestic and International Commercial Arbitrations (ICA)",
+      "Section 9 urgent interim relief petitions and Section 11 arbitrator appointments",
+      "Enforcement and setting aside of domestic and foreign arbitral awards (Sections 34 & 36)",
+      "Structured commercial mediation, judicial conciliations & settlement structuring"
     ]
   },
-    {
-  icon: Scale,
-  title: "Family Law",
-  description:
-"Our Family Law practice offers expert representation and advisory services in personal and familial matters before Family Courts, District Courts, and other High Cpurts.",
-  points: [
-    "Legal matters relating to marriage, divorce, maintenance, adoption, guardianship, succession, and inheritance",
-    "Filing and defending cases for divorce, judicial separation, restitution of conjugal rights, and annulment of marriage under Hindu, Muslim, Christian, Parsi, and Special Marriage Acts",
-    "Domestic violence cases, including protection, residence, and maintenance under the Protection of Women from Domestic Violence Act, 2005",
-    "Maintenance claims under statutes and applicable personal laws for spouses, children, and parents",
-    "Succession and inheritance disputes, including wills, probate, and letters of administration",
-    "Mediation and counselling for amicable settlement of matrimonial and custody disputes"
-  ]
-},
   {
+    id: "corporate-ma",
+    num: "03",
     icon: Briefcase,
-    title: "Corporate and Commercial Law Practice",
-    description:
-      "Our corporate and commercial law practice provides comprehensive legal support to businesses of all sizes.",
+    tag: "Transactional & Regulatory",
+    title: "Corporate Governance & M&A",
+    shortDesc: "Full-lifecycle enterprise counsel from cross-border M&A and due diligence to board fiduciary advisory.",
+    statutes: "Companies Act 2013, SEBI LODR, FEMA, RBI Guidelines",
     points: [
-      "Company formation, incorporation, and structuring under the Companies Act, 2013",
-      "Mergers, acquisitions, and amalgamations including due diligence and drafting",
-      "Drafting and negotiation of commercial contracts and agreements",
-      "Corporate governance, compliance, and statutory filings",
-      "Regulatory filings and approvals under SEBI, RBI, FEMA, and other authorities",
-      "Joint ventures, collaborations, and strategic partnerships",
-      "Private equity and venture capital financing transactions",
-      "Securities law compliance, public offerings, and listings",
-      "Corporate restructuring, demergers, and insolvency-related advisory"
+      "Cross-border Mergers, Acquisitions, joint ventures and scheme amalgamations",
+      "Comprehensive legal and regulatory due diligence for institutional investors",
+      "Board governance advisory, shareholder pacts, voting agreements & term sheets",
+      "NCLT representation for corporate insolvencies, oppression & mismanagement petitions"
     ]
   },
   {
-    icon: Scale,
-    title: "Litigation and Dispute Resolution Practice",
-    description:
-      "Our litigation and dispute resolution practice offers expert representation in civil, commercial, and regulatory disputes.",
+    id: "criminal-defense",
+    num: "04",
+    icon: Gavel,
+    tag: "Trial & Statutory Defense",
+    title: "Criminal Law & White-Collar Defense",
+    shortDesc: "Formidable trial advocacy, statutory compliance, and defense against financial crime & regulatory enforcement.",
+    statutes: "BNS, BNSS, PMLA, Prevention of Corruption Act, FEMA",
     points: [
-      "Civil and commercial litigation across courts and tribunals",
-      "Arbitration and mediation for faster dispute resolution",
-      "Contractual disputes and breach claims",
-      "Real estate and property litigation",
-      "Intellectual property enforcement",
-      "Banking and financial disputes",
-      "Insolvency and bankruptcy litigation",
-      "Regulatory and compliance disputes",
-      "Enforcement of judgments and arbitral awards"
+      "Anticipatory and regular bail representations before High Courts and Supreme Court",
+      "Specialized defense in ED investigations and Prevention of Money Laundering Act (PMLA)",
+      "FIR quashing petitions under Section 482 BNSS / CrPC equivalents",
+      "Corporate officer criminal liabilities, economic offenses & statutory enforcement defense"
     ]
   },
   {
-    icon: Banknote,
-    title: "Banking and Finance Practice",
-    description:
-      "Our banking and finance practice provides expert legal advice on regulatory frameworks, transactional matters, and risk management.",
-    points: [
-      "Regulatory compliance under RBI, SEBI, and other financial authorities",
-      "Loan and security documentation for corporate and retail lending",
-      "Project finance and structured finance transactions",
-      "Debt restructuring and recovery",
-      "Trade finance and payment systems",
-      "Investment funds and asset management advisory",
-      "Regulatory approvals for banking products and services",
-      "Risk management and enforcement of security interests",
-      "Litigation and arbitration involving financial disputes"
-    ]
-  },
-  {
-    icon: Lightbulb,
-    title: "Intellectual Property Law Practice",
-    description:
-      "We help clients protect, manage, and enforce their intangible assets including patents, trademarks, and copyrights.",
-    points: [
-      "Patents, trademarks, copyrights, and design registrations",
-      "IP licensing and commercialization agreements",
-      "Enforcement against infringement and counterfeiting",
-      "Trade secrets and confidential information protection",
-      "IP due diligence for M&A and investments",
-      "IP litigation and dispute resolution",
-      "Portfolio management and valuation",
-      "Counseling on international IP treaties and compliance"
-    ]
-  },
-  {
-    icon: FileCheck,
-    title: "Insolvency and Bankruptcy Law Practice",
-    description:
-      "We advise creditors and debtors through insolvency processes, restructuring, and recoveries.",
-    points: [
-      "Corporate insolvency resolution process (CIRP)",
-      "Debt restructuring and workouts",
-      "Liquidation and bankruptcy proceedings",
-      "Representation of creditors and stakeholders",
-      "Insolvency litigation and appeals",
-      "Cross-border insolvency and restructuring"
-    ]
-  },
-  {
-    icon: Leaf,
-    title: "Environmental, Social and Governance (ESG) Practice",
-    description:
-      "We counsel clients on ESG compliance, sustainability, and governance strategies.",
-    points: [
-      "ESG policy development and implementation",
-      "Sustainability reporting and compliance",
-      "Environmental regulation and permitting",
-      "Social responsibility programs",
-      "Corporate governance best practices"
-    ]
-  },
-  {
-    icon: ShieldCheck,
-    title: "Competition and Antitrust Law Practice",
-    description:
-      "We advise clients on competition law compliance, merger control, and antitrust matters.",
-    points: [
-      "Competition law compliance audits",
-      "Merger filings and approvals",
-      "Anti-competitive conduct investigations",
-      "Cartel defense and dawn raid support",
-      "Competition litigation and appeals"
-    ]
-  },
-  {
-    icon: FileCheck,
-    title: "Insurance and Reinsurance Law Practice",
-    description:
-      "We advise on insurance coverage, claims, and regulatory compliance.",
-    points: [
-      "Insurance policy drafting and review",
-      "Claims management and dispute resolution",
-      "Reinsurance agreements and transactions",
-      "Regulatory compliance in insurance sector",
-      "Insurance coverage litigation"
-    ]
-  },
-  {
-    icon: Percent,
-    title: "Taxation Law Practice",
-    description:
-      "We provide comprehensive tax advisory and compliance services for individuals and businesses.",
-    points: [
-      "Income tax, corporate tax, and capital gains advisory",
-      "GST compliance and advisory",
-      "Transfer pricing planning and documentation",
-      "Tax structuring for M&A and reorganizations",
-      "Representation before tax and GST authorities",
-      "Tax litigation and appeals",
-      "International taxation and cross-border planning",
-      "Tax-efficient estate and succession planning"
-    ]
-  },
-  {
-    icon: Users,
-    title: "Labour and Employment Law Practice",
-    description:
-      "Our labour and employment practice advises employers and employees on all aspects of workplace law.",
-    points: [
-      "Employment contracts and policies drafting",
-      "Workplace dispute resolution, mediation, and litigation",
-      "Compliance with labour laws and industrial regulations",
-      "Employee benefits and remuneration structuring",
-      "Trade union negotiations and collective bargaining",
-      "Employee discipline, termination, and grievances",
-      "Health and safety compliance",
-      "Discrimination and harassment claims",
-      "Government labour inspections and audits"
-    ]
-  },
-  {
-    icon: Home,
-    title: "Real Estate and Infrastructure Law Practice",
-    description:
-      "Our real estate and infrastructure practice offers legal services across property transactions, development projects, and compliance.",
-    points: [
-      "Property acquisitions and sales",
-      "Leasing agreements and tenant representation",
-      "Land use, zoning, and planning compliance",
-      "Infrastructure project development and financing",
-      "Real estate due diligence and title verification",
-      "Construction contracts and dispute resolution",
-      "Regulatory approvals for development projects",
-      "Joint ventures and PPP models",
-      "Real estate litigation and enforcement"
-    ]
-  },
-  {
-    icon: FileSearch,
-    title: "Regulatory and Government Affairs Practice",
-    description:
-      "We advise clients on compliance, policy matters, and interactions with government bodies.",
-    points: [
-      "Regulatory compliance across industries",
-      "Government policy advisory and advocacy",
-      "Licensing and permits",
-      "Regulatory investigations and enforcement defense",
-      "Public sector contracts and tenders",
-      "Administrative law and tribunal representations"
-    ]
-  },
-  {
-    icon: UserCheck,
-    title: "White Collar Crimes and Investigations Practice",
-    description:
-      "We represent clients facing investigations, prosecutions, and compliance issues related to white collar crime.",
-    points: [
-      "Internal investigations and compliance audits",
-      "Defense in criminal prosecutions",
-      "Anti-corruption and bribery compliance",
-      "Regulatory investigations and enforcement actions",
-      "Litigation and settlement negotiations"
-    ]
-  },
-  {
-    icon: Globe,
-    title: "International Trade and Customs Law Practice",
-    description:
-      "We advise clients on trade regulations, customs compliance, and dispute resolution.",
-    points: [
-      "Customs law and import/export compliance",
-      "Trade sanctions and embargoes",
-      "WTO and bilateral trade agreements",
-      "Anti-dumping and countervailing duties",
-      "Trade dispute resolution and litigation"
-    ]
-  },
-  {
+    id: "real-estate",
+    num: "05",
     icon: Building,
-    title: "Sector-Specific Advisory Practice",
-    description:
-      "We offer specialized legal services tailored to industries such as healthcare, education, pharmaceuticals, and energy.",
+    tag: "Property & Infrastructure",
+    title: "Real Estate & Infrastructure",
+    shortDesc: "Strategic land acquisition counsel, RERA statutory representation, infrastructure EPC contracts and title audits.",
+    statutes: "RERA 2016, Transfer of Property Act, Land Acquisition Act",
     points: [
-      "Healthcare regulatory compliance",
-      "Education law and policy advisory",
-      "Pharmaceutical licensing and litigation",
-      "Energy project development and compliance",
-      "Infrastructure PPP and government contracting"
+      "Rigorous 30-year property title scrutiny, search reports & encumbrance certification",
+      "Representation before Real Estate Regulatory Authorities (RERA) and Appellate Tribunals",
+      "EPC contracting, consortium agreements, concession pacts & PPP frameworks",
+      "Zoning compliance, land use conversion, developer agreements & layout approvals"
     ]
   },
   {
-    icon: Laptop,
-    title: "Startup and Venture Capital Advisory Practice",
-    description:
-      "We support startups and investors through formation, funding, and growth stages.",
+    id: "ip-tech",
+    num: "06",
+    icon: FileCheck,
+    tag: "Innovation & Technology",
+    title: "Intellectual Property & Technology",
+    shortDesc: "Safeguarding trademarks, patents, software copyrights, and enterprise digital privacy architectures.",
+    statutes: "Trade Marks Act 1999, Patents Act, Copyright Act, DPDP Act",
     points: [
-      "Company formation and incorporation",
-      "Fundraising and venture capital transactions",
-      "Regulatory compliance for startups",
-      "Stock option plans and employee incentives",
-      "Commercial contracts and partnerships",
-      "Exit strategies, mergers, and IPOs"
+      "Trademark and copyright registration, opposition proceedings & global portfolio defense",
+      "Patent infringement litigation, passing-off suits & interim restraining orders",
+      "Software licensing, SaaS terms, technology transfer pacts & API governance",
+      "Digital Personal Data Protection (DPDP) audits and trade secret nondisclosure structures"
     ]
   },
   {
-    icon: UserCheck,
-    title: "Private Client Services Practice",
-    description:
-      "We provide estate planning, succession, and family law services for individuals and families.",
+    id: "taxation",
+    num: "07",
+    icon: Percent,
+    tag: "Fiscal & Appellate Representation",
+    title: "Taxation & Revenue Law",
+    shortDesc: "Advisory and litigation spanning direct tax appellate tribunals, GST classification, and cross-border structuring.",
+    statutes: "Income Tax Act 1961, Central GST Act, Transfer Pricing Rules",
     points: [
-      "Estate planning and wills drafting",
-      "Trust creation and administration",
-      "Succession and inheritance planning",
-      "Family law matters including divorce and custody",
-      "Property ownership and transfers",
-      "Probate and estate administration"
+      "Appellate representations before ITAT, CESTAT, High Courts and Supreme Court",
+      "GST classification dispute advisory, input tax credit audits & show cause replies",
+      "Cross-border transfer pricing documentation, international treaties (DTAA) & advance rulings",
+      "Fiscal structuring for domestic amalgamations, spin-offs, and capital reorganizations"
+    ]
+  },
+  {
+    id: "employment",
+    num: "08",
+    icon: Users,
+    tag: "Workforce & Compliance",
+    title: "Labour & Employment Regulations",
+    shortDesc: "Guiding enterprise employers through workforce restructuring, executive contracts, and statutory POSH frameworks.",
+    statutes: "Industrial Relations Code, POSH Act 2013, EPF & ESI Acts",
+    points: [
+      "Executive employment contracts, non-compete covenants & senior severance frameworks",
+      "Internal Complaints Committee (ICC) advisory and independent POSH inquiry guidance",
+      "Workforce restructuring, retrenchment compliance, and union conciliation advocacy",
+      "Labour audits, social security statutory compliance, and workplace safety protocols"
     ]
   }
 ];
 
+const PracticeAreas = ({ onNavigate }) => {
+  const [hoveredIndex, setHoveredIndex] = useState(0);
+  const [selectedArea, setSelectedArea] = useState(null);
+  const { isDarkTheme } = useTheme();
+
+  const activeArea = PRACTICE_AREAS[hoveredIndex] || PRACTICE_AREAS[0];
+
   return (
-    <section id="practice" className={`practice-areas ${isDarkTheme ? 'dark-theme' : 'light-theme'}`}>
-      <div className="practice-areas-container">
-        <div className="practice-areas-header">
-          <h2 className="practice-areas-title">Our Practice Areas</h2>
-          <p className="practice-areas-subtitle">
-            We offer a comprehensive range of legal services to meet the diverse needs of our clients.
-          </p>
-        </div>
-
-        <div className="practice-areas-grid">
-          {areas.map((area, index) => {
-            const Icon = area.icon;
-            return (
-              <div
-                key={index}
-                className="practice-card"
-                onClick={() => setSelectedArea(area)}
-              >
-                <Icon className="practice-card-icon" size={40} />
-                <h3 className="practice-card-title">{area.title}</h3>
-                <span className="hover-text">Click to view details</span>
+    <section
+      id="practice"
+      className={`practice-areas snap-slide ${isDarkTheme ? 'dark-theme' : 'light-theme'}`}
+    >
+      <div className="practice-container">
+        {/* TLH Style Split 2-Column Grid */}
+        <div className="practice-split-layout">
+          
+          {/* LEFT COLUMN: Pinned / Sticky Editorial Header & Active Preview */}
+          <div className="practice-col-left">
+            <div className="practice-header-pinned">
+              <div className="practice-badge">
+                <span className="practice-badge-dot" />
+                <span className="practice-badge-text">PRACTICE DISCIPLINES</span>
               </div>
-            );
-          })}
+
+              <h2 className="practice-title">
+                Areas of <br />
+                <span className="practice-title-accent">Practice</span>
+              </h2>
+
+              {/* TLH Signature Horizontal Accent Line */}
+              <div className="practice-accent-line" />
+
+              <p className="practice-description">
+                MLS & Co provides comprehensive trial advocacy and institutional counsel across 
+                the full spectrum of contentious disputes and high-value commercial transactions.
+              </p>
+
+              {/* Dynamic Active Area Preview Card */}
+              <div className="practice-active-preview">
+                <div className="preview-top-row">
+                  <div className="preview-num-badge">{activeArea.num}</div>
+                  <span className="preview-tag">{activeArea.tag}</span>
+                </div>
+                
+                <h3 className="preview-title">{activeArea.title}</h3>
+                <p className="preview-desc">{activeArea.shortDesc}</p>
+
+                <div className="preview-statute-row">
+                  <span className="preview-statute-label">Primary Statutes:</span>
+                  <span className="preview-statute-val">{activeArea.statutes}</span>
+                </div>
+
+                <button
+                  type="button"
+                  className="preview-mandate-btn"
+                  onClick={() => setSelectedArea(activeArea)}
+                >
+                  <span>Examine Detailed Mandate Scope</span>
+                  <ArrowRight size={14} />
+                </button>
+              </div>
+
+              <div className="practice-left-footer">
+                <div className="practice-stat-chip">
+                  <Compass size={14} />
+                  <span>8 Core Disciplines</span>
+                </div>
+                <div className="practice-stat-chip">
+                  <CheckCircle2 size={14} />
+                  <span>High Courts & Supreme Court</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* RIGHT COLUMN: TLH Stacked Editorial List (.areas_link-block style) */}
+          <div className="practice-col-right">
+            <div className="practice-list-header">
+              <span className="list-header-label">DISCIPLINE DIRECTORY</span>
+              <span className="list-header-hint">Hover to preview • Click to examine</span>
+            </div>
+
+            <div className="practice-stacked-list">
+              {PRACTICE_AREAS.map((area, index) => {
+                const isHovered = hoveredIndex === index;
+                return (
+                  <div
+                    key={area.id}
+                    className={`tlh-area-row ${isHovered ? 'active' : ''}`}
+                    onMouseEnter={() => setHoveredIndex(index)}
+                    onClick={() => setSelectedArea(area)}
+                  >
+                    <div className="tlh-area-left">
+                      <span className="tlh-area-num">{area.num}</span>
+                      <div className="tlh-area-info">
+                        <span className="tlh-area-title">{area.title}</span>
+                        <span className="tlh-area-tag">{area.tag}</span>
+                      </div>
+                    </div>
+
+                    <div className="tlh-area-right">
+                      <div className="tlh-area-arrow-box">
+                        <ArrowRight size={16} className="tlh-area-arrow" />
+                      </div>
+                    </div>
+
+                    {/* Animated hover border line */}
+                    <div className="tlh-area-indicator" />
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </div>
 
+        {/* TLH Style Deep Mandate Modal */}
         {selectedArea && (
           <div
-            className="practice-modal-overlay"
+            className="practice-modal-backdrop"
             onClick={() => setSelectedArea(null)}
           >
             <div
-              className="practice-modal"
+              className="practice-modal-dialog"
               onClick={(e) => e.stopPropagation()}
             >
               <button
-                className="close-btn"
+                type="button"
+                className="practice-modal-close"
                 onClick={() => setSelectedArea(null)}
+                aria-label="Close practice mandate"
               >
-                ✕
+                <X size={20} />
               </button>
-              <div className="modal-icon">
-                {React.createElement(selectedArea.icon, {
-                  size: 80,
-                  color: '#FDB913'
-                })}
+
+              <div className="modal-hero">
+                <div className="modal-hero-badge">
+                  <span className="modal-badge-num">{selectedArea.num}</span>
+                  <span className="modal-badge-tag">{selectedArea.tag}</span>
+                </div>
+                <h3 className="modal-title">{selectedArea.title}</h3>
+                <p className="modal-lead">{selectedArea.shortDesc}</p>
+                
+                <div className="modal-statute-chip">
+                  <strong>Governing Legislation:</strong> {selectedArea.statutes}
+                </div>
               </div>
-              <h2>{selectedArea.title}</h2>
-              <p>{selectedArea.description}</p>
-              <ul className="modal-points">
-                {selectedArea.points.map((point, i) => (
-                  <li  className="selected" key={i}>{point}</li>
-                ))}
-              </ul>
+
+              <div className="modal-body-content">
+                <h4 className="modal-mandate-heading">Scope of Representation & Key Mandates</h4>
+                <div className="modal-points-grid">
+                  {selectedArea.points.map((pt, pIdx) => (
+                    <div key={pIdx} className="modal-point-card">
+                      <div className="modal-point-bullet">✦</div>
+                      <p className="modal-point-text">{pt}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="modal-footer-cta">
+                <button
+                  type="button"
+                  className="modal-cta-primary"
+                  onClick={() => {
+                    setSelectedArea(null);
+                    if (onNavigate) {
+                      onNavigate('contact');
+                    } else {
+                      const el = document.getElementById('contact');
+                      if (el) el.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }}
+                >
+                  <span>Instruct Counsel for {selectedArea.title}</span>
+                  <ArrowUpRight size={16} />
+                </button>
+              </div>
             </div>
           </div>
         )}

@@ -1,42 +1,8 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
-}
-
-/* removed global body theme overrides */
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
-
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-} */
-
-
-
-
-
-
-
-
-
+/* ========================================================
+   MLS & CO - TLH SMOOTH SCROLL & INVISIBLE SCROLLBAR STYLES
+   Powered by Strict Snap Fitting & Micro Pagination
+   Theme Palette: Noble Champagne Bronze & Warm Obsidian / Alabaster
+   ======================================================== */
 
 * {
   margin: 0;
@@ -44,39 +10,233 @@ code {
   box-sizing: border-box;
 }
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+:root {
+  --nav-height: 80px;
+  --gold-primary: #C5A059;
+  --gold-accent: #D4B26F;
+  --gold-light: #EAD9B8;
+  --gold-dark: #9A7B38;
+  --gold-muted: rgba(197, 160, 89, 0.15);
+  --bg-dark-obsidian: #0C0D11;
+  --bg-dark-surface: #13151D;
+  --bg-light-alabaster: #FAF9F5;
+  --bg-light-surface: #FFFFFF;
+}
+
+/* Official Lenis Scroll Reset for multi-page continuous scroll */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100%;
   overflow-x: hidden;
-  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.App.dark-theme {
-  background-color: #0d0d0d;
-  color: #ffffff;
+.App {
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
 }
 
-.App.light-theme {
-  background-color: #F5F5DC;
-  color: #111111;
+/* ========================================================
+   100% INVISIBLE SCROLLBAR ACROSS ENTIRE APPLICATION
+   Smooth scrolling behavior preserved completely
+   ======================================================== */
+html, body, * {
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important; /* IE & Edge */
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+::-webkit-scrollbar {
+  display: none !important;
+  width: 0px !important;
+  height: 0px !important;
+  background: transparent !important;
 }
 
-body.dark-theme {
-  background-color: #121212;
-  color: #ffffff;
-  transition: background-color 0.3s ease;
+/* ========================================================
+   HOME SNAP FITTING SLIDE CONTAINER
+   Exact 1-Slide Snapping Engine: Fits strictly 1 Slide
+   ======================================================== */
+.home-wrapper {
+  width: 100%;
+  height: calc(100vh - var(--nav-height, 80px));
+  position: relative;
+  overflow: hidden;
 }
 
-body.light-theme {
-  background-color: #f0f0f0;
-  color: #000000;
-  transition: background-color 0.3s ease;
+.home-snap-container {
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  position: relative;
+}
+
+.home-snap-container::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* Base 1-Slide Snapping Section */
+.snap-slide {
+  width: 100%;
+  height: calc(100vh - var(--nav-height, 80px)) !important;
+  max-height: calc(100vh - var(--nav-height, 80px)) !important;
+  min-height: calc(100vh - var(--nav-height, 80px)) !important;
+  scroll-snap-align: start !important;
+  scroll-snap-stop: always !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  position: relative !important;
+}
+
+/* ========================================================
+   SLIDE PAGINATION CONTROLLER (MICRO MINIMALIST SIDE DOTS)
+   Ultra-small, luxury aesthetic (3.5px micro-dots)
+   ======================================================== */
+.slide-pagination {
+  position: fixed;
+  right: 1.15rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 900;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.25rem;
+  background: rgba(10, 11, 15, 0.4);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: 9999px;
+  border: 1px solid rgba(197, 160, 89, 0.2);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+body.light-theme .slide-pagination {
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(197, 160, 89, 0.3);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* Micro Dot (Extremely Small: 3.5px) */
+.pagination-dot {
+  width: 3.5px;
+  height: 3.5px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.28);
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 0;
+  outline: none;
+}
+
+body.light-theme .pagination-dot {
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.pagination-dot:hover {
+  background: var(--gold-primary);
+  transform: scale(1.6);
+}
+
+/* Active State: Transitions into a micro vertical pill */
+.pagination-dot.active {
+  width: 3.5px;
+  height: 16px;
+  border-radius: 9999px;
+  background: var(--gold-primary);
+  box-shadow: 0 0 10px rgba(197, 160, 89, 0.6);
+  transform: scale(1);
+}
+
+/* Tooltip on dot hover */
+.pagination-tooltip {
+  position: absolute;
+  right: 180%;
+  top: 50%;
+  transform: translateY(-50%) translateX(4px);
+  background: rgba(14, 15, 20, 0.95);
+  color: #fff;
+  padding: 0.22rem 0.55rem;
+  border-radius: 4px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  border: 1px solid rgba(197, 160, 89, 0.25);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
+}
+
+body.light-theme .pagination-tooltip {
+  background: #ffffff;
+  color: #1a1a1c;
+  border-color: rgba(197, 160, 89, 0.35);
+}
+
+.pagination-dot:hover .pagination-tooltip {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+
+@media (max-width: 992px) {
+  .slide-pagination {
+    display: none;
+  }
+}
+
+/* ========================================================
+   GLOBAL EDITORIAL ACCENT LINES & SECTION HELPERS
+   ======================================================== */
+.accent-line-horizontal {
+  width: 100%;
+  max-width: 100px;
+  height: 2px;
+  background: linear-gradient(90deg, #C5A059 0%, rgba(197, 160, 89, 0.1) 100%);
+  position: relative;
+  margin: 0.75rem 0;
+}
+
+.accent-line-horizontal::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: -1px;
+  width: 24px;
+  height: 4px;
+  background: #C5A059;
+  border-radius: 2px;
+  box-shadow: 0 0 10px rgba(197, 160, 89, 0.5);
 }

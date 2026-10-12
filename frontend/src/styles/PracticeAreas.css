@@ -1,280 +1,693 @@
-/* ============================================
-   PracticeAreas.css
-   ============================================ */
+/* ========================================================
+   MLS & CO - TLH STYLE STICKY SPLIT PRACTICE AREAS
+   Pinned Left Column, Buttery Page Scroll, Zero Inner Scrollbars
+   Color Theme: Noble Champagne Bronze & Warm Obsidian / Alabaster
+   ======================================================== */
 
 .practice-areas {
-  padding: 5rem 1.5rem;
-  transition: all 0.3s ease;
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 5rem 2rem 6rem;
+  overflow: visible;
+  box-sizing: border-box;
+  transition: background-color 0.4s ease, color 0.4s ease;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
+/* Theme Backgrounds */
 .practice-areas.dark-theme {
-  background-color: #000000;
-  color: #ffffff;
+  background: radial-gradient(circle at 80% 25%, #141620 0%, #0C0D11 65%, #08090C 100%);
+  color: #ECECF0;
 }
 
 .practice-areas.light-theme {
-  background-color: #f8f9fa;
-  color: #212529;
+  background: radial-gradient(circle at 80% 25%, #FFFFFF 0%, #F9F8F5 65%, #EEECE4 100%);
+  color: #171A21;
 }
 
-.practice-areas-container {
-  max-width: 1280px;
+.practice-container {
+  max-width: 1320px;
+  width: 100%;
   margin: 0 auto;
-}
-
-.practice-areas-header {
-  text-align: center;
-  margin-bottom: 3rem;
-}
-
-.practice-areas-title {
-  margin-top: 60px;
-  font-size: 2.5rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
-}
-
-.practice-areas.dark-theme .practice-areas-title {
-  color: #FDB913;
-}
-
-.practice-areas.light-theme .practice-areas-title {
-  color: #d4af37;
-}
-
-.practice-areas-subtitle {
-  font-size: 1.125rem;
-}
-
-.practice-areas.dark-theme .practice-areas-subtitle {
-  color: #9ca3af;
-}
-
-.practice-areas.light-theme .practice-areas-subtitle {
-  color: #6c757d;
-}
-
-.practice-areas-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
-}
-
-.practice-card {
-  height: 170px;
   position: relative;
-  border-radius: 12px;
-  padding: 25px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
-.practice-areas.dark-theme .practice-card {
-  background-color: #1a1a1a;
-  border: 1px solid #333;
+/* ========================================================
+   TLH SPLIT 2-COLUMN LAYOUT
+   ======================================================== */
+.practice-split-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.35fr;
+  gap: 4rem;
+  width: 100%;
+  align-items: start;
 }
 
-.practice-areas.light-theme .practice-card {
-  background-color: #ffffff;
-  border: 1px solid #e0e0e0;
+/* ========================================================
+   LEFT COLUMN: PINNED / STICKY AS USER SCROLLS
+   ======================================================== */
+.practice-col-left {
+  position: sticky;
+  top: calc(var(--nav-height, 80px) + 2.5rem);
+  align-self: flex-start;
+  display: flex;
+  flex-direction: column;
+  z-index: 10;
 }
 
-.practice-card:hover {
-  transform: translateY(-5px);
+.practice-header-pinned {
+  display: flex;
+  flex-direction: column;
 }
 
-.practice-areas.dark-theme .practice-card:hover {
-  border-color: #FDB913;
-  box-shadow: 0 6px 15px rgba(253, 185, 19, 0.15);
+.practice-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.85rem;
+  border-radius: 9999px;
+  background: rgba(197, 160, 89, 0.08);
+  border: 1px solid rgba(197, 160, 89, 0.22);
+  color: #C5A059;
+  width: fit-content;
+  margin-bottom: 0.85rem;
 }
 
-.practice-areas.light-theme .practice-card:hover {
-  border-color: #d4af37;
-  box-shadow: 0 6px 15px rgba(212, 175, 55, 0.15);
+.practice-areas.light-theme .practice-badge {
+  background: rgba(197, 160, 89, 0.12);
+  border-color: rgba(197, 160, 89, 0.28);
+  color: #8C661D;
 }
 
-.practice-card-icon {
+.practice-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #C5A059;
+  box-shadow: 0 0 6px rgba(197, 160, 89, 0.6);
+}
+
+.practice-badge-text {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.practice-title {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(2.2rem, 3.5vw, 3.1rem);
+  font-weight: 700;
+  line-height: 1.15;
   margin-bottom: 1rem;
-  transition: transform 0.3s ease;
 }
 
-.practice-areas.dark-theme .practice-card-icon {
-  color: #FDB913;
+.practice-title-accent {
+  background: linear-gradient(135deg, #F2E3C6 0%, #C5A059 55%, #9E7B38 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.practice-areas.light-theme .practice-card-icon {
-  color: #d4af37;
+.practice-areas.light-theme .practice-title-accent {
+  background: linear-gradient(135deg, #A47B2E 0%, #87621B 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.practice-card:hover .practice-card-icon {
-  transform: scale(1.1);
+/* Horizontal Accent Line */
+.practice-accent-line {
+  width: 90px;
+  height: 2px;
+  background: linear-gradient(90deg, #C5A059 0%, rgba(197, 160, 89, 0.1) 100%);
+  margin-bottom: 1.25rem;
+  position: relative;
 }
 
-.practice-card-title {
-  font-weight: 600;
-  font-size: 1.125rem;
-}
-
-.hover-text {
+.practice-accent-line::after {
+  content: '';
   position: absolute;
-  bottom: 15px;
-  left: 50%;
-  transform: translateX(-50%);
-  opacity: 0;
-  font-size: 0.9rem;
-  font-weight: 500;
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  left: 0;
+  top: -1px;
+  width: 28px;
+  height: 4px;
+  background: #C5A059;
+  border-radius: 2px;
+  box-shadow: 0 0 8px rgba(197, 160, 89, 0.5);
 }
 
-.practice-areas.dark-theme .hover-text {
-  color: #FDB913;
+.practice-description {
+  font-size: 0.92rem;
+  line-height: 1.6;
+  opacity: 0.8;
+  max-width: 440px;
+  margin-bottom: 1.5rem;
 }
 
-.practice-areas.light-theme .hover-text {
-  color: #d4af37;
+/* Dynamic Active Preview Card */
+.practice-active-preview {
+  padding: 1.35rem 1.5rem;
+  border-radius: 12px;
+  background: rgba(18, 20, 28, 0.7);
+  border: 1px solid rgba(197, 160, 89, 0.2);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.45);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+  max-width: 460px;
 }
 
-.practice-card:hover .hover-text {
+.practice-areas.light-theme .practice-active-preview {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(197, 160, 89, 0.25);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+.preview-top-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 0.5rem;
+}
+
+.preview-num-badge {
+  font-family: 'Cinzel', serif;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #C5A059;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  background: rgba(197, 160, 89, 0.1);
+  border: 1px solid rgba(197, 160, 89, 0.22);
+}
+
+.preview-tag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #C5A059;
+  opacity: 0.9;
+}
+
+.practice-areas.light-theme .preview-tag {
+  color: #8C661D;
+}
+
+.preview-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: inherit;
+}
+
+.preview-desc {
+  font-size: 0.82rem;
+  line-height: 1.5;
+  opacity: 0.8;
+  margin-bottom: 0.85rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.preview-statute-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  font-size: 0.74rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  background: rgba(197, 160, 89, 0.06);
+  border: 1px solid rgba(197, 160, 89, 0.12);
+  margin-bottom: 1rem;
+}
+
+.preview-statute-label {
+  font-weight: 700;
+  color: #C5A059;
+  white-space: nowrap;
+}
+
+.practice-areas.light-theme .preview-statute-label {
+  color: #8C661D;
+}
+
+.preview-statute-val {
+  opacity: 0.85;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.preview-mandate-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.65rem 1rem;
+  border-radius: 6px;
+  background: rgba(197, 160, 89, 0.1);
+  border: 1px solid rgba(197, 160, 89, 0.28);
+  color: #C5A059;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.practice-areas.light-theme .preview-mandate-btn {
+  background: rgba(197, 160, 89, 0.12);
+  color: #8C661D;
+  border-color: rgba(197, 160, 89, 0.3);
+}
+
+.preview-mandate-btn:hover {
+  background: #C5A059;
+  color: #0E1015;
+  transform: translateY(-1px);
+}
+
+.practice-left-footer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+.practice-stat-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.74rem;
+  font-weight: 600;
+  opacity: 0.75;
+}
+
+/* ========================================================
+   RIGHT COLUMN: FULL-FLOW EDITORIAL LIST
+   ======================================================== */
+.practice-col-right {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.practice-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0.5rem 0.85rem;
+  margin-bottom: 0.25rem;
+  border-bottom: 1px solid rgba(197, 160, 89, 0.16);
+}
+
+.list-header-label {
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #C5A059;
+}
+
+.practice-areas.light-theme .list-header-label {
+  color: #8C661D;
+}
+
+.list-header-hint {
+  font-size: 0.72rem;
+  opacity: 0.55;
+  letter-spacing: 0.04em;
+}
+
+.practice-stacked-list {
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+}
+
+.tlh-area-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.45rem 1rem 1.45rem 1.5rem;
+  border-bottom: 1px solid;
+  cursor: pointer;
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  background: transparent;
+}
+
+.practice-areas.dark-theme .tlh-area-row {
+  border-bottom-color: rgba(197, 160, 89, 0.12);
+}
+
+.practice-areas.light-theme .tlh-area-row {
+  border-bottom-color: rgba(197, 160, 89, 0.16);
+}
+
+.tlh-area-indicator {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3.5px;
+  background: #C5A059;
+  transform: scaleY(0);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tlh-area-row.active .tlh-area-indicator,
+.tlh-area-row:hover .tlh-area-indicator {
+  transform: scaleY(1);
+}
+
+.tlh-area-row:hover,
+.tlh-area-row.active {
+  padding-left: 2rem;
+}
+
+.practice-areas.dark-theme .tlh-area-row:hover,
+.practice-areas.dark-theme .tlh-area-row.active {
+  background: rgba(197, 160, 89, 0.04);
+}
+
+.practice-areas.light-theme .tlh-area-row:hover,
+.practice-areas.light-theme .tlh-area-row.active {
+  background: rgba(197, 160, 89, 0.06);
+}
+
+.tlh-area-left {
+  display: flex;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+.tlh-area-num {
+  font-family: 'Cinzel', serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  opacity: 0.55;
+  letter-spacing: 0.05em;
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.tlh-area-row:hover .tlh-area-num,
+.tlh-area-row.active .tlh-area-num {
+  color: #C5A059;
   opacity: 1;
-  transform: translateX(-50%) translateY(3px);
 }
 
-/* Modal Styling */
-.practice-modal-overlay {
+.tlh-area-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.tlh-area-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1.12rem;
+  font-weight: 700;
+  line-height: 1.3;
+  transition: color 0.2s ease;
+}
+
+.tlh-area-row:hover .tlh-area-title,
+.tlh-area-row.active .tlh-area-title {
+  color: #C5A059;
+}
+
+.practice-areas.light-theme .tlh-area-row:hover .tlh-area-title,
+.practice-areas.light-theme .tlh-area-row.active .tlh-area-title {
+  color: #8C661D;
+}
+
+.tlh-area-tag {
+  font-size: 0.76rem;
+  opacity: 0.65;
+  letter-spacing: 0.02em;
+  margin-top: 4px;
+}
+
+.tlh-area-right {
+  display: flex;
+  align-items: center;
+}
+
+.tlh-area-arrow-box {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  transition: all 0.25s ease;
+}
+
+.tlh-area-arrow {
+  color: inherit;
+  opacity: 0.45;
+  transition: transform 0.25s ease, opacity 0.25s ease, color 0.25s ease;
+}
+
+.tlh-area-row:hover .tlh-area-arrow-box,
+.tlh-area-row.active .tlh-area-arrow-box {
+  border-color: rgba(197, 160, 89, 0.35);
+  background: rgba(197, 160, 89, 0.1);
+}
+
+.tlh-area-row:hover .tlh-area-arrow,
+.tlh-area-row.active .tlh-area-arrow {
+  transform: translateX(4px);
+  opacity: 1;
+  color: #C5A059;
+}
+
+/* ========================================================
+   MANDATE MODAL
+   ======================================================== */
+.practice-modal-backdrop {
   position: fixed;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.8);
+  background: rgba(6, 7, 10, 0.82);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 2200;
   display: flex;
-  justify-content: center;
   align-items: center;
-  z-index: 1000;
-  animation: fadeInOverlay 0.3s ease-in-out forwards;
+  justify-content: center;
+  padding: 1.5rem;
+  animation: modalIn 0.2s ease;
 }
 
-.practice-modal {
-  border-radius: 1rem;
-  padding: 2.5rem;
-  max-width: 600px;
-  width: 90%;
-  text-align: center;
-  position: relative;
-  overflow-y: auto;
-  max-height: 90vh;
-  animation: scaleUp 0.3s ease forwards;
-}
-
-.practice-areas.dark-theme .practice-modal {
-  background-color: #121212;
-  border: 1px solid #FDB913;
-  color: #fff;
-  box-shadow: 0 0 30px rgba(253, 185, 19, 0.2);
-}
-
-.practice-areas.light-theme .practice-modal {
-  background-color: #ffffff;
-  border: 1px solid #d4af37;
-  color: #212529;
-  box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
-}
-
-.practice-modal h2 {
-  font-size: 2rem;
-  margin-bottom: 1rem;
-}
-
-.practice-areas.dark-theme .practice-modal h2 {
-  color: #FDB913;
-}
-
-.practice-areas.light-theme .practice-modal h2 {
-  color: #d4af37;
-}
-
-.practice-modal p {
-  font-size: 1.1rem;
-  line-height: 1.6;
-  margin-bottom: 1rem;
-}
-
-.practice-areas.dark-theme .practice-modal p {
-  color: #ccc;
-}
-
-.practice-areas.light-theme .practice-modal p {
-  color: #6c757d;
-}
-
-.close-btn {
-  position: absolute;
-  top: 15px;
-  right: 20px;
-  background: transparent;
-  border: none;
-  font-size: 1.8rem;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-
-.practice-areas.dark-theme .close-btn {
-  color: #FDB913;
-}
-
-.practice-areas.light-theme .close-btn {
-  color: #d4af37;
-}
-
-.close-btn:hover {
-  transform: scale(1.2);
-}
-
-.modal-icon {
-  margin-bottom: 1rem;
-}
-
-.modal-points {
-  text-align: left;
-  list-style-type: disc;
-  margin-left: 25px;
-  line-height: 1.6;
-}
-
-.practice-areas.dark-theme .modal-points {
-  color: #ccc;
-}
-
-.practice-areas.light-theme .modal-points {
-  color: #6c757d;
-}
-
-.modal-points .selected {
-  text-align: justify;
-}
-
-@keyframes fadeInOverlay {
+@keyframes modalIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 
-@keyframes scaleUp {
-  from { transform: scale(0.8); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+.practice-modal-dialog {
+  position: relative;
+  width: 100%;
+  max-width: 680px;
+  background: #111319;
+  border: 1px solid rgba(197, 160, 89, 0.28);
+  border-radius: 14px;
+  padding: 2.25rem;
+  color: #ECECF0;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7);
+  max-height: 88vh;
+  overflow-y: auto;
+  animation: dialogPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Responsive Grid */
-@media (min-width: 640px) {
-  .practice-areas-grid {
-    grid-template-columns: repeat(2, 1fr);
+.practice-areas.light-theme .practice-modal-dialog {
+  background: #FFFFFF;
+  border-color: rgba(197, 160, 89, 0.3);
+  color: #171A21;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+}
+
+@keyframes dialogPop {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 
-@media (min-width: 1024px) {
-  .practice-areas-grid {
-    grid-template-columns: repeat(4, 1fr);
+.practice-modal-close {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  opacity: 0.65;
+  transition: all 0.2s ease;
+  padding: 0.35rem;
+  border-radius: 6px;
+}
+
+.practice-modal-close:hover {
+  opacity: 1;
+  color: #C5A059;
+  transform: rotate(90deg);
+}
+
+.modal-hero {
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(197, 160, 89, 0.15);
+  padding-bottom: 1.25rem;
+}
+
+.modal-hero-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 0.65rem;
+}
+
+.modal-badge-num {
+  font-family: 'Cinzel', serif;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #C5A059;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  background: rgba(197, 160, 89, 0.1);
+  border: 1px solid rgba(197, 160, 89, 0.22);
+}
+
+.modal-badge-tag {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #C5A059;
+}
+
+.modal-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 0.6rem;
+}
+
+.modal-lead {
+  font-size: 0.92rem;
+  line-height: 1.55;
+  opacity: 0.85;
+  margin-bottom: 1rem;
+}
+
+.modal-statute-chip {
+  font-size: 0.78rem;
+  padding: 0.5rem 0.85rem;
+  border-radius: 8px;
+  background: rgba(197, 160, 89, 0.08);
+  border: 1px solid rgba(197, 160, 89, 0.18);
+}
+
+.modal-statute-chip strong {
+  color: #C5A059;
+}
+
+.modal-mandate-heading {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #C5A059;
+  margin-bottom: 0.85rem;
+}
+
+.modal-points-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.75rem;
+}
+
+.modal-point-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem 0.95rem;
+  border-radius: 8px;
+  background: rgba(197, 160, 89, 0.04);
+  border: 1px solid rgba(197, 160, 89, 0.1);
+}
+
+.modal-point-bullet {
+  color: #C5A059;
+  font-size: 0.85rem;
+  margin-top: 1px;
+}
+
+.modal-point-text {
+  font-size: 0.86rem;
+  line-height: 1.5;
+  opacity: 0.9;
+}
+
+.modal-footer-cta {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.modal-cta-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1.6rem;
+  border-radius: 6px;
+  background: #C5A059;
+  color: #0C0D10;
+  font-size: 0.86rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.modal-cta-primary:hover {
+  background: #D4AF37;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(197, 160, 89, 0.35);
+}
+
+/* ========================================================
+   RESPONSIVE DESIGN (MOBILE & TABLET)
+   ======================================================== */
+@media (max-width: 992px) {
+  .practice-areas {
+    padding: 3rem 1.5rem;
   }
 
-  .practice-areas-title {
-    font-size: 3rem;
+  .practice-split-layout {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .practice-col-left {
+    position: static;
+  }
+
+  .practice-active-preview {
+    max-width: 100%;
   }
 }

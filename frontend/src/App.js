@@ -1,153 +1,227 @@
-import React from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
-import Navbar from "./components/Navbar";
-import Hero from "./components/Hero";
-import PracticeAreas from "./components/PracticeAreas";
-import ContactForm from "./components/ContactForm";
-import Footer from "./components/Footer";
-import Testimonials from "./components/Testimonials";
-import Ourpeople from "./components/Ourpeople";
-import About from "./components/About";
+import Lenis from "lenis";
+import Navbar from "./components/Navbar.jsx";
+import Hero from "./components/Hero.jsx";
+import About from "./components/About.jsx";
+import PracticeAreas from "./components/PracticeAreas.jsx";
+import Testimonials from "./components/Testimonials.jsx";
+import Ourpeople from "./components/Ourpeople.jsx";
+import ContactForm from "./components/ContactForm.jsx";
+import Footer from "./components/Footer.jsx";
+import Legacy from "./components/Legacy";
 import Careers from "./components/Career";
-import { ThemeProvider } from "./components/ThemeContext";
-import Blogs from "./components/Blogs";
+import Blogs from "./components/Blogs.jsx";
 import Publications from "./components/Publications";
 import Events from "./components/Events";
-import Legacy from "./components/Legacy";
 import Team from "./components/Team";
-import BlogPost from "./components/BlogPost";
+import BlogPost from "./components/BlogPost.jsx";
+import Preloader from "./components/Preloader.jsx";
+import { ThemeProvider } from "./components/ThemeContext";
+import "./App.css";
 
-const ScrollToTop = () => {
-  const { pathname, hash } = useLocation();
-  
-  React.useEffect(() => {
-    if (hash) {
-      // If there's a hash, scroll to that section
-      const element = document.getElementById(hash.substring(1));
-      if (element) {
-        // Small delay to ensure the page has loaded
-        setTimeout(() => {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
-      } else {
-        // If element not found, try again after a longer delay
-        setTimeout(() => {
-          const retryElement = document.getElementById(hash.substring(1));
-          if (retryElement) {
-            retryElement.scrollIntoView({ behavior: 'smooth' });
-          }
-        }, 500);
-      }
-    } else {
-      // If no hash, scroll to top
-      window.scrollTo({ top: 0, behavior: "smooth" });
+const SLIDES = [
+  { id: "home", label: "Hero" },
+  { id: "about", label: "About Firm" },
+  { id: "practice", label: "Practice Areas" },
+  { id: "awards", label: "Testimonials" },
+  { id: "people", label: "Our People" },
+  { id: "contact", label: "Chambers Intake" }
+];
+
+/* Snap-Fitting Single-Slide Home Page Component (Final slide is Contact with mini footer) */
+const HomePage = () => {
+  const [activeSlideIndex, setActiveSlideIndex] = useState(0);
+  const location = useLocation();
+  const snapContainerRef = useRef(null);
+
+  // Scroll smoothly to a specific section by index or id
+  const scrollToSlide = useCallback((target) => {
+    let targetId = target;
+    if (typeof target === "number") {
+      targetId = SLIDES[target]?.id || "home";
     }
-  }, [pathname, hash]);
-  
-  return null;
-};
-function App() {
-  React.useEffect(() => {
-    // 1. Disable Right Click
-    const handleContextMenu = (e) => e.preventDefault();
-    
-    // 2. Disable Screenshot Key Combinations & DevTools
-    const handleKeyDown = (e) => {
-  if (e.key === "PrintScreen") {
-    navigator.clipboard.writeText("");
-    alert("Screenshots are disabled for privacy.");
-  }
 
-  if (e.ctrlKey && (e.key === "p" || e.key === "P")) {
-    e.preventDefault();
-    alert("Printing is disabled.");
-  }
-
-  const isDevToolsCombo =
-    e.ctrlKey &&
-    e.shiftKey &&
-    (e.key === "I" || e.key === "J" || e.key === "C");
-
-  const isF12 = e.key === "F12";
-
-  const isViewSource = e.ctrlKey && (e.key === "u" || e.key === "U");
-
-  const isSavePage = e.ctrlKey && (e.key === "s" || e.key === "S");
-
-  if (isDevToolsCombo || isF12 || isViewSource || isSavePage) {
-    e.preventDefault();
-  }
-};
-
-    // 3. Hide content when window loses focus or tab is changed
-    const handlePrivacy = () => {
-      if (document.visibilityState === 'hidden' || !document.hasFocus()) {
-        document.body.style.filter = "blur(50px)";
-        document.body.style.opacity = "0";
-      } else {
-        document.body.style.filter = "none";
-        document.body.style.opacity = "1";
-      }
-    };
-
-    // 4. Disable Copy & Dragging
-    const handleCopy = (e) => {
-      e.preventDefault();
-      alert("Copying content is disabled for privacy.");
-    };
-    const handleDrag = (e) => {
-      if (e.target.tagName === 'IMG') e.preventDefault();
-    };
-
-    window.addEventListener("contextmenu", handleContextMenu);
-    window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("blur", handlePrivacy);
-    window.addEventListener("focus", handlePrivacy);
-    window.addEventListener("copy", handleCopy);
-    window.addEventListener("dragstart", handleDrag);
-    document.addEventListener("visibilitychange", handlePrivacy);
-
-    // Initial check
-    handlePrivacy();
-
-    return () => {
-      window.removeEventListener("contextmenu", handleContextMenu);
-      window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("blur", handlePrivacy);
-      window.removeEventListener("focus", handlePrivacy);
-      window.removeEventListener("copy", handleCopy);
-      window.removeEventListener("dragstart", handleDrag);
-      document.removeEventListener("visibilitychange", handlePrivacy);
-    };
+    const container = snapContainerRef.current;
+    const el = document.getElementById(targetId);
+    if (container && el) {
+      container.scrollTo({
+        top: el.offsetTop,
+        behavior: "smooth"
+      });
+    } else if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+    }
   }, []);
 
+  // Handle hash scrolling if navigating with #section from other pages
+  useEffect(() => {
+    if (location.hash) {
+      const sectionId = location.hash.replace("#", "");
+      setTimeout(() => {
+        scrollToSlide(sectionId);
+      }, 200);
+    }
+  }, [location.hash, scrollToSlide]);
+
+  // Track active slide via IntersectionObserver on snap container
+  useEffect(() => {
+    const container = snapContainerRef.current;
+    if (!container) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const idx = SLIDES.findIndex((s) => s.id === entry.target.id);
+            if (idx !== -1) {
+              setActiveSlideIndex(idx);
+            }
+          }
+        });
+      },
+      {
+        root: container,
+        threshold: 0.55
+      }
+    );
+
+    SLIDES.forEach((slide) => {
+      const el = document.getElementById(slide.id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  // Keyboard navigation for slide snapping (ArrowUp / ArrowDown / PageUp / PageDown)
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA" || e.target.tagName === "SELECT") {
+        return;
+      }
+      if (e.key === "ArrowDown" || e.key === "PageDown") {
+        e.preventDefault();
+        setActiveSlideIndex((prev) => {
+          const next = Math.min(prev + 1, SLIDES.length - 1);
+          scrollToSlide(next);
+          return next;
+        });
+      } else if (e.key === "ArrowUp" || e.key === "PageUp") {
+        e.preventDefault();
+        setActiveSlideIndex((prev) => {
+          const next = Math.max(prev - 1, 0);
+          scrollToSlide(next);
+          return next;
+        });
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [scrollToSlide]);
+
+  return (
+    <div className="home-wrapper">
+      {/* Micro-Dot Slide Pagination */}
+      <nav className="slide-pagination" aria-label="Slide Navigation">
+        {SLIDES.map((slide, idx) => (
+          <button
+            key={slide.id}
+            type="button"
+            className={`pagination-dot ${activeSlideIndex === idx ? "active" : ""}`}
+            onClick={() => scrollToSlide(idx)}
+            aria-label={`Scroll to ${slide.label}`}
+          >
+            <span className="pagination-tooltip">{slide.label}</span>
+          </button>
+        ))}
+      </nav>
+
+      {/* Snap Fitting Slide Container */}
+      <div className="home-snap-container" ref={snapContainerRef}>
+        <Hero onNavigate={scrollToSlide} />
+        <About onNavigate={scrollToSlide} />
+        <PracticeAreas onNavigate={scrollToSlide} />
+        <Testimonials onNavigate={scrollToSlide} />
+        <Ourpeople onNavigate={scrollToSlide} />
+        <ContactForm onNavigate={scrollToSlide} />
+      </div>
+    </div>
+  );
+};
+
+/* Scroll To Top helper for multi-page routing */
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    if (window.__lenis) {
+      window.__lenis.scrollTo(0, { immediate: true });
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [pathname]);
+  return null;
+};
+
+/* Multi-Page Lenis Initializer for outer pages (Legacy, Blogs, Careers, etc.) */
+const GlobalScrollManager = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    // Only enable Lenis on non-home pages that require continuous document scrolling
+    if (location.pathname !== "/") {
+      const lenis = new Lenis({
+        duration: 1.1,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smoothWheel: true,
+        smoothTouch: false
+      });
+
+      window.__lenis = lenis;
+
+      function raf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+      }
+      const rafId = requestAnimationFrame(raf);
+
+      return () => {
+        cancelAnimationFrame(rafId);
+        lenis.destroy();
+        window.__lenis = null;
+      };
+    }
+  }, [location.pathname]);
+
+  return null;
+};
+
+/* Page Layout Shell for outer pages (attaches full upgraded footer) */
+const OuterPageShell = ({ children }) => (
+  <div className="outer-page-shell">
+    {children}
+    <Footer />
+  </div>
+);
+
+function App() {
   return (
     <ThemeProvider>
+      <Preloader />
       <Router>
         <ScrollToTop />
-        <Navbar /> {/* ✅ Always visible */}
+        <GlobalScrollManager />
+        <Navbar />
         <Routes>
-          <Route
-            path="/"
-            element={
-              <>
-                <Hero />
-                <About />
-                <PracticeAreas />
-                <Testimonials />
-                <Ourpeople />
-                <ContactForm />
-                <Footer />
-              </>
-            }
-          />
-          <Route path="/legacy" element={<Legacy />} />
-          <Route path="/careers" element={<Careers />} />
-          <Route path="/blogs" element={<Blogs />} />
-          <Route path="/publications" element={<Publications />} />
-          <Route path="/events" element={<Events />} />
-          <Route path="/team" element={<Team />} />
-          <Route path="/blog/:id" element={<BlogPost />} />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/legacy" element={<OuterPageShell><Legacy /></OuterPageShell>} />
+          <Route path="/careers" element={<OuterPageShell><Careers /></OuterPageShell>} />
+          <Route path="/blogs" element={<OuterPageShell><Blogs /></OuterPageShell>} />
+          <Route path="/publications" element={<OuterPageShell><Publications /></OuterPageShell>} />
+          <Route path="/events" element={<OuterPageShell><Events /></OuterPageShell>} />
+          <Route path="/team" element={<OuterPageShell><Team /></OuterPageShell>} />
+          <Route path="/blog/:id" element={<OuterPageShell><BlogPost /></OuterPageShell>} />
         </Routes>
       </Router>
     </ThemeProvider>

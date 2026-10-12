@@ -1,106 +1,111 @@
 import React from "react";
-import { Link } from 'react-router-dom'
-import { Facebook, Instagram, Linkedin, MapPin, Phone, Mail } from "lucide-react";
+import { Link } from 'react-router-dom';
+import { Facebook, Instagram, Linkedin, MapPin, Phone, Mail, ArrowUp } from "lucide-react";
 import "../styles/Footer.css";
 import { useTheme } from "./ThemeContext";
 
-const Footer = () => {
+const Footer = ({ onNavigate }) => {
   const { isDarkTheme } = useTheme();
 
+  const handleScrollToTop = () => {
+    if (onNavigate) {
+      onNavigate('home');
+    } else {
+      const home = document.getElementById('home');
+      if (home) home.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleNavClick = (sectionId) => {
+    if (onNavigate) {
+      onNavigate(sectionId);
+    } else {
+      const el = document.getElementById(sectionId);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
-    <footer className={`footer ${isDarkTheme ? 'dark-theme' : 'light-theme'}`}>
+    <footer className={`footer snap-slide ${isDarkTheme ? 'dark-theme' : 'light-theme'}`}>
       <div className="footer-container">
-        <div className="footer-grid">
-          <div className="footer-section">
-            <h3>MLS & Co</h3>
-            <span className="law-firm">Law Firm</span>
-            <p className="tagline">
-              Delivering comprehensive legal solutions with integrity, expertise, and a commitment to your success.
+        {/* Main Footer Grid */}
+        <div className="footer-main-grid">
+          {/* Brand Col */}
+          <div className="footer-brand-col">
+            <div className="footer-logo-row">
+              <img src="/mls_logo_clean.svg" alt="MLS & Co Logo" className="footer-logo-img" />
+              <div>
+                <h3 className="footer-firm-title">MLS & Co</h3>
+                <span className="footer-firm-badge">ADVOCATES & ADVISORS</span>
+              </div>
+            </div>
+
+            <p className="footer-tagline">
+              Men Legatum Sanctitas &mdash; Driven by the spirit of justice, guided by the sanctity of law. 
+              Delivering authoritative legal stewardship across India and beyond.
             </p>
-            <div className="footer-social">
-              <Facebook className="footer-social-icon" />
-              <a href="https://www.instagram.com/mlsandcolawfirm" target="_blank" rel="noopener noreferrer">
-                <Instagram className="footer-social-icon" />
+
+            <div className="footer-social-strip">
+              <a href="https://www.linkedin.com/company/mls-law-firm/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                <Linkedin size={18} />
               </a>
-              <a href="https://www.linkedin.com/company/mls-law-firm/" target="_blank" rel="noopener noreferrer">
-                <Linkedin className="footer-social-icon" />
+              <a href="https://www.instagram.com/mlsandcolawfirm" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                <Instagram size={18} />
+              </a>
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                <Facebook size={18} />
               </a>
             </div>
           </div>
-          <div className="footer-section abbrcard">
-            <h4 className="abbr">
-              <span className="M M-letter">M</span>antle
-            </h4>
-            <ul className="footer-links">
-              <li>
-                <a href="#about">Our Firm</a>
-              </li>
-              <li>
-                <a href="#people">Our People</a>
-              </li>
-              <li>
-                <a href="#awards">Testimonials</a>
-              </li>
+
+          {/* Quick Links Column */}
+          <div className="footer-nav-col">
+            <h4 className="footer-col-heading">Practice & Navigation</h4>
+            <ul className="footer-links-list">
+              <li><button type="button" onClick={() => handleNavClick('about')}>About The Firm</button></li>
+              <li><button type="button" onClick={() => handleNavClick('practice')}>Core Practice Areas</button></li>
+              <li><button type="button" onClick={() => handleNavClick('people')}>Senior Partnership</button></li>
+              <li><button type="button" onClick={() => handleNavClick('awards')}>Client Testimonials</button></li>
+              <li><button type="button" onClick={() => handleNavClick('contact')}>Chambers Intake</button></li>
             </ul>
           </div>
-          <div className="footer-section abbrcard">
-            <h4 className="abbr">
-              <span className="M L-letter">L</span>egacy
-            </h4>
-            <ul className="footer-links">
-              <li>
-                <a href="#practice">Practice Areas</a>
-              </li>
+
+          {/* Institutional Legacy Column */}
+          <div className="footer-nav-col">
+            <h4 className="footer-col-heading">Institutional Hub</h4>
+            <ul className="footer-links-list">
+              <li><Link to="/legacy">Firm Legacy & Milestones</Link></li>
+              <li><Link to="/team">All Counsel & Senior Bench</Link></li>
+              <li><Link to="/careers">Chambers Fellowship & Careers</Link></li>
+              <li><Link to="/blogs">Legal Insights & Articles</Link></li>
+              <li><Link to="/publications">Scholarly Publications</Link></li>
             </ul>
           </div>
-          <div className="footer-section abbrcard">
-            <h4 className="abbr">
-              <span className="M S-letter">S</span>cholarly
-            </h4>
-            <ul className="footer-links">
-              <li>
-                <Link to="/blogs">Blogs</Link>
-              </li>
-              <li>
-                <Link to="/publications">Publications</Link>
-              </li>
-              <li>
-                <Link to="/events">Events</Link>
-              </li>
-            </ul>
+
+          {/* Registry & Chambers Info */}
+          <div className="footer-chambers-col">
+            <h4 className="footer-col-heading">Principal Chambers</h4>
+            <div className="footer-chambers-details">
+              <p><MapPin size={14} /> New Delhi &bull; Hyderabad &bull; Mumbai</p>
+              <p><Phone size={14} /> +91 (011) 2338-MLS1</p>
+              <p><Mail size={14} /> counsel@mlsandco.com</p>
+            </div>
+            <button type="button" className="footer-top-btn" onClick={handleScrollToTop}>
+              <ArrowUp size={14} />
+              <span>Back To Top</span>
+            </button>
           </div>
         </div>
 
-        <div className="footer-contact-section">
-          <h4>CONTACT US</h4>
-          <div className="footer-contact-wrapper">
-            <div className="footer-contact-list">
-              <div className="footer-contact-item">
-                <MapPin size={20} className="footer-contact-icon" />
-                <span>
-                  D.No. 12-203/6/2/57, 2nd floor, MLS Avenue, near Rainbow
-                  villas, Navodaya colony, Tadepalli, Guntur district
-                </span>
-              </div>
-              <div className="footer-contact-item">
-                <Phone size={20} className="footer-contact-icon" />
-                <span>+91 7989879735</span>
-              </div>
-              <div className="footer-contact-item">
-                <Mail size={20} className="footer-contact-icon" />
-                <span>mlslaw.contact@gmail.com</span>
-              </div>
-            </div>
-            <div className="footer-map">
-              {/* Added target="_blank" and rel="noopener noreferrer" */}
-              <a
-                href="https://maps.app.goo.gl/SpJhoJyydbWDTvJm6"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <img src="/final_map.png" alt="Map of Firm" className="map" />
-              </a>
-            </div>
+        {/* Regulatory Disclaimer & Copyright Strip */}
+        <div className="footer-disclaimer-strip">
+          <p className="disclaimer-text">
+            <strong>Bar Council of India Disclaimer:</strong> As per the rules of the Bar Council of India, law firms 
+            are not permitted to solicit work or advertise. This platform is solely for informational purposes regarding MLS & Co.
+          </p>
+          <div className="footer-copyright-row">
+            <span>&copy; {new Date().getFullYear()} MLS & Co Law Firm. All Rights Reserved.</span>
+            <span className="footer-motto-pill">Men Legatum Sanctitas</span>
           </div>
         </div>
       </div>

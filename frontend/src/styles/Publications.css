@@ -81,7 +81,7 @@
   font-size: 2.5rem;
   margin-bottom: 1rem;
   font-family: 'Playfair Display', serif;
-  background: linear-gradient(45deg, #d4af37, #fdb913);
+  background: linear-gradient(45deg, #d4af37, #C5A059);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -181,7 +181,7 @@
 }
 
 .read-more:hover {
-  background-color: #ffd700;
+  background-color: #C5A059;
   transform: scale(1.05);
 }
 

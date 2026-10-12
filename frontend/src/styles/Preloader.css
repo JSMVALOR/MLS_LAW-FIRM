@@ -1,0 +1,189 @@
+/* ========================================================
+   MLS & CO - CINEMATIC LAW FIRM PRELOADER
+   Obsidian Canvas, Pulsing Vector Logo, & Split Curtain Opening
+   ======================================================== */
+
+.preloader-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  user-select: none;
+  pointer-events: all;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Curtains for the Split Reveal */
+.preloader-curtain {
+  position: absolute;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 50.5%;
+  background: #08090c;
+  z-index: 1;
+  transition: transform 0.85s cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+.preloader-curtain-top {
+  top: 0;
+  transform-origin: top;
+  border-bottom: 1px solid rgba(197, 160, 89, 0.15);
+}
+
+.preloader-curtain-bottom {
+  bottom: 0;
+  transform-origin: bottom;
+  border-top: 1px solid rgba(197, 160, 89, 0.15);
+}
+
+/* Curtain Opening State */
+.preloader-overlay.preloader-opening .preloader-curtain-top {
+  transform: translateY(-100%);
+}
+
+.preloader-overlay.preloader-opening .preloader-curtain-bottom {
+  transform: translateY(100%);
+}
+
+/* Center Content */
+.preloader-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.preloader-content-fade {
+  opacity: 0;
+  transform: scale(1.06);
+  pointer-events: none;
+}
+
+/* Ambient Gold Radial Halo */
+.preloader-glow-ring {
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(197, 160, 89, 0.18) 0%, transparent 70%);
+  filter: blur(40px);
+  pointer-events: none;
+  z-index: -1;
+  animation: preloaderPulse 2.4s ease-in-out infinite alternate;
+}
+
+@keyframes preloaderPulse {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1.15);
+    opacity: 0.9;
+  }
+}
+
+/* Logo Frame */
+.preloader-logo-frame {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+  animation: preloaderLogoFloat 2.6s ease-in-out infinite alternate;
+}
+
+@keyframes preloaderLogoFloat {
+  0% {
+    transform: translateY(0) scale(1);
+    filter: drop-shadow(0 0 16px rgba(197, 160, 89, 0.3));
+  }
+  100% {
+    transform: translateY(-4px) scale(1.03);
+    filter: drop-shadow(0 0 26px rgba(197, 160, 89, 0.55));
+  }
+}
+
+.preloader-logo-svg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Typography */
+.preloader-typography {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 0.65rem;
+}
+
+.preloader-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1.85rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  background: linear-gradient(135deg, #ffffff 0%, #EAD9B8 40%, #C5A059 70%, #9E7B38 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
+  text-shadow: 0 0 30px rgba(197, 160, 89, 0.35);
+}
+
+.preloader-sub {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  color: #C5A059;
+  opacity: 0.85;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.preloader-motto {
+  font-family: 'Cinzel', serif;
+  font-size: 0.82rem;
+  font-style: italic;
+  letter-spacing: 0.08em;
+  color: #9ba0ad;
+  margin-bottom: 1.75rem;
+}
+
+/* Hairline Progress Track */
+.preloader-progress-track {
+  width: 180px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 9999px;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 0.75rem;
+}
+
+.preloader-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #F2E3C6 0%, #C5A059 60%, #A47B2E 100%);
+  box-shadow: 0 0 12px rgba(197, 160, 89, 0.8);
+  transition: width 0.08s ease-out;
+  border-radius: 9999px;
+}
+
+/* Counter Percentage */
+.preloader-counter {
+  font-size: 0.72rem;
+  font-family: 'Cinzel', serif;
+  font-weight: 600;
+  color: #C5A059;
+  letter-spacing: 0.1em;
+  opacity: 0.8;
+}

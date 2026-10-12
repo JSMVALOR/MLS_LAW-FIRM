@@ -1,0 +1,210 @@
+/* ========================================================
+   MLS & CO - TLH SMOOTH SCROLL & INVISIBLE SCROLLBAR STYLES
+   Powered by Studio Freight Lenis & Micro Pagination
+   ======================================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --nav-height: 80px;
+  --gold-primary: #C5A059;
+  --gold-accent: #DFC15D;
+  --gold-dark: #B8860B;
+}
+
+/* Official Lenis Scroll Reset */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100%;
+  overflow-x: hidden;
+}
+
+.App {
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* ========================================================
+   100% INVISIBLE SCROLLBAR ACROSS ENTIRE APPLICATION
+   Smooth scrolling behavior preserved completely
+   ======================================================== */
+html, body, * {
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important; /* IE & Edge */
+}
+
+::-webkit-scrollbar {
+  display: none !important;
+  width: 0px !important;
+  height: 0px !important;
+  background: transparent !important;
+}
+
+/* ========================================================
+   MAIN CONTENT FLOW & SECTIONS
+   ======================================================== */
+.main-scroll-content {
+  width: 100%;
+  position: relative;
+}
+
+/* Base Slide Section */
+.snap-slide {
+  width: 100%;
+  min-height: calc(100vh - var(--nav-height, 80px));
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+/* ========================================================
+   SLIDE PAGINATION CONTROLLER (MICRO MINIMALIST SIDE DOTS)
+   Ultra-small, luxury aesthetic (3.5px micro-dots)
+   ======================================================== */
+.slide-pagination {
+  position: fixed;
+  right: 1.15rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 900;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.25rem;
+  background: rgba(10, 11, 15, 0.4);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: 9999px;
+  border: 1px solid rgba(197, 160, 89, 0.16);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+body.light-theme .slide-pagination {
+  background: rgba(255, 255, 255, 0.65);
+  border-color: rgba(212, 175, 55, 0.28);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+}
+
+/* Micro Dot (Extremely Small: 3.5px) */
+.pagination-dot {
+  width: 3.5px;
+  height: 3.5px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.28);
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 0;
+  outline: none;
+}
+
+body.light-theme .pagination-dot {
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.pagination-dot:hover {
+  background: var(--gold-primary);
+  transform: scale(1.6);
+}
+
+/* Active State: Transitions into a micro vertical pill */
+.pagination-dot.active {
+  width: 3.5px;
+  height: 16px;
+  border-radius: 9999px;
+  background: var(--gold-primary);
+  box-shadow: 0 0 10px rgba(197, 160, 89, 0.85);
+  transform: scale(1);
+}
+
+/* Tooltip on dot hover */
+.pagination-tooltip {
+  position: absolute;
+  right: 180%;
+  top: 50%;
+  transform: translateY(-50%) translateX(4px);
+  background: rgba(14, 15, 20, 0.95);
+  color: #fff;
+  padding: 0.22rem 0.55rem;
+  border-radius: 4px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  border: 1px solid rgba(197, 160, 89, 0.25);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
+}
+
+body.light-theme .pagination-tooltip {
+  background: #ffffff;
+  color: #1a1a1c;
+  border-color: rgba(212, 175, 55, 0.35);
+}
+
+.pagination-dot:hover .pagination-tooltip {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+
+@media (max-width: 992px) {
+  .slide-pagination {
+    display: none;
+  }
+}
+
+/* ========================================================
+   GLOBAL EDITORIAL ACCENT LINES & SECTION HELPERS
+   ======================================================== */
+.accent-line-horizontal {
+  width: 100%;
+  max-width: 100px;
+  height: 2px;
+  background: linear-gradient(90deg, #C5A059 0%, rgba(197, 160, 89, 0.1) 100%);
+  position: relative;
+  margin: 0.75rem 0;
+}
+
+.accent-line-horizontal::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: -1px;
+  width: 24px;
+  height: 4px;
+  background: #C5A059;
+  border-radius: 2px;
+  box-shadow: 0 0 10px rgba(197, 160, 89, 0.7);
+}
