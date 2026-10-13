@@ -197,6 +197,10 @@ const Legacy = () => {
                   className={`triad-card ${isSelected ? "selected" : ""}`}
                   onClick={() => setSelectedPillar(pIdx)}
                   onMouseEnter={() => setSelectedPillar(pIdx)}
+                  role="button"
+                  tabIndex={0}
+                  aria-pressed={isSelected}
+                  onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setSelectedPillar(pIdx); } }}
                 >
                   <div className="triad-card-top">
                     <span className="triad-roman">0{pIdx + 1}</span>

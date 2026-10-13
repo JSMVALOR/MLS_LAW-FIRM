@@ -262,8 +262,9 @@
   padding: 1.75rem;
   cursor: pointer;
   overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform var(--dur-drop) var(--ease-out), border-color var(--dur-pop) var(--ease-out), box-shadow 250ms var(--ease-out);
   backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .legacy-page.light-theme .triad-card {
@@ -271,7 +272,10 @@
   border-color: rgba(212, 175, 55, 0.25);
 }
 
-.triad-card:hover,
+.triad-card:active {
+  transform: scale(0.98);
+}
+
 .triad-card.selected {
   transform: translateY(-4px);
   border-color: #C5A059;
@@ -314,14 +318,29 @@
   color: inherit;
 }
 
-.triad-card.selected .triad-latin-title,
-.triad-card:hover .triad-latin-title {
+.triad-card.selected .triad-latin-title {
   color: #C5A059;
 }
 
-.legacy-page.light-theme .triad-card.selected .triad-latin-title,
-.legacy-page.light-theme .triad-card:hover .triad-latin-title {
+.legacy-page.light-theme .triad-card.selected .triad-latin-title {
   color: #8c5d00;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .triad-card:hover {
+    transform: translateY(-4px);
+    border-color: #C5A059;
+    box-shadow: 0 14px 35px rgba(197, 160, 89, 0.2);
+  }
+  .triad-card:hover .triad-latin-title {
+    color: #C5A059;
+  }
+  .legacy-page.light-theme .triad-card:hover .triad-latin-title {
+    color: #8c5d00;
+  }
+  .triad-card:hover .triad-card-indicator {
+    transform: scaleX(1);
+  }
 }
 
 .triad-sub-label {
@@ -336,13 +355,13 @@
   left: 0;
   right: 0;
   height: 3px;
-  background: #C5A059;
+  background: linear-gradient(90deg, var(--gold-hi, #F2E3C6), #C5A059);
   transform: scaleX(0);
-  transition: transform 0.3s ease;
+  transform-origin: left;
+  transition: transform var(--dur-drop) var(--ease-out);
 }
 
-.triad-card.selected .triad-card-indicator,
-.triad-card:hover .triad-card-indicator {
+.triad-card.selected .triad-card-indicator {
   transform: scaleX(1);
 }
 
@@ -489,12 +508,18 @@
   flex-direction: column;
   align-items: flex-start;
   padding: 0.85rem 1rem;
+  min-height: 56px;
   border-radius: 8px;
   position: relative;
-  transition: all 0.25s ease;
+  font-family: inherit;
+  text-align: left;
+  transition: background-color var(--dur-pop) var(--ease-out), transform var(--dur-press) var(--ease-out);
 }
 
-.epoch-step-btn:hover,
+.epoch-step-btn:active {
+  transform: scale(0.98);
+}
+
 .epoch-step-btn.active {
   background: rgba(197, 160, 89, 0.08);
 }
@@ -507,9 +532,17 @@
   color: inherit;
 }
 
-.epoch-step-btn.active .epoch-step-range,
-.epoch-step-btn:hover .epoch-step-range {
+.epoch-step-btn.active .epoch-step-range {
   color: #C5A059;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .epoch-step-btn:hover {
+    background: rgba(197, 160, 89, 0.08);
+  }
+  .epoch-step-btn:hover .epoch-step-range {
+    color: #C5A059;
+  }
 }
 
 .legacy-page.light-theme .epoch-step-btn.active .epoch-step-range {
@@ -675,8 +708,9 @@
   background: rgba(18, 19, 25, 0.6);
   border: 1px solid rgba(197, 160, 89, 0.22);
   backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   box-shadow: 0 14px 35px rgba(0, 0, 0, 0.4);
-  transition: transform 0.3s ease, border-color 0.3s ease;
+  transition: transform var(--dur-drop) var(--ease-out), border-color var(--dur-pop) var(--ease-out);
 }
 
 .legacy-page.light-theme .legacy-metric-card {
@@ -685,9 +719,11 @@
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
 }
 
-.legacy-metric-card:hover {
-  transform: translateY(-4px);
-  border-color: #C5A059;
+@media (hover: hover) and (pointer: fine) {
+  .legacy-metric-card:hover {
+    transform: translateY(-4px);
+    border-color: #C5A059;
+  }
 }
 
 .metric-number-row {
@@ -703,6 +739,7 @@
   font-size: 2.75rem;
   font-weight: 800;
   line-height: 1;
+  font-variant-numeric: tabular-nums;
   background: linear-gradient(135deg, #ffffff 40%, #C5A059 100%);
   -webkit-background-clip: text;
   background-clip: text;
@@ -809,13 +846,14 @@
   flex-wrap: wrap;
 }
 
-/* TLH Signature Button Animation */
+/* Chambers covenant buttons — fill sweep kept, token curves, gated hover */
 .covenant-btn-primary {
   position: relative;
   display: inline-flex;
   align-items: center;
   gap: 0.65rem;
   padding: 0.85rem 1.85rem 0.85rem 2rem;
+  min-height: 48px;
   border-radius: 6px;
   background: rgba(18, 19, 25, 0.7);
   border: 1px solid rgba(197, 160, 89, 0.5);
@@ -824,9 +862,10 @@
   font-size: 0.88rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
+  font-family: inherit;
   cursor: pointer;
   overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform var(--dur-press) var(--ease-out), border-color var(--dur-pop) var(--ease-out), color var(--dur-pop) var(--ease-out), box-shadow 200ms var(--ease-out);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
   z-index: 1;
 }
@@ -844,20 +883,25 @@
   left: 0;
   bottom: 0;
   width: 5px;
-  background: #C5A059;
-  transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  background: linear-gradient(135deg, #E8CF9A, #C5A059);
+  transition: width var(--dur-drop) var(--ease-out);
   z-index: -1;
 }
 
-.covenant-btn-primary:hover {
-  border-color: #C5A059;
-  color: #0b0c10;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(197, 160, 89, 0.4);
+.covenant-btn-primary:active {
+  transform: scale(0.97);
 }
 
-.covenant-btn-primary:hover::before {
-  width: 100%;
+@media (hover: hover) and (pointer: fine) {
+  .covenant-btn-primary:hover {
+    border-color: #C5A059;
+    color: #0b0c10;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(197, 160, 89, 0.4);
+  }
+  .covenant-btn-primary:hover::before {
+    width: 100%;
+  }
 }
 
 .covenant-btn-secondary {
@@ -866,6 +910,7 @@
   align-items: center;
   gap: 0.65rem;
   padding: 0.85rem 1.75rem;
+  min-height: 48px;
   border-radius: 6px;
   border: 1px solid rgba(197, 160, 89, 0.3);
   background: rgba(255, 255, 255, 0.03);
@@ -873,9 +918,10 @@
   font-weight: 600;
   font-size: 0.88rem;
   letter-spacing: 0.03em;
+  font-family: inherit;
   text-decoration: none;
   overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform var(--dur-press) var(--ease-out), border-color var(--dur-pop) var(--ease-out), color var(--dur-pop) var(--ease-out);
   z-index: 1;
 }
 
@@ -887,18 +933,23 @@
   bottom: 0;
   width: 4px;
   background: rgba(197, 160, 89, 0.25);
-  transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: width var(--dur-drop) var(--ease-out);
   z-index: -1;
 }
 
-.covenant-btn-secondary:hover {
-  border-color: #C5A059;
-  color: #C5A059;
-  transform: translateY(-2px);
+.covenant-btn-secondary:active {
+  transform: scale(0.97);
 }
 
-.covenant-btn-secondary:hover::before {
-  width: 100%;
+@media (hover: hover) and (pointer: fine) {
+  .covenant-btn-secondary:hover {
+    border-color: #C5A059;
+    color: #C5A059;
+    transform: translateY(-2px);
+  }
+  .covenant-btn-secondary:hover::before {
+    width: 100%;
+  }
 }
 
 /* ========================================================
