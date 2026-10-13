@@ -148,16 +148,18 @@ const PracticeAreas = ({ onNavigate }) => {
            ======================================================== */
         .section_areas {
           position: relative;
-          height: calc(100vh - var(--nav-height, 80px)) !important;
-          max-height: calc(100vh - var(--nav-height, 80px)) !important;
           min-height: calc(100vh - var(--nav-height, 80px)) !important;
+          min-height: calc(100svh - var(--nav-height, 80px)) !important;
           scroll-snap-align: start !important;
           scroll-snap-stop: always !important;
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: 1.5rem 2.5rem;
+          padding: 2rem 2.5rem;
+          padding-left: max(2.5rem, var(--sal, 0px));
+          padding-right: max(2.5rem, var(--sar, 0px));
           overflow: hidden;
+          overflow: clip;
           box-sizing: border-box;
           transition: background-color 0.4s ease, color 0.4s ease;
           font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -177,7 +179,6 @@ const PracticeAreas = ({ onNavigate }) => {
           max-width: 1360px;
           width: 100%;
           margin: 0 auto;
-          height: 100%;
           display: flex;
           align-items: center;
         }
@@ -187,8 +188,6 @@ const PracticeAreas = ({ onNavigate }) => {
           justify-content: space-between;
           align-items: center;
           width: 100%;
-          height: calc(100vh - var(--nav-height, 80px) - 3rem);
-          max-height: 540px;
           gap: 3.5rem;
           position: relative;
         }
@@ -286,9 +285,11 @@ const PracticeAreas = ({ onNavigate }) => {
         .areas_left_cta {
           display: inline-flex;
           align-items: center;
+          justify-content: center;
           gap: 0.55rem;
-          padding: 0.72rem 1.45rem;
-          border-radius: 6px;
+          padding: 0.8rem 1.45rem;
+          min-height: 48px;
+          border-radius: 8px;
           background: #C5A059;
           color: #0E1015;
           font-size: 0.82rem;
@@ -351,13 +352,15 @@ const PracticeAreas = ({ onNavigate }) => {
 
         /* The Scroll Container inside the 1 Slide */
         .areas_scroll_list {
-          height: 100%;
+          max-height: 480px;
           overflow-y: auto;
           padding: 0.5rem 0.5rem 1rem 0;
           scrollbar-width: none !important;
           -ms-overflow-style: none !important;
           display: flex;
           flex-direction: column;
+          -webkit-overflow-scrolling: touch;
+          overscroll-behavior: contain;
         }
 
         .areas_scroll_list::-webkit-scrollbar {
@@ -370,7 +373,9 @@ const PracticeAreas = ({ onNavigate }) => {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          padding: 1.55rem 0.75rem;
+          gap: 0.8rem;
+          padding: 1.1rem 0.75rem;
+          min-height: 56px;
           border-top: 1px solid;
           cursor: pointer;
           text-decoration: none;
@@ -586,8 +591,7 @@ const PracticeAreas = ({ onNavigate }) => {
         @media (max-width: 992px) {
           .areas_wrap {
             flex-direction: column;
-            gap: 1.5rem;
-            max-height: calc(100vh - var(--nav-height, 80px) - 2rem);
+            gap: 1.25rem;
           }
           .areas_left {
             width: 100%;
@@ -596,6 +600,17 @@ const PracticeAreas = ({ onNavigate }) => {
           .areas_right {
             width: 100%;
           }
+        }
+        @media (max-width: 768px) {
+          .section_areas { padding: 2.5rem 1.1rem 2rem; align-items: flex-start; }
+          .areas_left { padding: 1.25rem 1.1rem; }
+          .areas_left_heading { font-size: clamp(1.5rem, 6.5vw, 1.9rem); }
+          .areas_link_text { font-size: 1.02rem; }
+          .areas_scroll_list { max-height: 340px; }
+          .areas_left_cta { width: 100%; }
+          .mandate_modal_backdrop { padding: 1rem; align-items: flex-end; }
+          .mandate_modal_dialog { padding: 1.5rem 1.25rem; max-height: 88vh; max-height: 88dvh; border-radius: 12px 12px 0 0; }
+          .mandate_modal_title { font-size: 1.25rem; }
         }
       `}</style>
 

@@ -22,32 +22,36 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useTheme } from "./ThemeContext";
 
 const PRACTICE_ITEMS = [
-  { name: "Civil & Constitutional Law", desc: "Writs, appellate advocacy & fundamental rights", icon: Scale },
-  { name: "Commercial Arbitration & Mediation", desc: "Domestic & international disputes (ICA)", icon: Shield },
-  { name: "Criminal Defense & Trial Advocacy", desc: "White-collar defense, statutory bail & PMLA", icon: Award },
-  { name: "Corporate Governance & M&A", desc: "Transactions, corporate structuring & due diligence", icon: Building2 },
-  { name: "Real Estate & Infrastructure", desc: "RERA compliance, EPC contracts & title diligence", icon: Briefcase },
-  { name: "Taxation & Revenue Law", desc: "Direct taxes, GST appeals & statutory tribunals", icon: FileText },
-  { name: "Intellectual Property & Technology", desc: "Trademarks, IP litigation & digital commerce", icon: Compass },
-  { name: "Labour & Employment Advisory", desc: "Executive advisory, POSH & compliance", icon: Users }
+  { name: "Civil & Constitutional Law", desc: "Writs, appellate advocacy & fundamental rights", icon: Scale, link: "/practice-areas" },
+  { name: "Commercial Arbitration & Mediation", desc: "Domestic & international disputes (ICA)", icon: Shield, link: "/practice-areas" },
+  { name: "Criminal Defense & Trial Advocacy", desc: "White-collar defense, statutory bail & PMLA", icon: Award, link: "/practice-areas" },
+  { name: "Corporate Governance & M&A", desc: "Transactions, corporate structuring & due diligence", icon: Building2, link: "/practice-areas" },
+  { name: "Real Estate & Infrastructure", desc: "RERA compliance, EPC contracts & title diligence", icon: Briefcase, link: "/practice-areas" },
+  { name: "Taxation & Revenue Law", desc: "Direct taxes, GST appeals & statutory tribunals", icon: FileText, link: "/practice-areas" },
+  { name: "Intellectual Property & Technology", desc: "Trademarks, IP litigation & digital commerce", icon: Compass, link: "/practice-areas" },
+  { name: "Labour & Employment Advisory", desc: "Executive advisory, POSH & compliance", icon: Users, link: "/practice-areas" }
 ];
 
 const SEARCH_DIRECTORY = [
-  { title: "Civil & Constitutional Law", type: "Practice Area", link: "/#practice" },
-  { title: "Commercial Arbitration & Mediation", type: "Practice Area", link: "/#practice" },
-  { title: "Criminal Defense & White-Collar", type: "Practice Area", link: "/#practice" },
-  { title: "Corporate Governance & M&A", type: "Practice Area", link: "/#practice" },
-  { title: "Real Estate & Infrastructure", type: "Practice Area", link: "/#practice" },
-  { title: "Intellectual Property & Technology", type: "Practice Area", link: "/#practice" },
-  { title: "Taxation & Revenue Law", type: "Practice Area", link: "/#practice" },
-  { title: "Labour & Employment Regulations", type: "Practice Area", link: "/#practice" },
-  { title: "Our People & Senior Partners", type: "Team", link: "/#people" },
+  { title: "About the Firm", type: "Overview", link: "/about" },
+  { title: "Civil & Constitutional Law", type: "Practice Area", link: "/practice-areas" },
+  { title: "Commercial Arbitration & Mediation", type: "Practice Area", link: "/practice-areas" },
+  { title: "Criminal Defense & White-Collar", type: "Practice Area", link: "/practice-areas" },
+  { title: "Corporate Governance & M&A", type: "Practice Area", link: "/practice-areas" },
+  { title: "Real Estate & Infrastructure", type: "Practice Area", link: "/practice-areas" },
+  { title: "Intellectual Property & Technology", type: "Practice Area", link: "/practice-areas" },
+  { title: "Taxation & Revenue Law", type: "Practice Area", link: "/practice-areas" },
+  { title: "Labour & Employment Regulations", type: "Practice Area", link: "/practice-areas" },
+  { title: "Client Testimonials", type: "Endorsements", link: "/testimonials" },
+  { title: "Our People & Senior Partners", type: "Team", link: "/people" },
+  { title: "Full Chambers Registry", type: "Team", link: "/team" },
   { title: "Chambers & Institutional Legacy", type: "Overview", link: "/legacy" },
+  { title: "Academic Collaborations", type: "Academia", link: "/academic-collaborations" },
   { title: "Careers & Internships", type: "Careers", link: "/careers" },
   { title: "Legal Insights & Blogs", type: "Academics", link: "/blogs" },
   { title: "Research Publications", type: "Academics", link: "/publications" },
   { title: "Conferences & Symposia", type: "Events", link: "/events" },
-  { title: "Chambers Consultation Intake", type: "Contact", link: "/#contact" }
+  { title: "Chambers Consultation Intake", type: "Contact", link: "/contact" }
 ];
 
 const Navbar = () => {
@@ -109,6 +113,16 @@ const Navbar = () => {
     }
   }, [searchOpen]);
 
+  // Lock body scroll when drawer / search is open (mobile UX)
+  useEffect(() => {
+    const locked = mobileMenuOpen || searchOpen;
+    const prev = document.body.style.overflow;
+    if (locked) document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [mobileMenuOpen, searchOpen]);
+
   const handleMouseEnter = (menu) => {
     if (dropdownCloseTimeout.current) clearTimeout(dropdownCloseTimeout.current);
     setOpenDropdown(menu);
@@ -143,6 +157,9 @@ const Navbar = () => {
 
   const handleSearchResultClick = (link) => {
     setSearchOpen(false);
+    setOpenDropdown(null);
+    setMobileMenuOpen(false);
+    // All directory entries are independent routes now; legacy /# hashes still supported.
     if (link.startsWith("/#")) {
       handleSectionNavigation(link.replace("/#", ""));
     } else {
@@ -205,6 +222,20 @@ const Navbar = () => {
           display: flex;
           align-items: center;
           justify-content: space-between;
+          gap: 0.75rem;
+        }
+        @media (max-width: 768px) {
+          .mls-header { height: 64px; }
+          .mls-header-container { padding: 0 1rem; padding-left: max(1rem, var(--sal, 0px)); padding-right: max(1rem, var(--sar, 0px)); }
+          .mls-brand-title { font-size: 1.05rem; }
+          .mls-brand-sub { font-size: 0.56rem; letter-spacing: 0.18em; }
+          .mls-logo-frame { width: 36px; height: 36px; }
+          .mls-actions { gap: 0.5rem; }
+          .mls-action-btn { min-width: 40px; min-height: 40px; }
+        }
+        @media (max-width: 380px) {
+          .mls-brand-sub { display: none; }
+          .mls-brand-title { font-size: 1rem; }
         }
         .mls-brand {
           display: flex;
@@ -553,16 +584,29 @@ const Navbar = () => {
           .mls-mobile-toggle-btn { display: none; }
         }
         .mls-mobile-drawer {
-          position: absolute;
-          top: 100%;
+          position: fixed;
+          top: 64px;
           left: 0;
           right: 0;
+          bottom: 0;
           z-index: 1500;
           border-top: 1px solid rgba(197, 160, 89, 0.18);
-          padding: 1.25rem 1.5rem 2rem;
+          padding: 1rem 1rem calc(1.5rem + var(--sab, 0px));
+          padding-left: max(1rem, var(--sal, 0px));
+          padding-right: max(1rem, var(--sar, 0px));
           animation: mlsFadeSlideDown 0.25s ease;
-          max-height: calc(100vh - 80px);
           overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
+          overscroll-behavior: contain;
+        }
+        @media (min-width: 769px) {
+          .mls-mobile-drawer {
+            position: absolute;
+            top: 100%;
+            bottom: auto;
+            max-height: calc(100vh - 80px);
+            padding: 1.25rem 1.5rem 2rem;
+          }
         }
         .mls-header.dark-theme .mls-mobile-drawer {
           background: #0D0F14;
@@ -599,7 +643,8 @@ const Navbar = () => {
           display: flex;
           align-items: center;
           gap: 0.75rem;
-          padding: 0.8rem 0.95rem;
+          padding: 0.9rem 0.95rem;
+          min-height: 48px;
           background: none;
           border: none;
           color: inherit;
@@ -610,6 +655,7 @@ const Navbar = () => {
           cursor: pointer;
           text-align: left;
           transition: all 0.2s ease;
+          width: 100%;
         }
         .mls-header.dark-theme .mls-mobile-nav-item:hover {
           background: rgba(197, 160, 89, 0.12);
@@ -655,19 +701,28 @@ const Navbar = () => {
         }
         .mls-mobile-cta {
           width: 100%;
+          min-height: 52px;
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 0.85rem 1.25rem;
+          padding: 0.9rem 1.25rem;
           background: #C5A059;
           color: #0E1015;
           border: none;
-          border-radius: 8px;
+          border-radius: 10px;
           font-size: 0.88rem;
           font-weight: 700;
           letter-spacing: 0.04em;
           text-transform: uppercase;
           cursor: pointer;
+        }
+        .mls-mobile-backdrop {
+          position: fixed;
+          inset: 0;
+          top: 64px;
+          background: rgba(0,0,0,0.45);
+          z-index: 1400;
+          animation: mlsFadeSlideDown 0.2s ease;
         }
         .mls-search-backdrop {
           position: fixed;
@@ -679,13 +734,20 @@ const Navbar = () => {
           display: flex;
           align-items: flex-start;
           justify-content: center;
-          padding-top: 12vh;
+          padding-top: 8vh;
           padding-left: 1rem;
           padding-right: 1rem;
+          padding-bottom: max(1rem, var(--sab, 0px));
+          overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
         }
         .mls-search-modal {
           width: 100%;
           max-width: 620px;
+          max-height: 85vh;
+          max-height: 85dvh;
+          display: flex;
+          flex-direction: column;
           border-radius: 12px;
           overflow: hidden;
           box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
@@ -839,8 +901,12 @@ const Navbar = () => {
             </div>
           </Link>
 
-          {/* Desktop Navigation Links */}
+          {/* Desktop Navigation Links — every option is an independent page */}
           <nav className="mls-desktop-nav" aria-label="Main Navigation">
+            <Link to="/about" className="mls-nav-link">
+              About
+            </Link>
+
             {/* Practice Areas Menu */}
             <div
               className="mls-nav-item mls-has-dropdown"
@@ -850,8 +916,10 @@ const Navbar = () => {
               <button
                 type="button"
                 className={`mls-nav-link ${openDropdown === "practice" ? "active" : ""}`}
-                onClick={() => toggleDropdown("practice")}
+                onClick={() => navigate("/practice-areas")}
+                onFocus={() => handleMouseEnter("practice")}
                 aria-expanded={openDropdown === "practice"}
+                aria-haspopup="true"
               >
                 <span>Practice Areas</span>
                 <ChevronDown size={14} className={`mls-chevron ${openDropdown === "practice" ? "open" : ""}`} />
@@ -869,7 +937,7 @@ const Navbar = () => {
                       <button
                         type="button"
                         className="mls-dropdown-view-all"
-                        onClick={() => handleSectionNavigation("practice")}
+                        onClick={() => { setOpenDropdown(null); navigate("/practice-areas"); }}
                       >
                         Explore All Practices <ArrowRight size={13} />
                       </button>
@@ -882,9 +950,10 @@ const Navbar = () => {
                           <div
                             key={idx}
                             className="mls-practice-item"
-                            onClick={() => handleSectionNavigation("practice")}
+                            onClick={() => { setOpenDropdown(null); navigate(item.link); }}
                             role="button"
                             tabIndex={0}
+                            onKeyDown={(e) => { if (e.key === "Enter") { setOpenDropdown(null); navigate(item.link); } }}
                           >
                             <div className="mls-practice-icon-box">
                               <Icon size={16} />
@@ -907,14 +976,10 @@ const Navbar = () => {
               Legacy
             </Link>
 
-            {/* Our People Link */}
-            <button
-              type="button"
-              className="mls-nav-link"
-              onClick={() => handleSectionNavigation("people")}
-            >
+            {/* Our People — independent page */}
+            <Link to="/people" className="mls-nav-link">
               Our People
-            </button>
+            </Link>
 
             {/* Insights & Academics Menu */}
             <div
@@ -927,6 +992,7 @@ const Navbar = () => {
                 className={`mls-nav-link ${openDropdown === "insights" ? "active" : ""}`}
                 onClick={() => toggleDropdown("insights")}
                 aria-expanded={openDropdown === "insights"}
+                aria-haspopup="true"
               >
                 <span>Insights</span>
                 <ChevronDown size={14} className={`mls-chevron ${openDropdown === "insights" ? "open" : ""}`} />
@@ -973,6 +1039,18 @@ const Navbar = () => {
                       <span className="mls-dropdown-link-sub">Chambers lectures & roundtables</span>
                     </div>
                   </Link>
+
+                  <Link
+                    to="/academic-collaborations"
+                    className="mls-dropdown-link"
+                    onClick={() => setOpenDropdown(null)}
+                  >
+                    <Users size={16} className="mls-dropdown-link-icon" />
+                    <div>
+                      <span className="mls-dropdown-link-title">Academic Collaborations</span>
+                      <span className="mls-dropdown-link-sub">MOU programmes & clerkships</span>
+                    </div>
+                  </Link>
                 </div>
               )}
             </div>
@@ -1009,7 +1087,7 @@ const Navbar = () => {
             <button
               type="button"
               className="mls-cta-button"
-              onClick={() => handleSectionNavigation("contact")}
+              onClick={() => { setOpenDropdown(null); setMobileMenuOpen(false); navigate("/contact"); }}
             >
               <span>Consult Chambers</span>
               <ArrowRight size={13} className="mls-cta-arrow" />
@@ -1028,7 +1106,13 @@ const Navbar = () => {
 
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="mls-mobile-drawer">
+          <>
+            <div
+              className="mls-mobile-backdrop"
+              onClick={() => setMobileMenuOpen(false)}
+              aria-hidden="true"
+            />
+            <div className="mls-mobile-drawer" role="dialog" aria-label="Mobile navigation">
             <div className="mls-mobile-drawer-inner">
               <button
                 type="button"
@@ -1043,14 +1127,23 @@ const Navbar = () => {
               </button>
 
               <div className="mls-mobile-nav-list">
-                <button
-                  type="button"
+                <Link
+                  to="/about"
                   className="mls-mobile-nav-item"
-                  onClick={() => handleSectionNavigation("practice")}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Compass size={18} />
+                  <span>About the Firm</span>
+                </Link>
+
+                <Link
+                  to="/practice-areas"
+                  className="mls-mobile-nav-item"
+                  onClick={() => setMobileMenuOpen(false)}
                 >
                   <Scale size={18} />
                   <span>Practice Areas</span>
-                </button>
+                </Link>
 
                 <Link
                   to="/legacy"
@@ -1061,14 +1154,23 @@ const Navbar = () => {
                   <span>Chambers Legacy</span>
                 </Link>
 
-                <button
-                  type="button"
+                <Link
+                  to="/people"
                   className="mls-mobile-nav-item"
-                  onClick={() => handleSectionNavigation("people")}
+                  onClick={() => setMobileMenuOpen(false)}
                 >
                   <Users size={18} />
                   <span>Our People & Partners</span>
-                </button>
+                </Link>
+
+                <Link
+                  to="/testimonials"
+                  className="mls-mobile-nav-item"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Shield size={18} />
+                  <span>Client Testimonials</span>
+                </Link>
 
                 <div className="mls-mobile-subgroup">
                   <span className="mls-mobile-subgroup-title">RESEARCH & INSIGHTS</span>
@@ -1096,6 +1198,14 @@ const Navbar = () => {
                     <Calendar size={15} />
                     <span>Conferences & Events</span>
                   </Link>
+                  <Link
+                    to="/academic-collaborations"
+                    className="mls-mobile-subitem"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <Users size={15} />
+                    <span>Academic Collaborations</span>
+                  </Link>
                 </div>
 
                 <Link
@@ -1112,7 +1222,7 @@ const Navbar = () => {
                 <button
                   type="button"
                   className="mls-mobile-cta"
-                  onClick={() => handleSectionNavigation("contact")}
+                  onClick={() => { setMobileMenuOpen(false); navigate("/contact"); }}
                 >
                   <span>Chambers Consultation</span>
                   <ArrowRight size={15} />
@@ -1120,6 +1230,7 @@ const Navbar = () => {
               </div>
             </div>
           </div>
+          </>
         )}
       </header>
 

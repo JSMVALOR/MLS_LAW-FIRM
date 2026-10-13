@@ -346,13 +346,13 @@ const Footer = () => {
           <div>
             <h4 className="footer-section-title">Practice Disciplines</h4>
             <ul className="footer-nav-menu">
-              <li><Link to="/#practice" className="footer-nav-entry">Civil & Constitutional Law</Link></li>
-              <li><Link to="/#practice" className="footer-nav-entry">Commercial Arbitration (ICA)</Link></li>
-              <li><Link to="/#practice" className="footer-nav-entry">White-Collar & Criminal Defense</Link></li>
-              <li><Link to="/#practice" className="footer-nav-entry">Corporate Governance & M&A</Link></li>
-              <li><Link to="/#practice" className="footer-nav-entry">Real Estate & Infrastructure</Link></li>
-              <li><Link to="/#practice" className="footer-nav-entry">Taxation & Appellate Tribunals</Link></li>
-              <li><Link to="/#practice" className="footer-nav-entry">Intellectual Property & Technology</Link></li>
+              <li><Link to="/practice-areas" className="footer-nav-entry">Civil & Constitutional Law</Link></li>
+              <li><Link to="/practice-areas" className="footer-nav-entry">Commercial Arbitration (ICA)</Link></li>
+              <li><Link to="/practice-areas" className="footer-nav-entry">White-Collar & Criminal Defense</Link></li>
+              <li><Link to="/practice-areas" className="footer-nav-entry">Corporate Governance & M&A</Link></li>
+              <li><Link to="/practice-areas" className="footer-nav-entry">Real Estate & Infrastructure</Link></li>
+              <li><Link to="/practice-areas" className="footer-nav-entry">Taxation & Appellate Tribunals</Link></li>
+              <li><Link to="/practice-areas" className="footer-nav-entry">Intellectual Property & Technology</Link></li>
             </ul>
           </div>
 
@@ -360,13 +360,17 @@ const Footer = () => {
           <div>
             <h4 className="footer-section-title">Institutional Overview</h4>
             <ul className="footer-nav-menu">
+              <li><Link to="/about" className="footer-nav-entry">About the Firm</Link></li>
               <li><Link to="/legacy" className="footer-nav-entry">Chambers Legacy & Epochs</Link></li>
-              <li><Link to="/team" className="footer-nav-entry">Senior Bench & Partners</Link></li>
+              <li><Link to="/people" className="footer-nav-entry">Senior Bench & Partners</Link></li>
+              <li><Link to="/team" className="footer-nav-entry">Full Chambers Registry</Link></li>
+              <li><Link to="/testimonials" className="footer-nav-entry">Client Testimonials</Link></li>
               <li><Link to="/blogs" className="footer-nav-entry">Legal Insights & Articles</Link></li>
               <li><Link to="/publications" className="footer-nav-entry">Research Publications</Link></li>
               <li><Link to="/events" className="footer-nav-entry">Conferences & Symposia</Link></li>
+              <li><Link to="/academic-collaborations" className="footer-nav-entry">Academic Collaborations</Link></li>
               <li><Link to="/careers" className="footer-nav-entry">Careers & Judicial Clerkships</Link></li>
-              <li><Link to="/#contact" className="footer-nav-entry">Chambers Consultation Intake</Link></li>
+              <li><Link to="/contact" className="footer-nav-entry">Chambers Consultation Intake</Link></li>
             </ul>
           </div>
 

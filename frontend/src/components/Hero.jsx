@@ -24,16 +24,19 @@ const Hero = ({ onNavigate }) => {
       <style>{`
         .hero {
           position: relative;
-          height: calc(100vh - var(--nav-height, 80px));
-          max-height: calc(100vh - var(--nav-height, 80px));
+          min-height: calc(100vh - var(--nav-height, 80px));
+          min-height: calc(100svh - var(--nav-height, 80px));
           scroll-snap-align: start;
           scroll-snap-stop: always;
           display: flex;
           flex-direction: column;
           justify-content: center;
           align-items: center;
-          padding: 1rem 1.5rem;
+          padding: 2rem 1.5rem;
+          padding-left: max(1.5rem, var(--sal, 0px));
+          padding-right: max(1.5rem, var(--sar, 0px));
           overflow: hidden;
+          overflow: clip;
           box-sizing: border-box;
           transition: background-color 0.4s ease, color 0.4s ease;
           font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -119,7 +122,6 @@ const Hero = ({ onNavigate }) => {
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          height: 100%;
         }
         .hero-content {
           text-align: center;
@@ -219,8 +221,9 @@ const Hero = ({ onNavigate }) => {
           align-items: center;
           justify-content: center;
           gap: 0.55rem;
-          padding: 0.72rem 1.65rem;
-          border-radius: 6px;
+          padding: 0.85rem 1.65rem;
+          min-height: 48px;
+          border-radius: 8px;
           font-size: 0.84rem;
           font-weight: 700;
           cursor: pointer;
@@ -229,6 +232,7 @@ const Hero = ({ onNavigate }) => {
           text-decoration: none;
           transition: all 0.25s ease;
           font-family: inherit;
+          white-space: nowrap;
         }
         .hero-btn-primary {
           background: #C5A059;
@@ -359,7 +363,38 @@ const Hero = ({ onNavigate }) => {
           100% { transform: translateY(8px); opacity: 0; }
         }
         @media (max-width: 860px) {
-          .hero-pillars { display: none; }
+          .hero { padding: 2.5rem 1.1rem 2rem; justify-content: flex-start; }
+          .hero-container { justify-content: flex-start; }
+          .hero-title { font-size: clamp(1.75rem, 8.5vw, 2.5rem); letter-spacing: 0.04em; line-height: 1.12; }
+          .hero-motto { font-size: clamp(0.95rem, 4.2vw, 1.1rem); padding: 0 0.25rem; }
+          .hero-description { font-size: 0.94rem; line-height: 1.6; padding: 0 0.25rem; }
+          .hero-actions { flex-direction: column; align-items: stretch; gap: 0.7rem; max-width: 420px; margin-left: auto; margin-right: auto; }
+          .hero-btn { width: 100%; padding: 0.95rem 1.25rem; font-size: 0.82rem; }
+          /* Replace hidden pillars with compact mobile trust strip */
+          .hero-pillars {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.55rem;
+            max-width: 420px;
+            padding: 0.9rem 1rem;
+            margin: 0 auto;
+            width: 100%;
+          }
+          .hero-pillar-divider { display: none; }
+          .hero-pillar-item { padding: 0.35rem 0.25rem; gap: 0.65rem; }
+          .pillar-icon-wrapper { width: 34px; height: 34px; }
+          .hero-glow-1 { width: 280px; height: 280px; filter: blur(70px); }
+          .hero-glow-2 { display: none; }
+          .hero-watermark { width: min(300px, 80vw); height: min(300px, 80vw); }
+          .hero-scroll-cue { display: none; }
+        }
+        @media (max-width: 380px) {
+          .hero { padding: 2rem 0.9rem 1.75rem; }
+          .hero-badge { font-size: 0.64rem; padding: 0.3rem 0.75rem; }
+          .hero-description { font-size: 0.88rem; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .scroll-cue-wheel { animation: none; }
         }
       `}</style>
 

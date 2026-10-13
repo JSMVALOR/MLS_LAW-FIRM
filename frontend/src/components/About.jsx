@@ -26,15 +26,18 @@ const About = ({ onNavigate }) => {
       <style>{`
         .about {
           position: relative;
-          height: calc(100vh - var(--nav-height, 80px));
-          max-height: calc(100vh - var(--nav-height, 80px));
+          min-height: calc(100vh - var(--nav-height, 80px));
+          min-height: calc(100svh - var(--nav-height, 80px));
           scroll-snap-align: start;
           scroll-snap-stop: always;
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: 1.25rem 2rem;
+          padding: 2rem 2rem;
+          padding-left: max(2rem, var(--sal, 0px));
+          padding-right: max(2rem, var(--sar, 0px));
           overflow: hidden;
+          overflow: clip;
           box-sizing: border-box;
           transition: background-color 0.4s ease, color 0.4s ease;
           font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -55,7 +58,6 @@ const About = ({ onNavigate }) => {
           grid-template-columns: 0.9fr 1.1fr;
           gap: 3rem;
           align-items: center;
-          height: 100%;
         }
         .about-visual-col {
           display: flex;
@@ -218,9 +220,11 @@ const About = ({ onNavigate }) => {
         .about-btn-primary {
           display: inline-flex;
           align-items: center;
+          justify-content: center;
           gap: 0.45rem;
-          padding: 0.68rem 1.45rem;
-          border-radius: 6px;
+          padding: 0.8rem 1.45rem;
+          min-height: 48px;
+          border-radius: 8px;
           background: #C5A059;
           border: 1px solid #C5A059;
           color: #0E1015;
@@ -242,9 +246,11 @@ const About = ({ onNavigate }) => {
         .about-btn-secondary {
           display: inline-flex;
           align-items: center;
+          justify-content: center;
           gap: 0.45rem;
-          padding: 0.68rem 1.3rem;
-          border-radius: 6px;
+          padding: 0.8rem 1.3rem;
+          min-height: 48px;
+          border-radius: 8px;
           border: 1px solid rgba(197, 160, 89, 0.25);
           background: rgba(255, 255, 255, 0.02);
           color: inherit;
@@ -266,6 +272,15 @@ const About = ({ onNavigate }) => {
             gap: 1.5rem;
           }
           .about-visual-col { display: none; }
+        }
+        @media (max-width: 768px) {
+          .about { padding: 2.5rem 1.1rem 2rem; align-items: flex-start; }
+          .about-heading { font-size: clamp(1.45rem, 6.5vw, 1.9rem); }
+          .about-lead { font-size: 0.92rem; line-height: 1.6; }
+          .about-body { font-size: 0.86rem; }
+          .about-highlights-grid { grid-template-columns: 1fr; gap: 0.85rem; }
+          .about-cta-row { flex-direction: column; align-items: stretch; max-width: 420px; }
+          .about-btn-primary, .about-btn-secondary { width: 100%; }
         }
       `}</style>
 

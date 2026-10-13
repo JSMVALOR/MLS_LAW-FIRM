@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Star, Quote, ChevronLeft, ChevronRight, Shield } from 'lucide-react';
 import { useTheme } from './ThemeContext';
 
 const Testimonials = () => {
   const { isDarkTheme } = useTheme();
   const [currentIndex, setCurrentIndex] = useState(0);
+  const touchStartX = useRef(null);
 
   const testimonials = [
     {
@@ -51,20 +52,36 @@ const Testimonials = () => {
 
   const current = testimonials[currentIndex];
 
+  const onTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+  const onTouchEnd = (e) => {
+    if (touchStartX.current == null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX.current;
+    if (Math.abs(dx) > 40) {
+      if (dx < 0) handleNext();
+      else handlePrev();
+    }
+    touchStartX.current = null;
+  };
+
   return (
     <section className={`testimonials snap-slide ${isDarkTheme ? 'dark-theme' : 'light-theme'}`} id="awards">
       <style>{`
         .testimonials {
           position: relative;
-          height: calc(100vh - var(--nav-height, 80px));
-          max-height: calc(100vh - var(--nav-height, 80px));
+          min-height: calc(100vh - var(--nav-height, 80px));
+          min-height: calc(100svh - var(--nav-height, 80px));
           scroll-snap-align: start;
           scroll-snap-stop: always;
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: 1.5rem 2rem;
+          padding: 2rem 2rem;
+          padding-left: max(2rem, var(--sal, 0px));
+          padding-right: max(2rem, var(--sar, 0px));
           overflow: hidden;
+          overflow: clip;
           box-sizing: border-box;
           transition: background-color 0.4s ease, color 0.4s ease;
           font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -84,7 +101,6 @@ const Testimonials = () => {
           display: flex;
           flex-direction: column;
           align-items: center;
-          height: 100%;
           justify-content: center;
         }
         .testimonials-header {
@@ -206,8 +222,10 @@ const Testimonials = () => {
           margin-top: 1.25rem;
         }
         .testimonial-nav-btn {
-          width: 38px;
-          height: 38px;
+          width: 44px;
+          height: 44px;
+          min-width: 44px;
+          min-height: 44px;
           border-radius: 50%;
           display: flex;
           align-items: center;
@@ -225,20 +243,48 @@ const Testimonials = () => {
         }
         .testimonial-dots {
           display: flex;
-          gap: 0.45rem;
+          gap: 0.35rem;
+          align-items: center;
         }
         .testimonial-dot {
+          width: 28px;
+          height: 28px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: none;
+          border: none;
+          cursor: pointer;
+          padding: 0;
+        }
+        .testimonial-dot::after {
+          content: '';
           width: 6px;
           height: 6px;
           border-radius: 50%;
           background: rgba(197, 160, 89, 0.25);
-          cursor: pointer;
           transition: all 0.2s ease;
+          display: block;
         }
-        .testimonial-dot.active {
+        .testimonial-dot.active::after {
           width: 18px;
           border-radius: 4px;
           background: #C5A059;
+        }
+        @media (max-width: 768px) {
+          .testimonials { padding: 2.5rem 1.1rem 2rem; align-items: flex-start; }
+          .testimonials-header { margin-bottom: 1rem; padding: 0 0.25rem; }
+          .testimonials-title { font-size: clamp(1.45rem, 6.5vw, 1.9rem); }
+          .testimonials-subtitle { font-size: 0.88rem; line-height: 1.55; max-width: 34ch; margin: 0 auto; }
+          .testimonial-card { padding: 1.4rem 1.25rem 1.25rem; border-radius: 12px; }
+          .testimonial-quote-icon { top: 1rem; right: 1.1rem; opacity: 0.12; }
+          .testimonial-text { font-size: 1rem; line-height: 1.65; margin-bottom: 1.15rem; }
+          .testimonial-author-row { flex-direction: column; align-items: flex-start; gap: 0.7rem; padding-top: 1rem; }
+          .practice-chip { align-self: flex-start; }
+          .testimonial-nav-row { margin-top: 1rem; gap: 0.75rem; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .testimonial-card { animation: none; }
         }
       `}</style>
 
@@ -254,7 +300,11 @@ const Testimonials = () => {
           </p>
         </div>
 
-        <div className="testimonial-card">
+        <div
+          className="testimonial-card"
+          onTouchStart={onTouchStart}
+          onTouchEnd={onTouchEnd}
+        >
           <Quote size={52} className="testimonial-quote-icon" />
 
           <div className="testimonial-stars">
@@ -286,12 +336,16 @@ const Testimonials = () => {
             <ChevronLeft size={18} />
           </button>
 
-          <div className="testimonial-dots">
+          <div className="testimonial-dots" role="tablist" aria-label="Testimonials">
             {testimonials.map((_, idx) => (
-              <div
+              <button
                 key={idx}
+                type="button"
                 className={`testimonial-dot ${currentIndex === idx ? "active" : ""}`}
                 onClick={() => setCurrentIndex(idx)}
+                aria-label={`Go to testimonial ${idx + 1}`}
+                aria-selected={currentIndex === idx}
+                role="tab"
               />
             ))}
           </div>

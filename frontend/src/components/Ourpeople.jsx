@@ -30,15 +30,18 @@ const OurPeople = () => {
       <style>{`
         .our-people {
           position: relative;
-          height: calc(100vh - var(--nav-height, 80px));
-          max-height: calc(100vh - var(--nav-height, 80px));
+          min-height: calc(100vh - var(--nav-height, 80px));
+          min-height: calc(100svh - var(--nav-height, 80px));
           scroll-snap-align: start;
           scroll-snap-stop: always;
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: 1.5rem 2rem;
+          padding: 2rem 2rem;
+          padding-left: max(2rem, var(--sal, 0px));
+          padding-right: max(2rem, var(--sar, 0px));
           overflow: hidden;
+          overflow: clip;
           box-sizing: border-box;
           transition: background-color 0.4s ease, color 0.4s ease;
           font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -58,7 +61,6 @@ const OurPeople = () => {
           display: flex;
           flex-direction: column;
           align-items: center;
-          height: 100%;
           justify-content: center;
         }
         .our-people-header {
@@ -199,9 +201,11 @@ const OurPeople = () => {
         .people-view-all-btn {
           display: inline-flex;
           align-items: center;
+          justify-content: center;
           gap: 0.45rem;
-          padding: 0.65rem 1.45rem;
-          border-radius: 6px;
+          padding: 0.8rem 1.45rem;
+          min-height: 48px;
+          border-radius: 8px;
           background: rgba(197, 160, 89, 0.08);
           border: 1px solid rgba(197, 160, 89, 0.28);
           color: inherit;
@@ -210,6 +214,7 @@ const OurPeople = () => {
           letter-spacing: 0.03em;
           text-decoration: none;
           transition: all 0.25s ease;
+          text-align: center;
         }
         .people-view-all-btn:hover {
           border-color: #C5A059;
@@ -221,6 +226,25 @@ const OurPeople = () => {
             grid-template-columns: 1fr;
             gap: 1rem;
           }
+        }
+        @media (max-width: 768px) {
+          .our-people { padding: 2.5rem 1.1rem 2rem; align-items: flex-start; }
+          .our-people-header { margin-bottom: 1.1rem; padding: 0 0.25rem; }
+          .our-people-heading { font-size: clamp(1.45rem, 6.5vw, 1.9rem); }
+          .our-people-subtext { font-size: 0.88rem; line-height: 1.55; max-width: 36ch; margin: 0 auto; }
+          .partners-grid { gap: 0.85rem; margin-bottom: 1.1rem; }
+          .partner-card { flex-direction: row; gap: 1rem; padding: 1.1rem 1rem; align-items: flex-start; }
+          .partner-image-wrapper { width: 84px; height: 96px; border-radius: 8px; }
+          .partner-tenure-tag { font-size: 0.62rem; padding: 0.2rem 0.45rem; }
+          .partner-name { font-size: 1.02rem; line-height: 1.3; }
+          .partner-title { font-size: 0.72rem; }
+          .partner-creds { font-size: 0.7rem; line-height: 1.45; }
+          .partner-desc { font-size: 0.78rem; line-height: 1.55; }
+          .people-view-all-btn { width: 100%; max-width: 420px; font-size: 0.78rem; line-height: 1.4; white-space: normal; }
+        }
+        @media (max-width: 380px) {
+          .partner-card { gap: 0.85rem; padding: 1rem 0.9rem; }
+          .partner-image-wrapper { width: 72px; height: 84px; }
         }
       `}</style>
 
@@ -245,6 +269,8 @@ const OurPeople = () => {
                     src={partner.image}
                     alt={partner.name}
                     className="partner-image"
+                    loading="lazy"
+                    decoding="async"
                   />
                 </div>
                 <div className="partner-tenure-tag">

@@ -240,3 +240,55 @@ body.light-theme .pagination-tooltip {
   border-radius: 2px;
   box-shadow: 0 0 10px rgba(197, 160, 89, 0.5);
 }
+
+/* ========================================================
+   OUTER STANDALONE PAGES — independent routes share theme flow
+   ======================================================== */
+.outer-page-shell {
+  width: 100%;
+  min-height: calc(100svh - var(--nav-height, 80px));
+  display: flex;
+  flex-direction: column;
+}
+
+/* Standalone snap sections become natural document sections */
+.outer-page-shell .snap-slide {
+  scroll-snap-align: none !important;
+  scroll-snap-stop: normal !important;
+}
+
+@media (max-width: 768px), (hover: none) and (pointer: coarse) {
+  :root {
+    --nav-height: 64px;
+  }
+
+  .home-wrapper {
+    height: auto;
+    overflow: visible;
+  }
+
+  .home-snap-container {
+    height: auto;
+    overflow-y: visible;
+    scroll-snap-type: none;
+    scroll-behavior: auto;
+  }
+
+  .snap-slide {
+    height: auto !important;
+    max-height: none !important;
+    min-height: calc(100svh - var(--nav-height, 64px)) !important;
+    scroll-snap-align: none !important;
+    scroll-snap-stop: normal !important;
+    overflow: visible !important;
+    justify-content: flex-start !important;
+    padding-top: max(1rem, var(--sat));
+    padding-bottom: max(1rem, var(--sab));
+  }
+}
+
+@media (max-width: 480px) {
+  .slide-pagination {
+    display: none !important;
+  }
+}

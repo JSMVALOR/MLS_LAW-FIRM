@@ -7,6 +7,7 @@ import About from "./components/About.jsx";
 import PracticeAreas from "./components/PracticeAreas.jsx";
 import Testimonials from "./components/Testimonials.jsx";
 import Ourpeople from "./components/Ourpeople.jsx";
+import AcademicCollaborations from "./components/AcademicCollaborations.jsx";
 import ContactForm from "./components/ContactForm.jsx";
 import Footer from "./components/Footer.jsx";
 import Legacy from "./components/Legacy";
@@ -16,6 +17,7 @@ import Publications from "./components/Publications";
 import Events from "./components/Events";
 import Team from "./components/Team";
 import BlogPost from "./components/BlogPost.jsx";
+import AcademicCollaborationsPage from "./components/AcademicCollaborationsPage.jsx";
 import Preloader from "./components/Preloader.jsx";
 import { ThemeProvider } from "./components/ThemeContext";
 import "./App.css";
@@ -26,6 +28,7 @@ const SLIDES = [
   { id: "practice", label: "Practice Areas" },
   { id: "awards", label: "Testimonials" },
   { id: "people", label: "Our People" },
+  { id: "collaborations", label: "Academic Collaborations" },
   { id: "contact", label: "Chambers Intake" }
 ];
 
@@ -145,6 +148,7 @@ const HomePage = () => {
         <PracticeAreas onNavigate={scrollToSlide} />
         <Testimonials onNavigate={scrollToSlide} />
         <Ourpeople onNavigate={scrollToSlide} />
+        <AcademicCollaborations onNavigate={scrollToSlide} />
         <ContactForm onNavigate={scrollToSlide} />
       </div>
     </div>
@@ -215,6 +219,13 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<HomePage />} />
+          {/* Independent standalone pages — every navbar option resolves here */}
+          <Route path="/about" element={<OuterPageShell><About /></OuterPageShell>} />
+          <Route path="/practice-areas" element={<OuterPageShell><PracticeAreas /></OuterPageShell>} />
+          <Route path="/testimonials" element={<OuterPageShell><Testimonials /></OuterPageShell>} />
+          <Route path="/people" element={<OuterPageShell><Ourpeople /></OuterPageShell>} />
+          <Route path="/contact" element={<OuterPageShell><ContactForm /></OuterPageShell>} />
+          <Route path="/academic-collaborations" element={<OuterPageShell><AcademicCollaborationsPage /></OuterPageShell>} />
           <Route path="/legacy" element={<OuterPageShell><Legacy /></OuterPageShell>} />
           <Route path="/careers" element={<OuterPageShell><Careers /></OuterPageShell>} />
           <Route path="/blogs" element={<OuterPageShell><Blogs /></OuterPageShell>} />

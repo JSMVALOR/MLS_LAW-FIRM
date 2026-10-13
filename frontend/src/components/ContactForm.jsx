@@ -59,16 +59,18 @@ const ContactForm = ({ onNavigate }) => {
       <style>{`
         .contact-form {
           position: relative;
-          height: calc(100vh - var(--nav-height, 80px)) !important;
-          max-height: calc(100vh - var(--nav-height, 80px)) !important;
           min-height: calc(100vh - var(--nav-height, 80px)) !important;
+          min-height: calc(100svh - var(--nav-height, 80px)) !important;
           scroll-snap-align: start !important;
           scroll-snap-stop: always !important;
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: 1.25rem 2rem 0.85rem;
+          padding: 2rem 2rem 1rem;
+          padding-left: max(2rem, var(--sal, 0px));
+          padding-right: max(2rem, var(--sar, 0px));
           overflow: hidden;
+          overflow: clip;
           box-sizing: border-box;
           transition: background-color 0.4s ease, color 0.4s ease;
           font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -87,8 +89,7 @@ const ContactForm = ({ onNavigate }) => {
           margin: 0 auto;
           display: flex;
           flex-direction: column;
-          height: 100%;
-          justify-content: space-between;
+          justify-content: center;
           box-sizing: border-box;
         }
         .contact-header {
@@ -135,8 +136,7 @@ const ContactForm = ({ onNavigate }) => {
           display: grid;
           grid-template-columns: 0.85fr 1.15fr;
           gap: 2rem;
-          align-items: center;
-          max-height: 480px;
+          align-items: start;
         }
         /* Left: Info Card */
         .contact-info-card {
@@ -267,8 +267,9 @@ const ContactForm = ({ onNavigate }) => {
           align-items: center;
           justify-content: center;
           gap: 0.5rem;
-          padding: 0.65rem;
-          border-radius: 6px;
+          padding: 0.85rem;
+          min-height: 50px;
+          border-radius: 8px;
           background: #C5A059;
           color: #0E1015;
           border: none;
@@ -356,6 +357,10 @@ const ContactForm = ({ onNavigate }) => {
           font-size: 0.68rem;
           letter-spacing: 0.03em;
           opacity: 0.65;
+          display: flex;
+          align-items: center;
+          gap: 0.45rem;
+          white-space: nowrap;
         }
 
         @media (max-width: 900px) {
@@ -366,6 +371,17 @@ const ContactForm = ({ onNavigate }) => {
           .contact-info-card { display: none; }
           .mini-footer-jurisdiction { display: none; }
           .mini-footer-nav { gap: 0.65rem; }
+        }
+        @media (max-width: 768px) {
+          .contact-form { padding: 2.5rem 1.1rem 1rem; align-items: flex-start; }
+          .contact-title { font-size: clamp(1.45rem, 6.5vw, 1.9rem); }
+          .contact-subtitle { font-size: 0.86rem; line-height: 1.55; }
+          .contact-form-panel { padding: 1.2rem 1.1rem; }
+          .form-row-grid { grid-template-columns: 1fr; }
+          .form-textarea { height: 96px; }
+          .home-mini-footer { flex-direction: column; gap: 0.7rem; align-items: flex-start; }
+          .mini-footer-nav { flex-wrap: wrap; gap: 0.6rem 1rem; }
+          .mini-footer-right { display: flex; flex-wrap: wrap; }
         }
       `}</style>
 
@@ -541,20 +557,16 @@ const ContactForm = ({ onNavigate }) => {
 
           <div className="mini-footer-nav">
             <Link to="/legacy" className="mini-footer-link">Legacy</Link>
-            <button
-              type="button"
-              className="mini-footer-link"
-              onClick={() => onNavigate && onNavigate('practice')}
-            >
-              Practices
-            </button>
-            <Link to="/team" className="mini-footer-link">Our People</Link>
+            <Link to="/practice-areas" className="mini-footer-link">Practices</Link>
+            <Link to="/people" className="mini-footer-link">Our People</Link>
             <Link to="/blogs" className="mini-footer-link">Insights</Link>
             <Link to="/careers" className="mini-footer-link">Careers</Link>
           </div>
 
           <div className="mini-footer-right">
             <span>BCI Disclaimer Compliant</span>
+            <span className="mini-footer-divider">&bull;</span>
+            <span>Engineered by JSM VALOR</span>
           </div>
         </div>
       </div>
