@@ -289,37 +289,14 @@ const PracticeAreas = ({ onNavigate }) => {
           font-weight: 400;
         }
 
+        /* CTA sizing — the gold gradient itself comes from .lux-btn-gold */
         .areas_left_cta {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          gap: 0.55rem;
-          padding: 0.8rem 1.45rem;
-          min-height: 48px;
-          border-radius: 8px;
-          background: #C5A059;
-          color: #0E1015;
-          font-size: 0.82rem;
-          font-weight: 700;
-          letter-spacing: 0.04em;
-          text-transform: uppercase;
-          border: none;
-          cursor: pointer;
           width: fit-content;
           max-width: 100%;
-          font-family: inherit;
-          transition: transform var(--dur-press) var(--ease-out), background-color var(--dur-pop) var(--ease-out), box-shadow 200ms var(--ease-out);
-          box-shadow: 0 4px 14px rgba(197, 160, 89, 0.22);
         }
 
         .areas_left_cta:active {
           transform: scale(0.97);
-        }
-
-        .areas_left_cta:hover {
-          background: #D4AF37;
-          transform: translateY(-2px);
-          box-shadow: 0 6px 20px rgba(197, 160, 89, 0.35);
         }
 
         /* ========================================================
@@ -381,7 +358,7 @@ const PracticeAreas = ({ onNavigate }) => {
           width: 0 !important;
         }
 
-        /* TLH Exact Link Block */
+        /* Practice link rows — named transitions, hover gated to fine pointers */
         .areas_link_block {
           display: flex;
           justify-content: space-between;
@@ -394,7 +371,7 @@ const PracticeAreas = ({ onNavigate }) => {
           text-decoration: none;
           color: inherit;
           position: relative;
-          transition: all 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+          transition: background-color var(--dur-drop) var(--ease-out);
           background: transparent;
         }
 
@@ -423,65 +400,67 @@ const PracticeAreas = ({ onNavigate }) => {
           font-size: clamp(1.15rem, 1.8vw, 1.48rem);
           font-weight: 600;
           line-height: 1.25;
-          letter-spacing: 0.02em;
-          transition: color 0.2s ease, transform 0.25s ease;
+          letter-spacing: 0.01em;
+          min-width: 0;
+          transition: color var(--dur-pop) var(--ease-out), transform var(--dur-drop) var(--ease-out);
         }
 
-        .areas_link_block:hover .areas_link_text {
-          color: #C5A059;
-          transform: translateX(6px);
+        @media (hover: hover) and (pointer: fine) {
+          .areas_link_block:hover .areas_link_text {
+            color: #C5A059;
+            transform: translateX(6px);
+          }
+          .section_areas.light-theme .areas_link_block:hover .areas_link_text {
+            color: #8C661D;
+          }
+          .areas_link_block:hover .areas_link_arrow_wrap {
+            transform: translateX(6px);
+            opacity: 1;
+            color: #C5A059;
+          }
+          .areas_link_block:hover .areas_hover_accent {
+            width: 100%;
+          }
         }
 
-        .section_areas.light-theme .areas_link_block:hover .areas_link_text {
-          color: #8C661D;
-        }
-
-        /* TLH Arrow Icon */
+        /* Practice arrow affordance */
         .areas_link_arrow_wrap {
           width: 32px;
           height: 32px;
           display: flex;
           align-items: center;
           justify-content: center;
-          transition: transform 0.25s ease, color 0.2s ease;
+          transition: transform var(--dur-drop) var(--ease-out), color var(--dur-pop) var(--ease-out), opacity var(--dur-pop) var(--ease-out);
           opacity: 0.55;
           flex-shrink: 0;
         }
 
-        .areas_link_block:hover .areas_link_arrow_wrap {
-          transform: translateX(6px);
-          opacity: 1;
-          color: #C5A059;
-        }
-
-        /* Expanding TLH Bottom Accent Bar on Hover */
+        /* Expanding bottom accent bar (width-driven: layout-bounded overlay) */
         .areas_hover_accent {
           position: absolute;
           bottom: 0;
           left: 0;
           height: 2px;
           width: 0;
-          background: #C5A059;
-          transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+          background: linear-gradient(90deg, var(--gold-hi), var(--gold-primary));
+          transition: width var(--dur-drop) var(--ease-out);
         }
 
-        .areas_link_block:hover .areas_hover_accent {
-          width: 100%;
-        }
-
-        /* Mandate Detail Modal */
+        /* Mandate Detail Modal — centered origin, token curves */
         .mandate_modal_backdrop {
           position: fixed;
           inset: 0;
           background: rgba(6, 7, 10, 0.84);
-          backdrop-filter: blur(10px);
-          -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
           z-index: 2500;
           display: flex;
           align-items: center;
           justify-content: center;
           padding: 1.5rem;
-          animation: modalFade 0.2s ease;
+          padding-bottom: max(1.5rem, var(--sab));
+          overscroll-behavior: contain;
+          animation: modalFade var(--dur-pop) var(--ease-out);
         }
 
         @keyframes modalFade {
@@ -497,13 +476,17 @@ const PracticeAreas = ({ onNavigate }) => {
           padding: 2.2rem;
           box-shadow: 0 25px 70px rgba(0, 0, 0, 0.7);
           max-height: 85vh;
+          max-height: 85dvh;
           overflow-y: auto;
+          overscroll-behavior: contain;
+          -webkit-overflow-scrolling: touch;
           box-sizing: border-box;
-          animation: modalPop 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+          transform-origin: center;
+          animation: modalPop var(--dur-modal) var(--ease-out);
         }
 
         @keyframes modalPop {
-          from { opacity: 0; transform: scale(0.96) translateY(8px); }
+          from { opacity: 0; transform: scale(0.95) translateY(8px); }
           to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
@@ -528,13 +511,24 @@ const PracticeAreas = ({ onNavigate }) => {
           color: inherit;
           cursor: pointer;
           opacity: 0.6;
-          padding: 0.3rem;
-          transition: opacity 0.2s, color 0.2s;
+          padding: 0.5rem;
+          min-width: 40px;
+          min-height: 40px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          transition: opacity var(--dur-pop) var(--ease-out), color var(--dur-pop) var(--ease-out), transform var(--dur-press) var(--ease-out);
         }
 
-        .mandate_close_btn:hover {
-          opacity: 1;
-          color: #C5A059;
+        .mandate_close_btn:active {
+          transform: scale(0.9);
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+          .mandate_close_btn:hover {
+            opacity: 1;
+            color: #C5A059;
+          }
         }
 
         .mandate_num_tag {
@@ -625,6 +619,19 @@ const PracticeAreas = ({ onNavigate }) => {
           .mandate_modal_dialog { padding: 1.5rem 1.25rem; max-height: 88vh; max-height: 88dvh; border-radius: 12px 12px 0 0; }
           .mandate_modal_title { font-size: 1.25rem; }
         }
+        /* Staggered row entrances — decorative, never blocking */
+        .areas-stagger {
+          opacity: 0;
+          animation: areasRowIn 420ms var(--ease-out) forwards;
+        }
+        @keyframes areasRowIn {
+          from { opacity: 0; transform: translateY(8px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .areas-stagger { animation: none; opacity: 1; }
+          .mandate_modal_backdrop, .mandate_modal_dialog { animation-duration: 0.01ms !important; }
+        }
       `}</style>
 
       <div className="areas_container">
@@ -648,7 +655,7 @@ const PracticeAreas = ({ onNavigate }) => {
 
             <button
               type="button"
-              className="areas_left_cta"
+              className="areas_left_cta lux-btn-gold"
               onClick={handleConsult}
             >
               <span>Consult Chambers</span>
@@ -658,14 +665,16 @@ const PracticeAreas = ({ onNavigate }) => {
 
           {/* Scrollable Right List (TLH Exact Links & Scroll) */}
           <div className="areas_right">
-            <div className="areas_scroll_list" ref={scrollListRef}>
-              {PRACTICE_AREAS.map((area) => (
+            <div className="areas_scroll_list">
+              {PRACTICE_AREAS.map((area, idx) => (
                 <div
                   key={area.id}
-                  className="areas_link_block"
+                  className="areas_link_block areas-stagger"
+                  style={{ animationDelay: `${Math.min(idx, 7) * 45}ms` }}
                   onClick={() => setSelectedModalArea(area)}
                   role="button"
                   tabIndex={0}
+                  onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setSelectedModalArea(area); } }}
                 >
                   <span className="areas_link_text">{area.title}</span>
 
@@ -725,7 +734,7 @@ const PracticeAreas = ({ onNavigate }) => {
             <div className="mandate_footer_action">
               <button
                 type="button"
-                className="areas_left_cta"
+                className="areas_left_cta lux-btn-gold"
                 onClick={() => {
                   setSelectedModalArea(null);
                   handleConsult();
