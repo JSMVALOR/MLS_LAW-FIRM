@@ -2,6 +2,12 @@ import React from 'react';
 import { ArrowRight, ShieldCheck, Compass, Scale, Award } from 'lucide-react';
 import { useTheme } from './ThemeContext';
 
+const PILLARS = [
+  { icon: ShieldCheck, title: "Uncompromising Advocacy", desc: "Litigation & Appellate Representation" },
+  { icon: Scale, title: "Judicial Acumen", desc: "Constitutional & Statutory Depth" },
+  { icon: Award, title: "Corporate Stewardship", desc: "Institutional Advisory & ADR" },
+];
+
 const Hero = ({ onNavigate }) => {
   const { isDarkTheme } = useTheme();
 
@@ -9,18 +15,12 @@ const Hero = ({ onNavigate }) => {
     if (onNavigate) {
       onNavigate(sectionId);
     } else {
-      const snapContainer = document.querySelector('.home-snap-container');
-      const element = document.getElementById(sectionId);
-      if (snapContainer && element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      } else if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
+      document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
     }
   };
 
   return (
-    <section className={`hero snap-slide ${isDarkTheme ? 'dark-theme' : 'light-theme'}`} id="home">
+    <section className={`hero snap-slide ${isDarkTheme ? 'dark-theme' : 'light-theme'}`} id="home" aria-label="Firm introduction">
       <style>{`
         .hero {
           position: relative;
@@ -33,8 +33,8 @@ const Hero = ({ onNavigate }) => {
           justify-content: center;
           align-items: center;
           padding: 2rem 1.5rem;
-          padding-left: max(1.5rem, var(--sal, 0px));
-          padding-right: max(1.5rem, var(--sar, 0px));
+          padding-left: max(1.5rem, var(--sal));
+          padding-right: max(1.5rem, var(--sar));
           overflow: hidden;
           overflow: clip;
           box-sizing: border-box;
@@ -59,12 +59,12 @@ const Hero = ({ onNavigate }) => {
           z-index: 0;
         }
         .hero.dark-theme .hero-bg-grid {
-          background-image: 
+          background-image:
             linear-gradient(to right, rgba(197, 160, 89, 0.04) 1px, transparent 1px),
             linear-gradient(to bottom, rgba(197, 160, 89, 0.04) 1px, transparent 1px);
         }
         .hero.light-theme .hero-bg-grid {
-          background-image: 
+          background-image:
             linear-gradient(to right, rgba(197, 160, 89, 0.05) 1px, transparent 1px),
             linear-gradient(to bottom, rgba(197, 160, 89, 0.05) 1px, transparent 1px);
         }
@@ -99,6 +99,7 @@ const Hero = ({ onNavigate }) => {
           pointer-events: none;
           z-index: 0;
           user-select: none;
+          -webkit-user-select: none;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -110,7 +111,6 @@ const Hero = ({ onNavigate }) => {
           height: 100%;
           object-fit: contain;
           opacity: 0.04;
-          filter: drop-shadow(0 0 20px rgba(197, 160, 89, 0.12));
         }
         .hero-container {
           width: 100%;
@@ -129,7 +129,19 @@ const Hero = ({ onNavigate }) => {
           display: flex;
           flex-direction: column;
           align-items: center;
+          animation: heroReveal 600ms var(--ease-out) backwards;
         }
+        @keyframes heroReveal {
+          from { opacity: 0; transform: translateY(16px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        /* Stagger the entrance 30–80ms per beat */
+        .hero-badge { animation: heroReveal 500ms var(--ease-out) 40ms backwards; }
+        .hero-title { animation: heroReveal 550ms var(--ease-out) 90ms backwards; }
+        .hero-motto { animation: heroReveal 500ms var(--ease-out) 140ms backwards; }
+        .hero-description { animation: heroReveal 500ms var(--ease-out) 190ms backwards; }
+        .hero-actions { animation: heroReveal 500ms var(--ease-out) 240ms backwards; }
+        .hero-pillars { animation: heroReveal 550ms var(--ease-out) 300ms backwards; }
         .hero-badge {
           display: inline-flex;
           align-items: center;
@@ -138,37 +150,38 @@ const Hero = ({ onNavigate }) => {
           border-radius: 9999px;
           font-size: 0.72rem;
           font-weight: 700;
-          letter-spacing: 0.08em;
+          letter-spacing: 0.06em;
           text-transform: uppercase;
           margin-bottom: 0.85rem;
+          white-space: nowrap;
         }
         .hero.dark-theme .hero-badge {
           background: rgba(197, 160, 89, 0.08);
           border: 1px solid rgba(197, 160, 89, 0.22);
           color: #C5A059;
-          backdrop-filter: blur(12px);
         }
         .hero.light-theme .hero-badge {
           background: rgba(197, 160, 89, 0.1);
           border: 1px solid rgba(197, 160, 89, 0.28);
           color: #8C661D;
-          backdrop-filter: blur(8px);
         }
         .hero-badge-logo {
           width: 14px;
           height: 14px;
           object-fit: contain;
           display: block;
+          flex-shrink: 0;
         }
         .hero-title {
           font-family: 'Cinzel', serif;
           font-size: clamp(2rem, 4.2vw, 3.4rem);
           font-weight: 800;
-          letter-spacing: 0.05em;
+          letter-spacing: 0.02em;
           line-height: 1.1;
-          margin-bottom: 0.65rem;
+          margin: 0 0 0.65rem;
           text-align: center;
           text-transform: uppercase;
+          text-wrap: balance;
         }
         .hero-title-accent {
           background: linear-gradient(135deg, #F2E3C6 0%, #C5A059 55%, #9E7B38 100%);
@@ -191,20 +204,22 @@ const Hero = ({ onNavigate }) => {
           font-family: 'Cinzel', serif;
           font-size: clamp(0.92rem, 1.6vw, 1.15rem);
           font-weight: 500;
-          letter-spacing: 0.03em;
-          line-height: 1.4;
-          margin-bottom: 0.65rem;
+          letter-spacing: 0.02em;
+          line-height: 1.5;
+          margin: 0 0 0.65rem;
           max-width: 760px;
           font-style: italic;
           opacity: 0.9;
+          text-wrap: balance;
         }
         .hero-description {
           font-size: clamp(0.82rem, 1.1vw, 0.92rem);
-          line-height: 1.55;
+          line-height: 1.6;
           max-width: 660px;
-          margin-bottom: 1.35rem;
+          margin: 0 0 1.35rem;
           font-weight: 400;
           opacity: 0.8;
+          text-wrap: pretty;
         }
         .hero-actions {
           display: flex;
@@ -230,9 +245,12 @@ const Hero = ({ onNavigate }) => {
           letter-spacing: 0.04em;
           text-transform: uppercase;
           text-decoration: none;
-          transition: all 0.25s ease;
+          transition: transform var(--dur-press) var(--ease-out), background-color var(--dur-pop) var(--ease-out), border-color var(--dur-pop) var(--ease-out), color var(--dur-pop) var(--ease-out), box-shadow 200ms var(--ease-out);
           font-family: inherit;
           white-space: nowrap;
+        }
+        .hero-btn:active {
+          transform: scale(0.97);
         }
         .hero-btn-primary {
           background: #C5A059;
@@ -240,32 +258,17 @@ const Hero = ({ onNavigate }) => {
           color: #0C0D11;
           box-shadow: 0 4px 16px rgba(197, 160, 89, 0.25);
         }
-        .hero-btn-primary:hover {
-          background: #D4AF37;
-          border-color: #D4AF37;
-          transform: translateY(-2px);
-          box-shadow: 0 6px 22px rgba(197, 160, 89, 0.35);
-        }
         .hero-btn-secondary {
           background: rgba(255, 255, 255, 0.03);
           border: 1px solid rgba(197, 160, 89, 0.28);
           color: inherit;
         }
-        .hero-btn-secondary:hover {
-          background: rgba(197, 160, 89, 0.12);
-          border-color: #C5A059;
-          color: #C5A059;
-          transform: translateY(-2px);
-        }
         .hero-btn-arrow {
-          transition: transform 0.25s ease;
-        }
-        .hero-btn:hover .hero-btn-arrow {
-          transform: translateX(4px);
+          transition: transform var(--dur-pop) var(--ease-out);
         }
         .hero-pillars {
           display: flex;
-          align-items: center;
+          align-items: stretch;
           justify-content: space-between;
           width: 100%;
           max-width: 860px;
@@ -276,18 +279,21 @@ const Hero = ({ onNavigate }) => {
         .hero.dark-theme .hero-pillars {
           background: rgba(17, 19, 25, 0.7);
           border: 1px solid rgba(197, 160, 89, 0.15);
-          backdrop-filter: blur(16px);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
         }
         .hero.light-theme .hero-pillars {
           background: rgba(255, 255, 255, 0.85);
           border: 1px solid rgba(197, 160, 89, 0.2);
-          backdrop-filter: blur(16px);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
         }
         .hero-pillar-item {
           display: flex;
           align-items: center;
           gap: 0.75rem;
           flex: 1;
+          min-width: 0;
           padding: 0 0.4rem;
         }
         .pillar-icon-wrapper {
@@ -304,23 +310,30 @@ const Hero = ({ onNavigate }) => {
         }
         .pillar-text {
           text-align: left;
+          min-width: 0;
         }
         .pillar-title {
           font-size: 0.8rem;
           font-weight: 700;
           line-height: 1.25;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
         .pillar-desc {
           font-size: 0.7rem;
           line-height: 1.3;
           margin-top: 1px;
           opacity: 0.7;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
         .hero-pillar-divider {
           width: 1px;
-          height: 30px;
+          align-self: stretch;
           flex-shrink: 0;
-          margin: 0 0.65rem;
+          margin: 0.25rem 0.65rem;
           background: linear-gradient(to bottom, transparent, rgba(197, 160, 89, 0.22), transparent);
         }
         .hero-scroll-cue {
@@ -331,15 +344,13 @@ const Hero = ({ onNavigate }) => {
           background: none;
           border: none;
           cursor: pointer;
-          padding: 0.35rem;
+          padding: 0.6rem;
+          min-width: 44px;
+          min-height: 44px;
           margin-top: 0.75rem;
           color: inherit;
           opacity: 0.7;
-          transition: opacity 0.2s;
-        }
-        .hero-scroll-cue:hover {
-          opacity: 1;
-          color: #C5A059;
+          transition: opacity var(--dur-pop) var(--ease-out), color var(--dur-pop) var(--ease-out);
         }
         .scroll-cue-mouse {
           width: 16px;
@@ -356,21 +367,42 @@ const Hero = ({ onNavigate }) => {
           height: 4px;
           border-radius: 1px;
           background-color: #C5A059;
-          animation: mouseWheel 1.5s infinite;
+          animation: mouseWheel 1.5s var(--ease-in-out) infinite;
         }
         @keyframes mouseWheel {
           0% { transform: translateY(0); opacity: 1; }
           100% { transform: translateY(8px); opacity: 0; }
         }
+        /* Hover gated — press feedback (:active) covers touch */
+        @media (hover: hover) and (pointer: fine) {
+          .hero-btn-primary:hover {
+            background: #D4AF37;
+            border-color: #D4AF37;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 22px rgba(197, 160, 89, 0.35);
+          }
+          .hero-btn-secondary:hover {
+            background: rgba(197, 160, 89, 0.12);
+            border-color: #C5A059;
+            color: #C5A059;
+            transform: translateY(-2px);
+          }
+          .hero-btn:hover .hero-btn-arrow {
+            transform: translateX(4px);
+          }
+          .hero-scroll-cue:hover {
+            opacity: 1;
+            color: #C5A059;
+          }
+        }
         @media (max-width: 860px) {
           .hero { padding: 2.5rem 1.1rem 2rem; justify-content: flex-start; }
           .hero-container { justify-content: flex-start; }
-          .hero-title { font-size: clamp(1.75rem, 8.5vw, 2.5rem); letter-spacing: 0.04em; line-height: 1.12; }
+          .hero-title { font-size: clamp(1.75rem, 8.5vw, 2.5rem); letter-spacing: 0.01em; }
           .hero-motto { font-size: clamp(0.95rem, 4.2vw, 1.1rem); padding: 0 0.25rem; }
-          .hero-description { font-size: 0.94rem; line-height: 1.6; padding: 0 0.25rem; }
+          .hero-description { font-size: 0.94rem; padding: 0 0.25rem; }
           .hero-actions { flex-direction: column; align-items: stretch; gap: 0.7rem; max-width: 420px; margin-left: auto; margin-right: auto; }
           .hero-btn { width: 100%; padding: 0.95rem 1.25rem; font-size: 0.82rem; }
-          /* Replace hidden pillars with compact mobile trust strip */
           .hero-pillars {
             display: grid;
             grid-template-columns: 1fr;
@@ -382,11 +414,15 @@ const Hero = ({ onNavigate }) => {
           }
           .hero-pillar-divider { display: none; }
           .hero-pillar-item { padding: 0.35rem 0.25rem; gap: 0.65rem; }
-          .pillar-icon-wrapper { width: 34px; height: 34px; }
-          .hero-glow-1 { width: 280px; height: 280px; filter: blur(70px); }
+          .pillar-title, .pillar-desc { white-space: normal; }
+          /* Perf: shrink glows, drop the second layer on small GPUs */
+          .hero-glow-1 { width: 280px; height: 280px; filter: blur(60px); }
           .hero-glow-2 { display: none; }
           .hero-watermark { width: min(300px, 80vw); height: min(300px, 80vw); }
           .hero-scroll-cue { display: none; }
+          .hero-content, .hero-badge, .hero-title, .hero-motto, .hero-description, .hero-actions, .hero-pillars {
+            animation-duration: 400ms;
+          }
         }
         @media (max-width: 380px) {
           .hero { padding: 2rem 0.9rem 1.75rem; }
@@ -394,52 +430,42 @@ const Hero = ({ onNavigate }) => {
           .hero-description { font-size: 0.88rem; }
         }
         @media (prefers-reduced-motion: reduce) {
+          .hero-content, .hero-badge, .hero-title, .hero-motto, .hero-description, .hero-actions, .hero-pillars {
+            animation: none;
+          }
           .scroll-cue-wheel { animation: none; }
         }
       `}</style>
 
-      {/* Background Decorative Ambient Layers */}
       <div className="hero-bg-grid" aria-hidden="true" />
       <div className="hero-glow hero-glow-1" aria-hidden="true" />
       <div className="hero-glow hero-glow-2" aria-hidden="true" />
-      
-      {/* Subtle Clean SVG Logo Watermark */}
+
       <div className="hero-watermark" aria-hidden="true">
-        <img
-          src="/mls_logo_clean.svg"
-          alt=""
-          className="hero-watermark-img"
-        />
+        <img src="/mls_logo_clean.svg" alt="" className="hero-watermark-img" loading="lazy" decoding="async" />
       </div>
 
       <div className="hero-container">
         <div className="hero-content">
-          {/* Eyebrow Badge */}
           <div className="hero-badge">
-            <span className="hero-badge-icon">
-              <img src="/mls_logo_clean.svg" alt="" className="hero-badge-logo" />
-            </span>
-            <span className="hero-badge-text">Premier Full-Service Law Firm</span>
+            <img src="/mls_logo_clean.svg" alt="" className="hero-badge-logo" />
+            <span>Premier Full-Service Law Firm</span>
           </div>
 
-          {/* Primary Motto Title */}
           <h1 className="hero-title">
             <span className="hero-title-accent">MEN LEGATUM</span>
             <span className="hero-title-main"> SANCTITAS</span>
           </h1>
 
-          {/* Motto Subtitle */}
           <p className="hero-motto">
             Driven by the Spirit of Justice, Guided by the Sanctity of Law
           </p>
 
-          {/* Editorial Description */}
           <p className="hero-description">
-            Delivering formidable advocacy, nuanced strategic advisory, and unwavering integrity across 
+            Delivering formidable advocacy, nuanced strategic advisory, and unwavering integrity across
             high-stakes commercial litigation, corporate governance, and complex dispute resolution.
           </p>
 
-          {/* Action CTAs */}
           <div className="hero-actions">
             <button
               type="button"
@@ -460,44 +486,24 @@ const Hero = ({ onNavigate }) => {
             </button>
           </div>
 
-          {/* Institutional Pillars Strip */}
           <div className="hero-pillars">
-            <div className="hero-pillar-item">
-              <div className="pillar-icon-wrapper">
-                <ShieldCheck size={16} />
-              </div>
-              <div className="pillar-text">
-                <div className="pillar-title">Uncompromising Advocacy</div>
-                <div className="pillar-desc">Litigation & Appellate Representation</div>
-              </div>
-            </div>
-
-            <div className="hero-pillar-divider" aria-hidden="true" />
-
-            <div className="hero-pillar-item">
-              <div className="pillar-icon-wrapper">
-                <Scale size={16} />
-              </div>
-              <div className="pillar-text">
-                <div className="pillar-title">Judicial Acumen</div>
-                <div className="pillar-desc">Constitutional & Statutory Depth</div>
-              </div>
-            </div>
-
-            <div className="hero-pillar-divider" aria-hidden="true" />
-
-            <div className="hero-pillar-item">
-              <div className="pillar-icon-wrapper">
-                <Award size={16} />
-              </div>
-              <div className="pillar-text">
-                <div className="pillar-title">Corporate Stewardship</div>
-                <div className="pillar-desc">Institutional Advisory & ADR</div>
-              </div>
-            </div>
+            {PILLARS.map((p, i) => {
+              const Icon = p.icon;
+              return (
+                <React.Fragment key={p.title}>
+                  {i > 0 && <div className="hero-pillar-divider" aria-hidden="true" />}
+                  <div className="hero-pillar-item">
+                    <div className="pillar-icon-wrapper"><Icon size={16} /></div>
+                    <div className="pillar-text">
+                      <div className="pillar-title">{p.title}</div>
+                      <div className="pillar-desc">{p.desc}</div>
+                    </div>
+                  </div>
+                </React.Fragment>
+              );
+            })}
           </div>
 
-          {/* Micro Scroll Indicator */}
           <button
             type="button"
             className="hero-scroll-cue"
