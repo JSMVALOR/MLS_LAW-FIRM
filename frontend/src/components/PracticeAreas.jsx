@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowRight, X, CheckCircle2, Scale } from "lucide-react";
 import { useTheme } from './ThemeContext';
 
@@ -120,19 +120,26 @@ const PRACTICE_AREAS = [
 const PracticeAreas = ({ onNavigate }) => {
   const { isDarkTheme } = useTheme();
   const [selectedModalArea, setSelectedModalArea] = useState(null);
-  const scrollListRef = useRef(null);
+
+  // Lock body scroll + close on Escape while the mandate modal is open.
+  useEffect(() => {
+    if (!selectedModalArea) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (e) => { if (e.key === "Escape") setSelectedModalArea(null); };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [selectedModalArea]);
 
   const handleConsult = () => {
+    setSelectedModalArea(null);
     if (onNavigate) {
       onNavigate('contact');
     } else {
-      const snapContainer = document.querySelector('.home-snap-container');
-      const el = document.getElementById('contact');
-      if (snapContainer && el) {
-        el.scrollIntoView({ behavior: 'smooth' });
-      } else if (el) {
-        el.scrollIntoView({ behavior: 'smooth' });
-      }
+      document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
@@ -299,8 +306,14 @@ const PracticeAreas = ({ onNavigate }) => {
           border: none;
           cursor: pointer;
           width: fit-content;
-          transition: all 0.25s ease;
+          max-width: 100%;
+          font-family: inherit;
+          transition: transform var(--dur-press) var(--ease-out), background-color var(--dur-pop) var(--ease-out), box-shadow 200ms var(--ease-out);
           box-shadow: 0 4px 14px rgba(197, 160, 89, 0.22);
+        }
+
+        .areas_left_cta:active {
+          transform: scale(0.97);
         }
 
         .areas_left_cta:hover {
