@@ -133,8 +133,10 @@ const Footer = () => {
         }
 
         .footer-social-link {
-          width: 36px;
-          height: 36px;
+          width: 40px;
+          height: 40px;
+          min-width: 40px;
+          min-height: 40px;
           border-radius: 8px;
           display: flex;
           align-items: center;
@@ -143,14 +145,11 @@ const Footer = () => {
           border: 1px solid rgba(197, 160, 89, 0.22);
           color: inherit;
           text-decoration: none;
-          transition: all 0.22s ease;
+          transition: transform var(--dur-press) var(--ease-out), border-color var(--dur-pop) var(--ease-out), color var(--dur-pop) var(--ease-out), background-color var(--dur-pop) var(--ease-out);
         }
 
-        .footer-social-link:hover {
-          border-color: #C5A059;
-          color: #C5A059;
-          transform: translateY(-2px);
-          background: rgba(197, 160, 89, 0.14);
+        .footer-social-link:active {
+          transform: scale(0.93);
         }
 
         /* Navigation & Directory Columns */
@@ -182,14 +181,9 @@ const Footer = () => {
           text-decoration: none;
           font-size: 0.82rem;
           opacity: 0.75;
-          transition: opacity 0.2s, color 0.2s, transform 0.2s;
+          transition: opacity var(--dur-pop) var(--ease-out), color var(--dur-pop) var(--ease-out), transform var(--dur-drop) var(--ease-out);
           display: inline-block;
-        }
-
-        .footer-nav-entry:hover {
-          opacity: 1;
-          color: #C5A059;
-          transform: translateX(3px);
+          padding: 0.2rem 0;
         }
 
         /* Registry Details Column */
@@ -258,17 +252,36 @@ const Footer = () => {
           border: 1px solid rgba(197, 160, 89, 0.28);
           color: inherit;
           cursor: pointer;
-          padding: 0.45rem 0.95rem;
+          padding: 0.55rem 0.95rem;
+          min-height: 44px;
           border-radius: 6px;
           font-size: 0.75rem;
           font-weight: 600;
-          transition: all 0.2s ease;
+          font-family: inherit;
+          transition: transform var(--dur-press) var(--ease-out), border-color var(--dur-pop) var(--ease-out), color var(--dur-pop) var(--ease-out);
         }
 
-        .footer-back-to-top:hover {
-          border-color: #C5A059;
-          color: #C5A059;
-          transform: translateY(-2px);
+        .footer-back-to-top:active {
+          transform: scale(0.96);
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+          .footer-social-link:hover {
+            border-color: #C5A059;
+            color: #C5A059;
+            transform: translateY(-2px);
+            background: rgba(197, 160, 89, 0.14);
+          }
+          .footer-nav-entry:hover {
+            opacity: 1;
+            color: #C5A059;
+            transform: translateX(3px);
+          }
+          .footer-back-to-top:hover {
+            border-color: #C5A059;
+            color: #C5A059;
+            transform: translateY(-2px);
+          }
         }
 
         @media (max-width: 992px) {
@@ -409,6 +422,7 @@ const Footer = () => {
         <div className="footer-bottom-ribbon">
           <div>
             &copy; {new Date().getFullYear()} MLS & Co. Advocates & Solicitors. All Rights Reserved.
+            <span style={{ opacity: 0.6 }}> &bull; Engineered by JSM VALOR</span>
           </div>
           <button type="button" className="footer-back-to-top" onClick={handleScrollToTop}>
             <span>Return to Top</span>

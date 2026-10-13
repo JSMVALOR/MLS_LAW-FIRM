@@ -1,10 +1,22 @@
 import React, { useState } from 'react';
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 import { Send, MapPin, Phone, Mail, Clock, ShieldCheck, CheckCircle2 } from "lucide-react";
 import { useTheme } from './ThemeContext';
 
-const ContactForm = ({ onNavigate }) => {
+const DISPUTE_DOMAINS = [
+  "Civil & Constitutional Writs",
+  "Commercial Arbitration & ADR",
+  "Corporate Governance & M&A",
+  "White-Collar & Criminal Defense",
+  "Real Estate & Infrastructure",
+  "Taxation & Revenue Law",
+  "Intellectual Property & Tech",
+  "Labour & Employment",
+];
+
+const ContactForm = () => {
   const { isDarkTheme } = useTheme();
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -13,7 +25,6 @@ const ContactForm = ({ onNavigate }) => {
     email: '',
     phone: '',
     disputeType: '',
-    flexibleHours: '',
     query: ''
   });
 
@@ -32,43 +43,40 @@ const ContactForm = ({ onNavigate }) => {
       email: formData.email,
       query: formData.query,
       dispute: formData.disputeType,
-      freetime: formData.flexibleHours
     };
 
+    const request = axios.post('http://localhost:5000/form', postData);
+
     try {
-      await axios.post('http://localhost:5000/form', postData);
-      setSubmitted(true);
-      setFormData({
-        fullName: '',
-        email: '',
-        phone: '',
-        disputeType: '',
-        flexibleHours: '',
-        query: ''
+      await toast.promise(request, {
+        loading: 'Transmitting to Chambers Registry…',
+        success: 'Intake received — Chambers Registry will respond shortly.',
+        error: 'Transmission failed — please call Chambers directly.',
       });
+      setSubmitted(true);
+      setFormData({ fullName: '', email: '', phone: '', disputeType: '', query: '' });
     } catch (err) {
       console.error(err);
-      setSubmitted(true);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <section className={`contact-form snap-slide ${isDarkTheme ? 'dark-theme' : 'light-theme'}`} id="contact">
+    <section className={`contact-form snap-slide ${isDarkTheme ? 'dark-theme' : 'light-theme'}`} id="contact" aria-label="Consult chambers">
       <style>{`
         .contact-form {
           position: relative;
-          min-height: calc(100vh - var(--nav-height, 80px)) !important;
-          min-height: calc(100svh - var(--nav-height, 80px)) !important;
-          scroll-snap-align: start !important;
-          scroll-snap-stop: always !important;
+          min-height: calc(100vh - var(--nav-height, 80px));
+          min-height: calc(100svh - var(--nav-height, 80px));
+          scroll-snap-align: start;
+          scroll-snap-stop: always;
           display: flex;
           align-items: center;
           justify-content: center;
           padding: 2rem 2rem 1rem;
-          padding-left: max(2rem, var(--sal, 0px));
-          padding-right: max(2rem, var(--sar, 0px));
+          padding-left: max(2rem, var(--sal));
+          padding-right: max(2rem, var(--sar));
           overflow: hidden;
           overflow: clip;
           box-sizing: border-box;
@@ -76,7 +84,7 @@ const ContactForm = ({ onNavigate }) => {
           font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
         .contact-form.dark-theme {
-          background: radial-gradient(circle at 85% 50%, #13151D 0%, #0A0B0E 75%);
+          background: radial-gradient(circle at 85% 50%, #14161E 0%, #0A0B0E 75%);
           color: #ECECF0;
         }
         .contact-form.light-theme {
@@ -109,26 +117,21 @@ const ContactForm = ({ onNavigate }) => {
           font-weight: 700;
           letter-spacing: 0.08em;
           text-transform: uppercase;
-          margin-bottom: 0.35rem;
+          margin-bottom: 0.4rem;
+          white-space: nowrap;
         }
         .contact-title {
           font-family: 'Cinzel', serif;
           font-size: clamp(1.5rem, 2.4vw, 2.1rem);
           font-weight: 700;
+          letter-spacing: 0;
           line-height: 1.2;
           margin: 0 0 0.2rem;
-        }
-        .contact-form.dark-theme .contact-title {
-          background: linear-gradient(135deg, #FFFFFF 50%, #C5A059 100%);
-          -webkit-background-clip: text;
-          background-clip: text;
-          -webkit-text-fill-color: transparent;
-        }
-        .contact-form.light-theme .contact-title {
-          color: #171A21;
+          text-wrap: balance;
         }
         .contact-subtitle {
           font-size: 0.8rem;
+          line-height: 1.6;
           opacity: 0.75;
           margin: 0;
         }
@@ -138,28 +141,25 @@ const ContactForm = ({ onNavigate }) => {
           gap: 2rem;
           align-items: start;
         }
-        /* Left: Info Card */
         .contact-info-card {
           padding: 1.4rem 1.6rem;
-          border-radius: 12px;
+          border-radius: var(--r-lg);
           display: flex;
           flex-direction: column;
           gap: 1rem;
           box-sizing: border-box;
         }
-        .contact-form.dark-theme .contact-info-card {
-          background: rgba(18, 20, 27, 0.7);
-          border: 1px solid rgba(197, 160, 89, 0.2);
-        }
-        .contact-form.light-theme .contact-info-card {
-          background: rgba(255, 255, 255, 0.9);
-          border: 1px solid rgba(197, 160, 89, 0.22);
-          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        .contact-form-panel {
+          padding: 1.4rem 1.85rem;
+          border-radius: var(--r-lg);
+          box-sizing: border-box;
+          min-width: 0;
         }
         .info-item {
           display: flex;
           align-items: flex-start;
           gap: 0.8rem;
+          min-width: 0;
         }
         .info-icon {
           width: 32px;
@@ -173,6 +173,9 @@ const ContactForm = ({ onNavigate }) => {
           color: #C5A059;
           border: 1px solid rgba(197, 160, 89, 0.2);
         }
+        .info-text {
+          min-width: 0;
+        }
         .info-title {
           font-size: 0.7rem;
           font-weight: 700;
@@ -183,36 +186,21 @@ const ContactForm = ({ onNavigate }) => {
         }
         .info-val {
           font-size: 0.8rem;
-          line-height: 1.4;
+          line-height: 1.5;
           opacity: 0.85;
+          overflow-wrap: anywhere;
         }
         .confidentiality-chip {
           display: flex;
-          align-items: center;
+          align-items: flex-start;
           gap: 0.5rem;
           padding: 0.55rem 0.75rem;
           border-radius: 6px;
           background: rgba(197, 160, 89, 0.06);
           border: 1px solid rgba(197, 160, 89, 0.18);
           font-size: 0.72rem;
-          line-height: 1.35;
+          line-height: 1.4;
           opacity: 0.85;
-        }
-        /* Right: Interactive Form */
-        .contact-form-panel {
-          padding: 1.4rem 1.85rem;
-          border-radius: 12px;
-          box-sizing: border-box;
-        }
-        .contact-form.dark-theme .contact-form-panel {
-          background: rgba(18, 20, 27, 0.8);
-          border: 1px solid rgba(197, 160, 89, 0.22);
-          box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
-        }
-        .contact-form.light-theme .contact-form-panel {
-          background: rgba(255, 255, 255, 0.95);
-          border: 1px solid rgba(197, 160, 89, 0.25);
-          box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
         }
         .form-row-grid {
           display: grid;
@@ -223,26 +211,32 @@ const ContactForm = ({ onNavigate }) => {
         .form-field {
           display: flex;
           flex-direction: column;
-          gap: 0.22rem;
+          gap: 0.25rem;
           margin-bottom: 0.75rem;
+          min-width: 0;
+        }
+        .form-field.tight {
+          margin: 0;
         }
         .form-label {
-          font-size: 0.7rem;
+          font-size: 0.68rem;
           font-weight: 700;
-          letter-spacing: 0.04em;
+          letter-spacing: 0.05em;
           text-transform: uppercase;
           opacity: 0.75;
         }
         .form-input, .form-select, .form-textarea {
-          padding: 0.52rem 0.8rem;
+          padding: 0.6rem 0.8rem;
+          min-height: 44px;
           border-radius: 6px;
-          font-size: 0.82rem;
           background: transparent;
           border: 1px solid rgba(197, 160, 89, 0.24);
           color: inherit;
           outline: none;
           font-family: inherit;
-          transition: border-color 0.2s;
+          width: 100%;
+          box-sizing: border-box;
+          transition: border-color var(--dur-pop) var(--ease-out), box-shadow var(--dur-pop) var(--ease-out);
         }
         .contact-form.dark-theme .form-input,
         .contact-form.dark-theme .form-select,
@@ -256,38 +250,27 @@ const ContactForm = ({ onNavigate }) => {
         }
         .form-input:focus, .form-select:focus, .form-textarea:focus {
           border-color: #C5A059;
+          box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.15);
+        }
+        .form-select option {
+          color: #171A21;
         }
         .form-textarea {
-          resize: none;
-          height: 64px;
+          resize: vertical;
+          min-height: 96px;
+          line-height: 1.55;
         }
         .form-submit-btn {
           width: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 0.5rem;
-          padding: 0.85rem;
-          min-height: 50px;
-          border-radius: 8px;
-          background: #C5A059;
-          color: #0E1015;
-          border: none;
-          font-size: 0.8rem;
-          font-weight: 700;
-          letter-spacing: 0.04em;
-          text-transform: uppercase;
-          cursor: pointer;
-          transition: all 0.25s ease;
-          box-shadow: 0 4px 14px rgba(197, 160, 89, 0.22);
         }
-        .form-submit-btn:hover {
-          background: #D4AF37;
-          transform: translateY(-1px);
+        .form-submit-btn:disabled {
+          opacity: 0.65;
+          cursor: wait;
+          transform: none;
         }
         .submitted-notice {
           display: flex;
-          align-items: center;
+          align-items: flex-start;
           gap: 0.65rem;
           padding: 1rem;
           border-radius: 8px;
@@ -295,12 +278,9 @@ const ContactForm = ({ onNavigate }) => {
           border: 1px solid rgba(197, 160, 89, 0.35);
           color: #C5A059;
           font-size: 0.84rem;
+          line-height: 1.55;
           font-weight: 600;
         }
-
-        /* ========================================================
-           HOME MINI TINY FOOTER (FRAMING THE BOTTOM OF CONTACT SLIDE)
-           ======================================================== */
         .home-mini-footer {
           width: 100%;
           margin-top: 0.85rem;
@@ -309,6 +289,8 @@ const ContactForm = ({ onNavigate }) => {
           display: flex;
           align-items: center;
           justify-content: space-between;
+          gap: 0.75rem;
+          flex-wrap: wrap;
           font-size: 0.72rem;
           box-sizing: border-box;
           opacity: 0.85;
@@ -317,41 +299,44 @@ const ContactForm = ({ onNavigate }) => {
           display: flex;
           align-items: center;
           gap: 0.55rem;
+          min-width: 0;
+          flex-wrap: wrap;
         }
         .mini-footer-brand {
           font-family: 'Cinzel', serif;
           font-weight: 700;
           color: #C5A059;
-          letter-spacing: 0.05em;
+          letter-spacing: 0.04em;
+          white-space: nowrap;
         }
         .mini-footer-divider {
           opacity: 0.35;
         }
         .mini-footer-jurisdiction {
           opacity: 0.65;
-          display: inline-block;
+          white-space: nowrap;
         }
         .mini-footer-nav {
           display: flex;
           align-items: center;
           gap: 1.15rem;
+          flex-wrap: wrap;
         }
         .mini-footer-link {
           color: inherit;
           text-decoration: none;
           opacity: 0.75;
           font-weight: 500;
-          transition: color 0.2s, opacity 0.2s;
-          cursor: pointer;
+          transition: color var(--dur-pop) var(--ease-out), opacity var(--dur-pop) var(--ease-out);
           background: none;
           border: none;
-          padding: 0;
+          padding: 0.3rem 0;
           font-size: 0.72rem;
           font-family: inherit;
-        }
-        .mini-footer-link:hover {
-          color: #C5A059;
-          opacity: 1;
+          cursor: pointer;
+          min-height: 32px;
+          display: inline-flex;
+          align-items: center;
         }
         .mini-footer-right {
           font-size: 0.68rem;
@@ -362,12 +347,14 @@ const ContactForm = ({ onNavigate }) => {
           gap: 0.45rem;
           white-space: nowrap;
         }
-
-        @media (max-width: 900px) {
-          .contact-split-grid {
-            grid-template-columns: 1fr;
-            gap: 1rem;
+        @media (hover: hover) and (pointer: fine) {
+          .mini-footer-link:hover {
+            color: #C5A059;
+            opacity: 1;
           }
+        }
+        @media (max-width: 900px) {
+          .contact-split-grid { grid-template-columns: 1fr; gap: 1rem; }
           .contact-info-card { display: none; }
           .mini-footer-jurisdiction { display: none; }
           .mini-footer-nav { gap: 0.65rem; }
@@ -375,110 +362,102 @@ const ContactForm = ({ onNavigate }) => {
         @media (max-width: 768px) {
           .contact-form { padding: 2.5rem 1.1rem 1rem; align-items: flex-start; }
           .contact-title { font-size: clamp(1.45rem, 6.5vw, 1.9rem); }
-          .contact-subtitle { font-size: 0.86rem; line-height: 1.55; }
+          .contact-subtitle { font-size: 0.86rem; }
           .contact-form-panel { padding: 1.2rem 1.1rem; }
           .form-row-grid { grid-template-columns: 1fr; }
-          .form-textarea { height: 96px; }
           .home-mini-footer { flex-direction: column; gap: 0.7rem; align-items: flex-start; }
-          .mini-footer-nav { flex-wrap: wrap; gap: 0.6rem 1rem; }
-          .mini-footer-right { display: flex; flex-wrap: wrap; }
+          .mini-footer-nav { gap: 0.6rem 1rem; }
+          .mini-footer-right { flex-wrap: wrap; }
         }
       `}</style>
 
       <div className="contact-form-container">
         <div className="contact-header">
           <div className="contact-badge">
-            <ShieldCheck size={13} />
+            <ShieldCheck size={13} style={{ flexShrink: 0 }} />
             <span>Confidential Intake</span>
           </div>
-          <h2 className="contact-title">Consult Chambers & Advocates</h2>
+          <h2 className="contact-title lux-crest-text">Consult Chambers & Advocates</h2>
           <p className="contact-subtitle">
             Direct intake for High Court, Supreme Court, or Corporate Counsel representation.
           </p>
         </div>
 
         <div className="contact-split-grid">
-          {/* Left: Chambers Registry */}
-          <div className="contact-info-card">
+          <div className="contact-info-card lux-card">
             <div className="info-item">
-              <div className="info-icon">
-                <MapPin size={16} />
-              </div>
-              <div>
+              <div className="info-icon"><MapPin size={16} /></div>
+              <div className="info-text">
                 <div className="info-title">Chambers Registry</div>
-                <div className="info-val">
-                  D.No: 48-18-4/2, Nagarjuna Nagar, Ring Road, Vijayawada, Andhra Pradesh, 520008
-                </div>
+                <div className="info-val">D.No: 48-18-4/2, Nagarjuna Nagar, Ring Road, Vijayawada, Andhra Pradesh, 520008</div>
               </div>
             </div>
 
             <div className="info-item">
-              <div className="info-icon">
-                <Phone size={16} />
-              </div>
-              <div>
+              <div className="info-icon"><Phone size={16} /></div>
+              <div className="info-text">
                 <div className="info-title">Chambers Direct Lines</div>
                 <div className="info-val">+91 93905 13198 / +91 94401 75789</div>
               </div>
             </div>
 
             <div className="info-item">
-              <div className="info-icon">
-                <Mail size={16} />
-              </div>
-              <div>
+              <div className="info-icon"><Mail size={16} /></div>
+              <div className="info-text">
                 <div className="info-title">Electronic Registry</div>
                 <div className="info-val">contact@mlslawfirm.com</div>
               </div>
             </div>
 
             <div className="info-item">
-              <div className="info-icon">
-                <Clock size={16} />
-              </div>
-              <div>
+              <div className="info-icon"><Clock size={16} /></div>
+              <div className="info-text">
                 <div className="info-title">Registry Hours</div>
                 <div className="info-val">Mon &ndash; Sat: 09:30 AM &ndash; 08:30 PM</div>
               </div>
             </div>
 
             <div className="confidentiality-chip">
-              <ShieldCheck size={15} color="#C5A059" style={{ flexShrink: 0 }} />
+              <ShieldCheck size={15} color="#C5A059" style={{ flexShrink: 0, marginTop: 1 }} />
               <span>Protected under statutory Advocate-Client Privilege (Section 126, Evidence Act).</span>
             </div>
           </div>
 
-          {/* Right: Submission Form */}
-          <div className="contact-form-panel">
+          <div className="contact-form-panel lux-card">
             {submitted ? (
-              <div className="submitted-notice">
-                <CheckCircle2 size={20} />
+              <div className="submitted-notice" role="status">
+                <CheckCircle2 size={20} style={{ flexShrink: 0, marginTop: 1 }} />
                 <span>Your confidential intake petition has been received by Chambers Registry. A designated associate will connect with you shortly.</span>
               </div>
             ) : (
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleSubmit} noValidate={false}>
                 <div className="form-row-grid">
-                  <div className="form-field" style={{ margin: 0 }}>
-                    <label className="form-label">Full Name</label>
+                  <div className="form-field tight">
+                    <label className="form-label" htmlFor="cf-name">Full Name</label>
                     <input
+                      id="cf-name"
                       type="text"
                       name="fullName"
                       className="form-input"
                       placeholder="e.g. Adv. R. Verma / John Doe"
                       required
+                      autoComplete="name"
                       value={formData.fullName}
                       onChange={handleChange}
                     />
                   </div>
 
-                  <div className="form-field" style={{ margin: 0 }}>
-                    <label className="form-label">Email Address</label>
+                  <div className="form-field tight">
+                    <label className="form-label" htmlFor="cf-email">Email Address</label>
                     <input
+                      id="cf-email"
                       type="email"
                       name="email"
                       className="form-input"
                       placeholder="e.g. counsel@enterprise.com"
                       required
+                      autoComplete="email"
+                      inputMode="email"
                       value={formData.email}
                       onChange={handleChange}
                     />
@@ -486,22 +465,26 @@ const ContactForm = ({ onNavigate }) => {
                 </div>
 
                 <div className="form-row-grid">
-                  <div className="form-field" style={{ margin: 0 }}>
-                    <label className="form-label">Direct Phone</label>
+                  <div className="form-field tight">
+                    <label className="form-label" htmlFor="cf-phone">Direct Phone</label>
                     <input
+                      id="cf-phone"
                       type="tel"
                       name="phone"
                       className="form-input"
                       placeholder="+91 98765 43210"
                       required
+                      autoComplete="tel"
+                      inputMode="tel"
                       value={formData.phone}
                       onChange={handleChange}
                     />
                   </div>
 
-                  <div className="form-field" style={{ margin: 0 }}>
-                    <label className="form-label">Dispute / Practice Domain</label>
+                  <div className="form-field tight">
+                    <label className="form-label" htmlFor="cf-domain">Dispute / Practice Domain</label>
                     <select
+                      id="cf-domain"
                       name="disputeType"
                       className="form-select"
                       required
@@ -509,35 +492,28 @@ const ContactForm = ({ onNavigate }) => {
                       onChange={handleChange}
                     >
                       <option value="">Select Domain...</option>
-                      <option value="Civil & Constitutional">Civil & Constitutional Writs</option>
-                      <option value="Commercial Arbitration">Commercial Arbitration & ADR</option>
-                      <option value="Corporate & M&A">Corporate Governance & M&A</option>
-                      <option value="Criminal Defense">White-Collar & Criminal Defense</option>
-                      <option value="Real Estate">Real Estate & Infrastructure</option>
-                      <option value="Taxation">Taxation & Revenue Law</option>
-                      <option value="IP & Tech">Intellectual Property & Tech</option>
-                      <option value="Labour">Labour & Employment</option>
+                      {DISPUTE_DOMAINS.map((d) => (
+                        <option key={d} value={d}>{d}</option>
+                      ))}
                     </select>
                   </div>
                 </div>
 
                 <div className="form-field">
-                  <label className="form-label">Brief Summary of Legal Query</label>
+                  <label className="form-label" htmlFor="cf-query">Brief Summary of Legal Query</label>
                   <textarea
+                    id="cf-query"
                     name="query"
                     className="form-textarea"
                     placeholder="Provide a confidential synopsis of your court matter, tribunal notice, or corporate contract..."
                     required
+                    enterKeyHint="send"
                     value={formData.query}
                     onChange={handleChange}
                   />
                 </div>
 
-                <button
-                  type="submit"
-                  className="form-submit-btn"
-                  disabled={loading}
-                >
+                <button type="submit" className="form-submit-btn lux-btn-gold" disabled={loading}>
                   <Send size={14} />
                   <span>{loading ? "Transmitting to Registry..." : "Transmit Intake Request"}</span>
                 </button>
@@ -546,7 +522,6 @@ const ContactForm = ({ onNavigate }) => {
           </div>
         </div>
 
-        {/* Small Tiny Home Footer */}
         <div className="home-mini-footer">
           <div className="mini-footer-left">
             <span className="mini-footer-brand">MLS & Co.</span>
