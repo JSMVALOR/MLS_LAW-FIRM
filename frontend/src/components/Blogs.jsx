@@ -293,12 +293,13 @@ const Blogs = () => {
 
         .search-input {
           width: 100%;
+          box-sizing: border-box;
           padding: 0.95rem 1.2rem 0.95rem 3.2rem;
           border-radius: 8px;
           font-size: 0.95rem;
           letter-spacing: 0.02em;
           outline: none;
-          transition: all 0.25s ease;
+          transition: border-color var(--dur-pop) var(--ease-out), box-shadow var(--dur-pop) var(--ease-out);
           font-family: inherit;
         }
 
@@ -334,15 +335,22 @@ const Blogs = () => {
 
         .category-pill {
           padding: 0.55rem 1.15rem;
+          min-height: 40px;
           border-radius: 999px;
           font-size: 0.78rem;
-          letter-spacing: 0.08em;
+          letter-spacing: 0.06em;
           text-transform: uppercase;
           font-weight: 600;
+          font-family: inherit;
           cursor: pointer;
-          transition: all 0.25s ease;
+          transition: transform var(--dur-press) var(--ease-out), color var(--dur-pop) var(--ease-out), border-color var(--dur-pop) var(--ease-out), background-color var(--dur-pop) var(--ease-out);
           border: 1px solid transparent;
           background: transparent;
+          white-space: nowrap;
+        }
+
+        .category-pill:active {
+          transform: scale(0.95);
         }
 
         .theme-dark .category-pill {
@@ -351,15 +359,9 @@ const Blogs = () => {
           background: rgba(255, 255, 255, 0.02);
         }
 
-        .theme-dark .category-pill:hover {
-          color: #f5f4ef;
-          border-color: rgba(197, 160, 89, 0.4);
-          background: rgba(197, 160, 89, 0.05);
-        }
-
         .theme-dark .category-pill.active {
           color: #0c0d11;
-          background: #c5a059;
+          background: linear-gradient(135deg, #E8CF9A 0%, #c5a059 60%, #9e7b38 100%);
           border-color: #c5a059;
           box-shadow: 0 4px 18px rgba(197, 160, 89, 0.25);
         }
@@ -370,17 +372,24 @@ const Blogs = () => {
           background: rgba(0, 0, 0, 0.02);
         }
 
-        .theme-light .category-pill:hover {
-          color: #14161f;
-          border-color: rgba(158, 123, 56, 0.4);
-          background: rgba(197, 160, 89, 0.08);
-        }
-
         .theme-light .category-pill.active {
           color: #ffffff;
           background: #9e7b38;
           border-color: #9e7b38;
           box-shadow: 0 4px 18px rgba(158, 123, 56, 0.25);
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+          .theme-dark .category-pill:hover {
+            color: #f5f4ef;
+            border-color: rgba(197, 160, 89, 0.4);
+            background: rgba(197, 160, 89, 0.05);
+          }
+          .theme-light .category-pill:hover {
+            color: #14161f;
+            border-color: rgba(158, 123, 56, 0.4);
+            background: rgba(197, 160, 89, 0.08);
+          }
         }
 
         /* Lead Featured Treatise */
@@ -410,7 +419,8 @@ const Blogs = () => {
           align-items: center;
           position: relative;
           overflow: hidden;
-          transition: border-color 0.3s ease, box-shadow 0.3s ease;
+          min-width: 0;
+          transition: border-color var(--dur-drop) var(--ease-out), box-shadow var(--dur-drop) var(--ease-out);
         }
 
         .theme-dark .featured-card {
@@ -423,8 +433,17 @@ const Blogs = () => {
           box-shadow: 0 14px 40px rgba(0, 0, 0, 0.06);
         }
 
-        .featured-card:hover {
-          border-color: #c5a059;
+        @media (hover: hover) and (pointer: fine) {
+          .featured-card:hover {
+            border-color: #c5a059;
+          }
+          .featured-title:hover {
+            color: #c5a059;
+          }
+          .featured-card:hover .featured-cover-img {
+            transform: scale(1.03);
+            filter: grayscale(0%) contrast(105%);
+          }
         }
 
         .featured-content-col {
@@ -449,14 +468,12 @@ const Blogs = () => {
           font-size: clamp(1.8rem, 3.2vw, 2.6rem);
           font-weight: 500;
           line-height: 1.22;
+          letter-spacing: -0.01em;
           margin: 0;
           color: currentColor;
           cursor: pointer;
-          transition: color 0.2s ease;
-        }
-
-        .featured-title:hover {
-          color: #c5a059;
+          transition: color var(--dur-pop) var(--ease-out);
+          text-wrap: balance;
         }
 
         .featured-excerpt {
@@ -561,12 +578,7 @@ const Blogs = () => {
           object-fit: cover;
           display: block;
           filter: grayscale(18%) contrast(105%);
-          transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s ease;
-        }
-
-        .featured-card:hover .featured-cover-img {
-          transform: scale(1.03);
-          filter: grayscale(0%) contrast(105%);
+          transition: transform 600ms var(--ease-out), filter 600ms var(--ease-out);
         }
 
         .featured-visual-overlay {
@@ -595,24 +607,33 @@ const Blogs = () => {
           align-items: center;
           gap: 0.75rem;
           padding: 0.95rem 1.8rem;
+          min-height: 48px;
           border-radius: 6px;
           font-size: 0.82rem;
-          letter-spacing: 0.12em;
+          letter-spacing: 0.1em;
           text-transform: uppercase;
           font-weight: 700;
+          font-family: inherit;
           cursor: pointer;
-          border: none;
-          background: #c5a059;
+          border: 1px solid rgba(242, 227, 198, 0.45);
+          background: linear-gradient(135deg, #E8CF9A 0%, #c5a059 55%, #9e7b38 100%);
           color: #0c0d11;
-          transition: all 0.25s ease;
+          transition: transform var(--dur-press) var(--ease-out), filter var(--dur-pop) var(--ease-out), box-shadow 200ms var(--ease-out);
           width: fit-content;
-          box-shadow: 0 4px 14px rgba(197, 160, 89, 0.25);
+          max-width: 100%;
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 4px 14px rgba(197, 160, 89, 0.25);
         }
 
-        .examine-button:hover {
-          background: #f2e3c6;
-          transform: translateY(-2px);
-          box-shadow: 0 8px 24px rgba(197, 160, 89, 0.35);
+        .examine-button:active {
+          transform: scale(0.97);
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+          .examine-button:hover {
+            filter: brightness(1.06);
+            transform: translateY(-2px);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 8px 24px rgba(197, 160, 89, 0.35);
+          }
         }
 
         /* Dossiers Grid Section */
@@ -655,30 +676,42 @@ const Blogs = () => {
           display: flex;
           flex-direction: column;
           padding: 2.2rem;
-          transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+          min-width: 0;
+          transition: transform var(--dur-drop) var(--ease-out), border-color var(--dur-pop) var(--ease-out), box-shadow var(--dur-drop) var(--ease-out), background-color var(--dur-pop) var(--ease-out);
           cursor: pointer;
           position: relative;
+        }
+
+        .dossier-card:active {
+          transform: scale(0.99);
         }
 
         .theme-dark .dossier-card {
           background: #12141c;
         }
 
-        .theme-dark .dossier-card:hover {
-          border-color: #c5a059;
-          transform: translateY(-5px);
-          box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
-          background: #141722;
-        }
-
         .theme-light .dossier-card {
           background: #ffffff;
         }
 
-        .theme-light .dossier-card:hover {
-          border-color: #9e7b38;
-          transform: translateY(-5px);
-          box-shadow: 0 16px 36px rgba(158, 123, 56, 0.12);
+        @media (hover: hover) and (pointer: fine) {
+          .theme-dark .dossier-card:hover {
+            border-color: #c5a059;
+            transform: translateY(-5px);
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
+            background: #141722;
+          }
+          .theme-light .dossier-card:hover {
+            border-color: #9e7b38;
+            transform: translateY(-5px);
+            box-shadow: 0 16px 36px rgba(158, 123, 56, 0.12);
+          }
+          .dossier-card:hover .dossier-title {
+            color: #c5a059;
+          }
+          .dossier-card:hover .dossier-link {
+            transform: translateX(4px);
+          }
         }
 
         .dossier-top-meta {
@@ -708,13 +741,11 @@ const Blogs = () => {
           font-size: 1.45rem;
           font-weight: 500;
           line-height: 1.32;
+          letter-spacing: -0.005em;
           margin: 0 0 1rem;
           color: currentColor;
-          transition: color 0.2s ease;
-        }
-
-        .dossier-card:hover .dossier-title {
-          color: #c5a059;
+          transition: color var(--dur-pop) var(--ease-out);
+          text-wrap: balance;
         }
 
         .dossier-excerpt {
@@ -767,22 +798,23 @@ const Blogs = () => {
           font-size: 0.82rem;
           font-weight: 600;
           opacity: 0.85;
+          min-width: 0;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
 
         .dossier-link {
           font-size: 0.78rem;
           font-weight: 700;
-          letter-spacing: 0.08em;
+          letter-spacing: 0.06em;
           text-transform: uppercase;
           color: #c5a059;
           display: inline-flex;
           align-items: center;
           gap: 0.4rem;
-          transition: transform 0.2s ease;
-        }
-
-        .dossier-card:hover .dossier-link {
-          transform: translateX(4px);
+          flex-shrink: 0;
+          transition: transform var(--dur-pop) var(--ease-out);
         }
 
         /* Empty State */
@@ -812,22 +844,30 @@ const Blogs = () => {
         }
 
         .reset-filter-btn {
-          padding: 0.6rem 1.4rem;
-          border-radius: 4px;
+          padding: 0.7rem 1.4rem;
+          min-height: 44px;
+          border-radius: 6px;
           border: 1px solid #c5a059;
           background: transparent;
           color: #c5a059;
           font-size: 0.78rem;
-          letter-spacing: 0.08em;
+          letter-spacing: 0.06em;
           text-transform: uppercase;
           font-weight: 600;
+          font-family: inherit;
           cursor: pointer;
-          transition: all 0.2s ease;
+          transition: transform var(--dur-press) var(--ease-out), background-color var(--dur-pop) var(--ease-out), color var(--dur-pop) var(--ease-out);
         }
 
-        .reset-filter-btn:hover {
-          background: #c5a059;
-          color: #0c0d11;
+        .reset-filter-btn:active {
+          transform: scale(0.96);
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+          .reset-filter-btn:hover {
+            background: #c5a059;
+            color: #0c0d11;
+          }
         }
 
         /* Institutional Research Advisory CTA */
@@ -880,25 +920,35 @@ const Blogs = () => {
 
         .advisory-action-btn {
           padding: 0.95rem 2rem;
+          min-height: 48px;
           border-radius: 6px;
-          background: #c5a059;
+          background: linear-gradient(135deg, #E8CF9A 0%, #c5a059 55%, #9e7b38 100%);
           color: #0c0d11;
           font-size: 0.82rem;
-          letter-spacing: 0.12em;
+          letter-spacing: 0.1em;
           text-transform: uppercase;
           font-weight: 700;
-          border: none;
+          font-family: inherit;
+          border: 1px solid rgba(242, 227, 198, 0.45);
           cursor: pointer;
-          transition: all 0.25s ease;
+          transition: transform var(--dur-press) var(--ease-out), filter var(--dur-pop) var(--ease-out), box-shadow 200ms var(--ease-out);
           display: inline-flex;
           align-items: center;
           gap: 0.6rem;
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 4px 14px rgba(197, 160, 89, 0.25);
+          white-space: nowrap;
         }
 
-        .advisory-action-btn:hover {
-          background: #f2e3c6;
-          transform: translateY(-2px);
-          box-shadow: 0 8px 24px rgba(197, 160, 89, 0.3);
+        .advisory-action-btn:active {
+          transform: scale(0.97);
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+          .advisory-action-btn:hover {
+            filter: brightness(1.06);
+            transform: translateY(-2px);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 8px 24px rgba(197, 160, 89, 0.3);
+          }
         }
 
         @media (max-width: 1024px) {
@@ -1081,6 +1131,10 @@ const Blogs = () => {
                   key={post.id}
                   className="dossier-card"
                   onClick={() => navigate(`/blog/${post.id}`)}
+                  role="link"
+                  tabIndex={0}
+                  aria-label={`Read: ${post.title}`}
+                  onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); navigate(`/blog/${post.id}`); } }}
                 >
                   <div className="dossier-top-meta">
                     <span className="dossier-category">{post.category}</span>
