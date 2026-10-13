@@ -51,8 +51,7 @@ const AcademicCollaborationsPage = () => {
         .acad-page.light .acad-cta { background: #fff; border: 1px solid rgba(197,160,89,0.3); }
         .acad-cta h3 { font-family: 'Cinzel', serif; font-size: 1.4rem; margin: 0 0 0.4rem; }
         .acad-cta p { font-size: 0.86rem; opacity: 0.75; margin: 0; max-width: 52ch; line-height: 1.6; }
-        .acad-btn { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 48px; padding: 0.8rem 1.6rem; border-radius: 8px; background: #C5A059; color: #0E1015; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.04em; text-transform: uppercase; text-decoration: none; border: none; cursor: pointer; }
-        .acad-btn:hover { background: #D4AF37; }
+        .acad-btn { font-family: inherit; }
         @media (max-width: 900px) { .acad-tracks { grid-template-columns: 1fr; } .acad-partners { grid-template-columns: 1fr 1fr; } }
         @media (max-width: 640px) {
           .acad-page { padding: 92px 0 60px; }
@@ -109,8 +108,8 @@ const AcademicCollaborationsPage = () => {
             <p>Share your institution profile, cohort size and preferred term. Chambers Academic Desk responds within 5 working days.</p>
           </div>
           <div style={{ display: "flex", gap: "0.7rem", flexWrap: "wrap" }}>
-            <Link to="/careers" className="acad-btn"><span>Apply via Careers</span><ArrowRight size={14} /></Link>
-            <a className="acad-btn" style={{ background: "transparent", border: "1px solid rgba(197,160,89,0.4)", color: "inherit" }} href="mailto:contact@mlslawfirm.com"><Mail size={14} /><span>Academic Desk</span></a>
+            <Link to="/careers" className="acad-btn lux-btn-gold"><span>Apply via Careers</span><ArrowRight size={14} /></Link>
+            <a className="acad-btn lux-btn-ghost" href="mailto:contact@mlslawfirm.com"><Mail size={14} /><span>Academic Desk</span></a>
           </div>
         </div>
       </div>

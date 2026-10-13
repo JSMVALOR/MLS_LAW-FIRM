@@ -60,8 +60,9 @@ const Events = () => {
         .events-page.dark .ev-h1 { background: linear-gradient(135deg, #fff 40%, #C5A059 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
         .ev-lead { font-size: 1rem; line-height: 1.65; opacity: 0.8; max-width: 68ch; margin: 0 0 1.8rem; }
         .ev-tabs { display: flex; gap: 0.6rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
-        .ev-tab { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 44px; padding: 0.6rem 1.2rem; border-radius: 999px; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; cursor: pointer; border: 1px solid rgba(197,160,89,0.3); background: transparent; color: inherit; }
-        .ev-tab.active { background: #C5A059; border-color: #C5A059; color: #0E1015; }
+        .ev-tab { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 44px; padding: 0.6rem 1.2rem; border-radius: 999px; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; cursor: pointer; border: 1px solid rgba(197,160,89,0.3); background: transparent; color: inherit; font-family: inherit; transition: transform var(--dur-press) var(--ease-out), background-color var(--dur-pop) var(--ease-out), border-color var(--dur-pop) var(--ease-out), color var(--dur-pop) var(--ease-out); }
+        .ev-tab:active { transform: scale(0.96); }
+        .ev-tab.active { background: linear-gradient(135deg, #E8CF9A 0%, #C5A059 55%, #9E7B38 100%); border-color: rgba(242,227,198,0.45); color: #0E1015; }
         .ev-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
         .ev-card { padding: 1.5rem; border-radius: 12px; display: flex; flex-direction: column; gap: 0.7rem; }
         .events-page.dark .ev-card { background: #12141B; border: 1px solid rgba(197,160,89,0.2); }
@@ -73,15 +74,15 @@ const Events = () => {
         .ev-meta-row { display: flex; align-items: center; gap: 0.5rem; }
         .ev-foot { display: flex; align-items: center; justify-content: space-between; gap: 0.8rem; padding-top: 0.8rem; border-top: 1px solid rgba(197,160,89,0.16); font-size: 0.76rem; }
         .ev-seats { opacity: 0.75; }
-        .ev-btn { display: inline-flex; align-items: center; gap: 0.4rem; background: none; border: none; color: #C5A059; font-weight: 700; font-size: 0.78rem; letter-spacing: 0.04em; text-transform: uppercase; cursor: pointer; padding: 0.4rem 0; }
+        .ev-btn { display: inline-flex; align-items: center; gap: 0.4rem; background: none; border: none; color: #C5A059; font-weight: 700; font-size: 0.78rem; letter-spacing: 0.04em; text-transform: uppercase; cursor: pointer; padding: 0.5rem 0; min-height: 44px; font-family: inherit; transition: opacity var(--dur-pop) var(--ease-out); }
         .ev-cta { margin-top: 2.5rem; padding: 2rem; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap; }
         .events-page.dark .ev-cta { background: linear-gradient(135deg, #12141B, #0E1015); border: 1px solid rgba(197,160,89,0.28); }
         .events-page.light .ev-cta { background: #fff; border: 1px solid rgba(197,160,89,0.3); }
         .ev-cta h3 { font-family: 'Cinzel', serif; font-size: 1.35rem; margin: 0 0 0.4rem; }
         .ev-cta p { font-size: 0.86rem; opacity: 0.75; margin: 0; max-width: 52ch; line-height: 1.6; }
-        .ev-cta-btn { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 48px; padding: 0.8rem 1.6rem; border-radius: 8px; background: #C5A059; color: #0E1015; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.04em; text-transform: uppercase; border: none; cursor: pointer; }
+        .ev-cta-btn { font-family: inherit; }
         .ev-back { margin-top: 1.5rem; display: flex; justify-content: flex-start; }
-        .ev-back-btn { background: none; border: 1px solid rgba(197,160,89,0.3); color: inherit; border-radius: 8px; padding: 0.6rem 1.2rem; min-height: 44px; cursor: pointer; font-size: 0.8rem; font-weight: 600; }
+        .ev-back-btn { font-family: inherit; }
         @media (max-width: 860px) { .ev-grid { grid-template-columns: 1fr; } }
         @media (max-width: 640px) {
           .events-page { padding: 92px 0 60px; }
@@ -94,7 +95,7 @@ const Events = () => {
 
       <div className="events-wrap">
         <span className="ev-badge"><Sparkles size={13} /> Conferences & Symposia</span>
-        <h1 className="ev-h1">Events & Chambers Convenings</h1>
+        <h1 className="ev-h1 lux-crest-text">Events & Chambers Convenings</h1>
         <p className="ev-lead">
           Practice-led symposia, closed-door general-counsel briefings and open academic workshops.
           Browse upcoming convenings or review the archive of past events below.
@@ -123,7 +124,7 @@ const Events = () => {
               <div className="ev-foot">
                 <span className="ev-seats">{e.seats || e.takeaway}</span>
                 {tab === "upcoming" && (
-                  <button type="button" className="ev-btn" onClick={() => navigate("/#contact")}>
+                  <button type="button" className="ev-btn" onClick={() => navigate("/contact")}>
                     <span>Reserve seat</span><ArrowRight size={13} />
                   </button>
                 )}
@@ -137,13 +138,13 @@ const Events = () => {
             <h3>Host a joint convening with chambers</h3>
             <p>Universities, bar associations and in-house teams can co-host roundtables with MLS &amp; Co. counsel.</p>
           </div>
-          <button type="button" className="ev-cta-btn" onClick={() => navigate("/#contact")}>
+          <button type="button" className="ev-cta-btn lux-btn-gold" onClick={() => navigate("/contact")}>
             <span>Propose an event</span><ArrowRight size={14} />
           </button>
         </div>
 
         <div className="ev-back">
-          <button type="button" className="ev-back-btn" onClick={() => navigate("/")}>Back to Home</button>
+          <button type="button" className="ev-back-btn lux-btn-ghost" onClick={() => navigate("/")}>Back to Home</button>
         </div>
       </div>
     </div>

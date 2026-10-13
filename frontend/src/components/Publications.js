@@ -47,16 +47,17 @@ const Publications = () => {
         .pub-desc { font-size: 0.84rem; line-height: 1.6; opacity: 0.82; margin: 0; flex: 1; }
         .pub-meta { font-size: 0.76rem; opacity: 0.7; }
         .pub-foot { display: flex; align-items: center; justify-content: space-between; padding-top: 0.8rem; border-top: 1px solid rgba(197,160,89,0.16); }
-        .pub-link { display: inline-flex; align-items: center; gap: 0.4rem; background: none; border: none; color: #C5A059; font-weight: 700; font-size: 0.78rem; letter-spacing: 0.04em; text-transform: uppercase; cursor: pointer; padding: 0.4rem 0; }
+        .pub-link { display: inline-flex; align-items: center; gap: 0.4rem; background: none; border: none; color: #C5A059; font-weight: 700; font-size: 0.78rem; letter-spacing: 0.04em; text-transform: uppercase; cursor: pointer; padding: 0.5rem 0; min-height: 44px; font-family: inherit; transition: opacity var(--dur-pop) var(--ease-out); }
+        .pub-cta-btn { font-family: inherit; }
         .pub-empty { padding: 3rem 1.5rem; text-align: center; border: 1px dashed rgba(197,160,89,0.35); border-radius: 10px; }
         .pub-back { margin-top: 1.5rem; }
-        .pub-back-btn { background: none; border: 1px solid rgba(197,160,89,0.3); color: inherit; border-radius: 8px; padding: 0.6rem 1.2rem; min-height: 44px; cursor: pointer; font-size: 0.8rem; font-weight: 600; }
+        .pub-back-btn { font-family: inherit; }
         @media (max-width: 860px) { .pubs-grid { grid-template-columns: 1fr; } }
         @media (max-width: 640px) { .pubs-page { padding: 92px 0 60px; } .pubs-wrap { padding: 0 1.1rem; } .pub-card { padding: 1.2rem 1.1rem; } }
       `}</style>
       <div className="pubs-wrap">
         <span className="pubs-badge"><BookOpen size={13} /> Research & Publications</span>
-        <h1 className="pubs-h1">Publications & Research Briefs</h1>
+        <h1 className="pubs-h1 lux-crest-text">Publications & Research Briefs</h1>
         <p className="pubs-lead">Citation-grade practice compendia authored by chambers counsel — matrices, checklists and playbooks distilled from live files.</p>
         <div className="pubs-search">
           <Search size={17} className="pubs-search-icon" />
@@ -74,7 +75,7 @@ const Publications = () => {
                 <div className="pub-meta">{p.pages} • Chambers authorised excerpt</div>
                 <div className="pub-foot">
                   <span className="pub-meta">{p.year} Edition</span>
-                  <button type="button" className="pub-link" onClick={() => navigate("/#contact")}><Download size={13} /><span>Request copy</span></button>
+                  <button type="button" className="pub-link" onClick={() => navigate("/contact")}><Download size={13} /><span>Request copy</span></button>
                 </div>
               </div>
             ))}
@@ -82,9 +83,9 @@ const Publications = () => {
         )}
         <div style={{ marginTop: "2rem", padding: "1.75rem", borderRadius: 12, border: "1px solid rgba(197,160,89,0.25)", display: "flex", justifyContent: "space-between", alignItems: "center", gap: "1rem", flexWrap: "wrap" }}>
           <div><h3 style={{ fontFamily: "'Cinzel', serif", margin: "0 0 0.35rem", fontSize: "1.25rem" }}>Commission a research brief</h3><p style={{ margin: 0, fontSize: "0.86rem", opacity: 0.75 }}>Custom amicus notes, compliance matrices and appellate opinions.</p></div>
-          <button type="button" className="pub-link" style={{ background: "#C5A059", color: "#0E1015", padding: "0.8rem 1.4rem", borderRadius: 8 }} onClick={() => navigate("/#contact")}><span>Engage counsel</span><ArrowRight size={14} /></button>
+          <button type="button" className="pub-cta-btn lux-btn-gold" onClick={() => navigate("/contact")}><span>Engage counsel</span><ArrowRight size={14} /></button>
         </div>
-        <div className="pub-back"><button type="button" className="pub-back-btn" onClick={() => navigate("/")}>Back to Home</button></div>
+        <div className="pub-back"><button type="button" className="pub-back-btn lux-btn-ghost" onClick={() => navigate("/")}>Back to Home</button></div>
       </div>
     </div>
   );
