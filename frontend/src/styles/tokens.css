@@ -1,0 +1,61 @@
+/* ========================================================
+   MLS & CO — GLOBAL MOTION & THEME TOKENS
+   Per emil-design-eng / animate / review-animations STANDARDS.
+   Every component consumes these; no parallel easing systems.
+   ======================================================== */
+
+:root {
+  /* Motion curves — strong custom variants, never built-in easings */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+
+  /* Duration scale — UI stays under 300ms */
+  --dur-press: 130ms;
+  --dur-pop: 170ms;
+  --dur-drop: 220ms;
+  --dur-modal: 280ms;
+
+  /* Brand */
+  --nav-height: 80px;
+  --gold-primary: #C5A059;
+  --gold-accent: #D4B26F;
+  --gold-light: #EAD9B8;
+  --gold-dark: #9A7B38;
+  --gold-muted: rgba(197, 160, 89, 0.15);
+  --bg-dark-obsidian: #0C0D11;
+  --bg-dark-surface: #13151D;
+  --bg-light-alabaster: #FAF9F5;
+  --bg-light-surface: #FFFFFF;
+
+  /* Safe-area fallbacks */
+  --sat: env(safe-area-inset-top, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --sal: env(safe-area-inset-left, 0px);
+  --sar: env(safe-area-inset-right, 0px);
+}
+
+@media (max-width: 768px), (hover: none) and (pointer: coarse) {
+  :root {
+    --nav-height: 64px;
+  }
+}
+
+/* Press feedback base — instant, on pointer-down via :active */
+.pressable {
+  transition: transform var(--dur-press) var(--ease-out), background-color var(--dur-press) var(--ease-out), border-color var(--dur-press) var(--ease-out), color var(--dur-press) var(--ease-out), box-shadow 200ms var(--ease-out);
+}
+.pressable:active {
+  transform: scale(0.97);
+}
+
+/* Reduced motion — fewer and gentler, never zero comprehension aids */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

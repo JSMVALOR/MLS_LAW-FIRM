@@ -1,7 +1,7 @@
 /* ========================================================
-   MLS & CO - TLH SMOOTH SCROLL & INVISIBLE SCROLLBAR STYLES
-   Powered by Strict Snap Fitting & Micro Pagination
-   Theme Palette: Noble Champagne Bronze & Warm Obsidian / Alabaster
+   MLS & CO — APP SHELL, SNAP ENGINE & PAGINATION
+   Motion tokens from styles/tokens.css. Transitions named,
+   hover gated to fine pointers, dots keep 44px hit-areas.
    ======================================================== */
 
 * {
@@ -10,36 +10,19 @@
   box-sizing: border-box;
 }
 
-:root {
-  --nav-height: 80px;
-  --gold-primary: #C5A059;
-  --gold-accent: #D4B26F;
-  --gold-light: #EAD9B8;
-  --gold-dark: #9A7B38;
-  --gold-muted: rgba(197, 160, 89, 0.15);
-  --bg-dark-obsidian: #0C0D11;
-  --bg-dark-surface: #13151D;
-  --bg-light-alabaster: #FAF9F5;
-  --bg-light-surface: #FFFFFF;
-}
-
-/* Official Lenis Scroll Reset for multi-page continuous scroll */
+/* Lenis smooth-scroll reset for outer continuous-scroll pages */
 html.lenis, html.lenis body {
   height: auto;
 }
-
 .lenis.lenis-smooth {
   scroll-behavior: auto !important;
 }
-
 .lenis.lenis-smooth [data-lenis-prevent] {
   overscroll-behavior: contain;
 }
-
 .lenis.lenis-stopped {
   overflow: hidden;
 }
-
 .lenis.lenis-scrolling iframe {
   pointer-events: none;
 }
@@ -48,39 +31,36 @@ html, body {
   width: 100%;
   min-height: 100%;
   overflow-x: hidden;
+  overflow-x: clip;
 }
 
 .App {
   width: 100%;
   min-height: 100vh;
+  min-height: 100svh;
   position: relative;
 }
 
-/* ========================================================
-   100% INVISIBLE SCROLLBAR ACROSS ENTIRE APPLICATION
-   Smooth scrolling behavior preserved completely
-   ======================================================== */
+/* Invisible scrollbars — smooth scroll behavior preserved */
 html, body, * {
-  scrollbar-width: none !important; /* Firefox */
-  -ms-overflow-style: none !important; /* IE & Edge */
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
 }
-
 ::-webkit-scrollbar {
   display: none !important;
-  width: 0px !important;
-  height: 0px !important;
+  width: 0 !important;
+  height: 0 !important;
   background: transparent !important;
 }
 
-/* ========================================================
-   HOME SNAP FITTING SLIDE CONTAINER
-   Exact 1-Slide Snapping Engine: Fits strictly 1 Slide
-   ======================================================== */
+/* ============ HOME SNAP ENGINE (desktop 1-slide fit) ============ */
 .home-wrapper {
   width: 100%;
   height: calc(100vh - var(--nav-height, 80px));
+  height: calc(100svh - var(--nav-height, 80px));
   position: relative;
   overflow: hidden;
+  overscroll-behavior: contain;
 }
 
 .home-snap-container {
@@ -92,6 +72,8 @@ html, body, * {
   scrollbar-width: none !important;
   -ms-overflow-style: none !important;
   position: relative;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 .home-snap-container::-webkit-scrollbar {
@@ -100,12 +82,14 @@ html, body, * {
   height: 0 !important;
 }
 
-/* Base 1-Slide Snapping Section */
 .snap-slide {
   width: 100%;
   height: calc(100vh - var(--nav-height, 80px)) !important;
+  height: calc(100svh - var(--nav-height, 80px)) !important;
   max-height: calc(100vh - var(--nav-height, 80px)) !important;
+  max-height: calc(100svh - var(--nav-height, 80px)) !important;
   min-height: calc(100vh - var(--nav-height, 80px)) !important;
+  min-height: calc(100svh - var(--nav-height, 80px)) !important;
   scroll-snap-align: start !important;
   scroll-snap-stop: always !important;
   overflow: hidden !important;
@@ -116,10 +100,7 @@ html, body, * {
   position: relative !important;
 }
 
-/* ========================================================
-   SLIDE PAGINATION CONTROLLER (MICRO MINIMALIST SIDE DOTS)
-   Ultra-small, luxury aesthetic (3.5px micro-dots)
-   ======================================================== */
+/* ============ SLIDE PAGINATION (micro dots, 44px targets) ============ */
 .slide-pagination {
   position: fixed;
   right: 1.15rem;
@@ -129,15 +110,15 @@ html, body, * {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.45rem 0.25rem;
+  gap: 0.15rem;
+  padding: 0.35rem 0.2rem;
   background: rgba(10, 11, 15, 0.4);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-radius: 9999px;
   border: 1px solid rgba(197, 160, 89, 0.2);
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transition: opacity 200ms var(--ease-out), transform 200ms var(--ease-out);
 }
 
 body.light-theme .slide-pagination {
@@ -146,43 +127,44 @@ body.light-theme .slide-pagination {
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
 }
 
-/* Micro Dot (Extremely Small: 3.5px) */
+/* 3.5px visual dot on a full touch target */
 .pagination-dot {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  min-height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  padding: 0;
+  outline: none;
+}
+.pagination-dot::after {
+  content: '';
   width: 3.5px;
   height: 3.5px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.28);
-  border: none;
-  cursor: pointer;
-  position: relative;
-  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  padding: 0;
-  outline: none;
+  transition: width var(--dur-drop) var(--ease-out), height var(--dur-drop) var(--ease-out), background-color var(--dur-drop) var(--ease-out), box-shadow var(--dur-drop) var(--ease-out);
 }
-
-body.light-theme .pagination-dot {
+body.light-theme .pagination-dot::after {
   background: rgba(0, 0, 0, 0.22);
 }
-
-.pagination-dot:hover {
-  background: var(--gold-primary);
-  transform: scale(1.6);
-}
-
-/* Active State: Transitions into a micro vertical pill */
-.pagination-dot.active {
+.pagination-dot.active::after {
   width: 3.5px;
   height: 16px;
   border-radius: 9999px;
   background: var(--gold-primary);
   box-shadow: 0 0 10px rgba(197, 160, 89, 0.6);
-  transform: scale(1);
 }
 
-/* Tooltip on dot hover */
 .pagination-tooltip {
   position: absolute;
-  right: 180%;
+  right: 130%;
   top: 50%;
   transform: translateY(-50%) translateX(4px);
   background: rgba(14, 15, 20, 0.95);
@@ -195,20 +177,24 @@ body.light-theme .pagination-dot {
   white-space: nowrap;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.25s ease, transform 0.25s ease;
+  transition: opacity 180ms var(--ease-out), transform 180ms var(--ease-out);
   border: 1px solid rgba(197, 160, 89, 0.25);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
 }
-
 body.light-theme .pagination-tooltip {
   background: #ffffff;
   color: #1a1a1c;
   border-color: rgba(197, 160, 89, 0.35);
 }
 
-.pagination-dot:hover .pagination-tooltip {
-  opacity: 1;
-  transform: translateY(-50%) translateX(0);
+@media (hover: hover) and (pointer: fine) {
+  .pagination-dot:hover::after {
+    background: var(--gold-primary);
+  }
+  .pagination-dot:hover .pagination-tooltip {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
 }
 
 @media (max-width: 992px) {
@@ -217,9 +203,7 @@ body.light-theme .pagination-tooltip {
   }
 }
 
-/* ========================================================
-   GLOBAL EDITORIAL ACCENT LINES & SECTION HELPERS
-   ======================================================== */
+/* ============ EDITORIAL ACCENT HELPERS ============ */
 .accent-line-horizontal {
   width: 100%;
   max-width: 100px;
@@ -228,7 +212,6 @@ body.light-theme .pagination-tooltip {
   position: relative;
   margin: 0.75rem 0;
 }
-
 .accent-line-horizontal::after {
   content: '';
   position: absolute;
@@ -241,39 +224,30 @@ body.light-theme .pagination-tooltip {
   box-shadow: 0 0 10px rgba(197, 160, 89, 0.5);
 }
 
-/* ========================================================
-   OUTER STANDALONE PAGES — independent routes share theme flow
-   ======================================================== */
+/* ============ OUTER STANDALONE PAGES ============ */
 .outer-page-shell {
   width: 100%;
   min-height: calc(100svh - var(--nav-height, 80px));
   display: flex;
   flex-direction: column;
 }
-
-/* Standalone snap sections become natural document sections */
 .outer-page-shell .snap-slide {
   scroll-snap-align: none !important;
   scroll-snap-stop: normal !important;
 }
 
+/* ============ MOBILE / TOUCH: natural document flow ============ */
 @media (max-width: 768px), (hover: none) and (pointer: coarse) {
-  :root {
-    --nav-height: 64px;
-  }
-
   .home-wrapper {
     height: auto;
     overflow: visible;
   }
-
   .home-snap-container {
     height: auto;
     overflow-y: visible;
     scroll-snap-type: none;
     scroll-behavior: auto;
   }
-
   .snap-slide {
     height: auto !important;
     max-height: none !important;

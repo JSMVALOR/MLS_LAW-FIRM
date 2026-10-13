@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import Lenis from "lenis";
+import { Toaster } from "sonner";
 import Navbar from "./components/Navbar.jsx";
 import Hero from "./components/Hero.jsx";
 import About from "./components/About.jsx";
@@ -19,8 +20,27 @@ import Team from "./components/Team";
 import BlogPost from "./components/BlogPost.jsx";
 import AcademicCollaborationsPage from "./components/AcademicCollaborationsPage.jsx";
 import Preloader from "./components/Preloader.jsx";
-import { ThemeProvider } from "./components/ThemeContext";
+import { ThemeProvider, useTheme } from "./components/ThemeContext";
 import "./App.css";
+
+/* Single root Toaster (ask-sonner): mounted once, theme-wired, never per-page */
+const ThemedToaster = () => {
+  const { isDarkTheme } = useTheme();
+  return (
+    <Toaster
+      theme={isDarkTheme ? "dark" : "light"}
+      position="bottom-center"
+      gap={8}
+      toastOptions={{
+        style: {
+          background: isDarkTheme ? "#12141B" : "#FFFFFF",
+          border: "1px solid rgba(197, 160, 89, 0.3)",
+          color: isDarkTheme ? "#ECECF0" : "#171A21",
+        },
+      }}
+    />
+  );
+};
 
 const SLIDES = [
   { id: "home", label: "Hero" },
@@ -212,6 +232,7 @@ const OuterPageShell = ({ children }) => (
 function App() {
   return (
     <ThemeProvider>
+      <ThemedToaster />
       <Preloader />
       <Router>
         <ScrollToTop />
