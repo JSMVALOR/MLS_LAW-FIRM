@@ -181,11 +181,22 @@ const BlogPost = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [id]);
 
-  // Handle citation copy
-  const handleCopyCitation = () => {
-    navigator.clipboard.writeText(
-      `${treatise.author.name}, "${treatise.title}", ${treatise.citation} (${treatise.date}).`
-    );
+  // Handle citation copy — Clipboard API with legacy fallback.
+  const handleCopyCitation = async () => {
+    const text = `${treatise.author.name}, "${treatise.title}", ${treatise.citation} (${treatise.date}).`;
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "absolute";
+      ta.style.left = "-9999px";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+    }
     setCopiedCitation(true);
     setTimeout(() => setCopiedCitation(false), 2500);
   };
@@ -240,21 +251,29 @@ const BlogPost = () => {
           display: inline-flex;
           align-items: center;
           gap: 0.6rem;
+          min-height: 44px;
           font-size: 0.82rem;
-          letter-spacing: 0.12em;
+          letter-spacing: 0.1em;
           text-transform: uppercase;
           font-weight: 700;
+          font-family: inherit;
           color: #c5a059;
           background: transparent;
           border: none;
           cursor: pointer;
-          transition: transform 0.2s ease, color 0.2s ease;
-          padding: 0;
+          transition: transform var(--dur-pop) var(--ease-out), color var(--dur-pop) var(--ease-out);
+          padding: 0.4rem 0;
         }
 
-        .article-back-btn:hover {
-          transform: translateX(-4px);
-          color: #f2e3c6;
+        .article-back-btn:active {
+          transform: scale(0.97);
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+          .article-back-btn:hover {
+            transform: translateX(-4px);
+            color: #f2e3c6;
+          }
         }
 
         .article-citation-tag {
@@ -510,17 +529,23 @@ const BlogPost = () => {
         .action-deck-btn {
           width: 100%;
           padding: 0.85rem 1.2rem;
+          min-height: 48px;
           border-radius: 6px;
           font-size: 0.8rem;
-          letter-spacing: 0.08em;
+          letter-spacing: 0.06em;
           text-transform: uppercase;
           font-weight: 700;
+          font-family: inherit;
           cursor: pointer;
           display: inline-flex;
           align-items: center;
           justify-content: center;
           gap: 0.6rem;
-          transition: all 0.2s ease;
+          transition: transform var(--dur-press) var(--ease-out), background-color var(--dur-pop) var(--ease-out), color var(--dur-pop) var(--ease-out), border-color var(--dur-pop) var(--ease-out);
+        }
+
+        .action-deck-btn:active {
+          transform: scale(0.97);
         }
 
         .btn-copy-citation {
@@ -529,19 +554,20 @@ const BlogPost = () => {
           color: #c5a059;
         }
 
-        .btn-copy-citation:hover {
-          background: #c5a059;
-          color: #0c0d11;
-        }
-
         .btn-download-pdf {
           border: 1px solid rgba(197, 160, 89, 0.25);
           background: rgba(197, 160, 89, 0.08);
           color: currentColor;
         }
 
-        .btn-download-pdf:hover {
-          background: rgba(197, 160, 89, 0.15);
+        @media (hover: hover) and (pointer: fine) {
+          .btn-copy-citation:hover {
+            background: #c5a059;
+            color: #0c0d11;
+          }
+          .btn-download-pdf:hover {
+            background: rgba(197, 160, 89, 0.15);
+          }
         }
 
         /* Statutes Sidebox */
@@ -621,25 +647,31 @@ const BlogPost = () => {
           border-radius: 8px;
           border: 1px solid rgba(197, 160, 89, 0.2);
           cursor: pointer;
-          transition: all 0.3s ease;
+          min-width: 0;
+          transition: transform var(--dur-drop) var(--ease-out), border-color var(--dur-pop) var(--ease-out), box-shadow var(--dur-drop) var(--ease-out);
+        }
+
+        .related-card:active {
+          transform: scale(0.99);
         }
 
         .theme-dark .related-card {
           background: #12141c;
         }
 
-        .theme-dark .related-card:hover {
-          border-color: #c5a059;
-          transform: translateY(-4px);
-        }
-
         .theme-light .related-card {
           background: #ffffff;
         }
 
-        .theme-light .related-card:hover {
-          border-color: #9e7b38;
-          transform: translateY(-4px);
+        @media (hover: hover) and (pointer: fine) {
+          .theme-dark .related-card:hover {
+            border-color: #c5a059;
+            transform: translateY(-4px);
+          }
+          .theme-light .related-card:hover {
+            border-color: #9e7b38;
+            transform: translateY(-4px);
+          }
         }
 
         .related-card-category {
@@ -808,6 +840,10 @@ const BlogPost = () => {
                 key={item.id}
                 className="related-card"
                 onClick={() => navigate(`/blog/${item.id}`)}
+                role="link"
+                tabIndex={0}
+                aria-label={`Read: ${item.title}`}
+                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); navigate(`/blog/${item.id}`); } }}
               >
                 <div className="related-card-category">{item.category}</div>
                 <h3 className="related-card-title">{item.title}</h3>

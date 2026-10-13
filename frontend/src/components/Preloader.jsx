@@ -1,27 +1,35 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 const Preloader = () => {
   const [loading, setLoading] = useState(true);
   const [opening, setOpening] = useState(false);
   const [progress, setProgress] = useState(0);
+  const barRef = useRef(null);
+  const timers = useRef([]);
 
+  // Eased fake progress — no per-frame React renders; the bar moves via transform.
   useEffect(() => {
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setOpening(true);
-          setTimeout(() => {
-            setLoading(false);
-          }, 850);
-          return 100;
-        }
-        const increment = Math.floor(Math.random() * 12) + 6;
-        return Math.min(prev + increment, 100);
-      });
-    }, 45);
-
-    return () => clearInterval(interval);
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setProgress(100);
+      return;
+    }
+    let value = 0;
+    const tick = () => {
+      value = Math.min(value + Math.floor(Math.random() * 12) + 6, 100);
+      setProgress(value);
+      if (barRef.current) {
+        barRef.current.style.transform = `scaleX(${value / 100})`;
+      }
+      if (value < 100) {
+        timers.current.push(setTimeout(tick, 45));
+      } else {
+        timers.current.push(setTimeout(() => setOpening(true), 120));
+        timers.current.push(setTimeout(() => setLoading(false), 950));
+      }
+    };
+    timers.current.push(setTimeout(tick, 60));
+    const stash = timers.current;
+    return () => stash.forEach(clearTimeout);
   }, []);
 
   if (!loading) return null;
@@ -41,8 +49,10 @@ const Preloader = () => {
           justify-content: center;
           overflow: hidden;
           user-select: none;
+          -webkit-user-select: none;
           pointer-events: all;
           font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+          background: #08090C;
         }
         .preloader-curtain {
           position: absolute;
@@ -52,16 +62,14 @@ const Preloader = () => {
           height: 50.5%;
           background: #08090C;
           z-index: 1;
-          transition: transform 0.85s cubic-bezier(0.77, 0, 0.175, 1);
+          transition: transform 800ms var(--ease-in-out);
         }
         .preloader-curtain-top {
           top: 0;
-          transform-origin: top;
           border-bottom: 1px solid rgba(197, 160, 89, 0.15);
         }
         .preloader-curtain-bottom {
           bottom: 0;
-          transform-origin: bottom;
           border-top: 1px solid rgba(197, 160, 89, 0.15);
         }
         .preloader-overlay.preloader-opening .preloader-curtain-top {
@@ -78,7 +86,7 @@ const Preloader = () => {
           align-items: center;
           justify-content: center;
           text-align: center;
-          transition: opacity 0.5s ease, transform 0.6s ease;
+          transition: opacity 450ms var(--ease-out), transform 500ms var(--ease-out);
         }
         .preloader-content-fade {
           opacity: 0;
@@ -91,7 +99,6 @@ const Preloader = () => {
           height: 280px;
           border-radius: 50%;
           background: radial-gradient(circle, rgba(197, 160, 89, 0.15) 0%, transparent 70%);
-          filter: blur(40px);
           pointer-events: none;
           z-index: -1;
         }
@@ -102,6 +109,11 @@ const Preloader = () => {
           align-items: center;
           justify-content: center;
           margin-bottom: 1.15rem;
+          animation: preloaderBreathe 2.2s var(--ease-in-out) infinite;
+        }
+        @keyframes preloaderBreathe {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.04); }
         }
         .preloader-logo-svg {
           width: 100%;
@@ -119,7 +131,7 @@ const Preloader = () => {
           font-family: 'Cinzel', serif;
           font-size: 1.75rem;
           font-weight: 800;
-          letter-spacing: 0.12em;
+          letter-spacing: 0.1em;
           background: linear-gradient(135deg, #FFFFFF 0%, #EAD9B8 40%, #C5A059 70%, #9E7B38 100%);
           -webkit-background-clip: text;
           background-clip: text;
@@ -129,17 +141,17 @@ const Preloader = () => {
         .preloader-sub {
           font-size: 0.65rem;
           font-weight: 700;
-          letter-spacing: 0.28em;
+          letter-spacing: 0.26em;
           color: #C5A059;
           opacity: 0.85;
           text-transform: uppercase;
           margin-top: 4px;
         }
         .preloader-motto {
-          font-family: 'Cinzel', serif;
-          font-size: 0.78rem;
+          font-family: 'Cormorant Garamond', Georgia, serif;
+          font-size: 0.95rem;
           font-style: italic;
-          letter-spacing: 0.08em;
+          letter-spacing: 0.04em;
           color: #9BA0AD;
           margin-bottom: 1.5rem;
         }
@@ -154,9 +166,11 @@ const Preloader = () => {
         }
         .preloader-progress-bar {
           height: 100%;
+          width: 100%;
           background: linear-gradient(90deg, #F2E3C6 0%, #C5A059 60%, #A47B2E 100%);
           box-shadow: 0 0 10px rgba(197, 160, 89, 0.6);
-          transition: width 0.08s ease-out;
+          transform: scaleX(0);
+          transform-origin: left;
           border-radius: 9999px;
         }
         .preloader-counter {
@@ -166,6 +180,12 @@ const Preloader = () => {
           color: #C5A059;
           letter-spacing: 0.1em;
           opacity: 0.8;
+          font-variant-numeric: tabular-nums;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .preloader-logo-frame { animation: none; }
+          .preloader-curtain { transition-duration: 0.01ms; }
+          .preloader-content { transition-duration: 0.01ms; }
         }
       `}</style>
 
@@ -193,13 +213,10 @@ const Preloader = () => {
         </div>
 
         <div className="preloader-progress-track">
-          <div
-            className="preloader-progress-bar"
-            style={{ width: `${progress}%` }}
-          />
+          <div ref={barRef} className="preloader-progress-bar" />
         </div>
 
-        <div className="preloader-counter">
+        <div className="preloader-counter" aria-hidden="true">
           {progress}%
         </div>
       </div>
