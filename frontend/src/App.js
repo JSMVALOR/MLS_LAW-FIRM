@@ -65,15 +65,17 @@ const HomePage = () => {
       targetId = SLIDES[target]?.id || "home";
     }
 
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const behavior = reduced ? "auto" : "smooth";
     const container = snapContainerRef.current;
     const el = document.getElementById(targetId);
     if (container && el) {
       container.scrollTo({
         top: el.offsetTop,
-        behavior: "smooth"
+        behavior
       });
     } else if (el) {
-      el.scrollIntoView({ behavior: "smooth" });
+      el.scrollIntoView({ behavior });
     }
   }, []);
 
@@ -155,6 +157,7 @@ const HomePage = () => {
             className={`pagination-dot ${activeSlideIndex === idx ? "active" : ""}`}
             onClick={() => scrollToSlide(idx)}
             aria-label={`Scroll to ${slide.label}`}
+            aria-current={activeSlideIndex === idx ? "true" : undefined}
           >
             <span className="pagination-tooltip">{slide.label}</span>
           </button>

@@ -73,7 +73,13 @@ const Team = () => {
           <div key={index} className="team-card">
             <div className="card-inner">
               <div className="image-wrapper">
-                <img src={member.image} alt={member.name} />
+                <img
+                  src={member.image}
+                  alt={member.name}
+                  loading="lazy"
+                  decoding="async"
+                  onError={(e) => { e.currentTarget.style.display = "none"; }}
+                />
                 {member.icon && <div className="member-icon">{member.icon}</div>}
               </div>
               <div className="info-wrapper">
