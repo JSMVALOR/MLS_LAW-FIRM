@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   ChevronDown,
   Menu,
@@ -58,7 +58,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [openDropdown, setOpenDropdown] = useState(null); // 'practice' | 'insights' | null
+  const [openDropdown, setOpenDropdown] = useState(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [scrolled, setScrolled] = useState(false);
@@ -66,13 +66,25 @@ const Navbar = () => {
   const searchInputRef = useRef(null);
   const navContainerRef = useRef(null);
   const dropdownCloseTimeout = useRef(null);
+  const scrollTicking = useRef(false);
 
   const { isDarkTheme, toggleTheme } = useTheme();
 
+  // rAF-throttled scroll state — no setState storm per scroll event.
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 25);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const onScroll = () => {
+      if (scrollTicking.current) return;
+      scrollTicking.current = true;
+      requestAnimationFrame(() => {
+        setScrolled((prev) => {
+          const next = window.scrollY > 25;
+          return prev === next ? prev : next;
+        });
+        scrollTicking.current = false;
+      });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   useEffect(() => {
@@ -92,7 +104,7 @@ const Navbar = () => {
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
         setSearchOpen((prev) => !prev);
       } else if (e.key === "Escape") {
@@ -107,65 +119,65 @@ const Navbar = () => {
 
   useEffect(() => {
     if (searchOpen && searchInputRef.current) {
-      setTimeout(() => searchInputRef.current.focus(), 80);
-    } else {
-      setSearchQuery("");
+      const t = setTimeout(() => searchInputRef.current.focus(), 80);
+      return () => clearTimeout(t);
     }
+    setSearchQuery("");
   }, [searchOpen]);
 
-  // Lock body scroll when drawer / search is open (mobile UX)
+  // Lock body scroll when drawer / search is open.
   useEffect(() => {
-    const locked = mobileMenuOpen || searchOpen;
+    if (!(mobileMenuOpen || searchOpen)) return;
     const prev = document.body.style.overflow;
-    if (locked) document.body.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = prev;
     };
   }, [mobileMenuOpen, searchOpen]);
 
-  const handleMouseEnter = (menu) => {
+  const handleMouseEnter = useCallback((menu) => {
     if (dropdownCloseTimeout.current) clearTimeout(dropdownCloseTimeout.current);
     setOpenDropdown(menu);
-  };
+  }, []);
 
-  const handleMouseLeave = () => {
-    dropdownCloseTimeout.current = setTimeout(() => {
-      setOpenDropdown(null);
-    }, 180);
-  };
+  const handleMouseLeave = useCallback(() => {
+    dropdownCloseTimeout.current = setTimeout(() => setOpenDropdown(null), 180);
+  }, []);
+
+  useEffect(() => () => {
+    if (dropdownCloseTimeout.current) clearTimeout(dropdownCloseTimeout.current);
+  }, []);
 
   const toggleDropdown = (menu) => {
     setOpenDropdown((prev) => (prev === menu ? null : menu));
   };
 
-  const handleSectionNavigation = (sectionId) => {
+  const handleSectionNavigation = useCallback((sectionId) => {
     setOpenDropdown(null);
     setMobileMenuOpen(false);
-
     if (location.pathname === "/") {
-      const snapContainer = document.querySelector(".home-snap-container");
-      const element = document.getElementById(sectionId);
-      if (snapContainer && element) {
-        element.scrollIntoView({ behavior: "smooth" });
-      } else if (element) {
-        element.scrollIntoView({ behavior: "smooth" });
-      }
+      document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
     } else {
       navigate(`/#${sectionId}`);
     }
-  };
+  }, [location.pathname, navigate]);
 
   const handleSearchResultClick = (link) => {
     setSearchOpen(false);
     setOpenDropdown(null);
     setMobileMenuOpen(false);
-    // All directory entries are independent routes now; legacy /# hashes still supported.
     if (link.startsWith("/#")) {
       handleSectionNavigation(link.replace("/#", ""));
     } else {
       navigate(link);
     }
   };
+
+  const go = useCallback((link) => {
+    setOpenDropdown(null);
+    setMobileMenuOpen(false);
+    navigate(link);
+  }, [navigate]);
 
   const filteredResults = searchQuery.trim() === ""
     ? SEARCH_DIRECTORY.slice(0, 6)
@@ -178,39 +190,38 @@ const Navbar = () => {
     <>
       <style>{`
         .mls-header {
-          height: 80px;
+          height: var(--nav-height, 80px);
           position: sticky;
-          top: 0;
-          left: 0;
-          right: 0;
+          top: 0; left: 0; right: 0;
           z-index: 1000;
-          transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+          transition: background-color 250ms var(--ease-out), box-shadow 250ms var(--ease-out), border-color 250ms var(--ease-out);
           display: flex;
           align-items: center;
           border-bottom: 1px solid transparent;
+          padding-top: var(--sat);
           font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
         .mls-header.dark-theme {
-          background: rgba(12, 14, 18, 0.94);
-          backdrop-filter: blur(16px);
-          -webkit-backdrop-filter: blur(16px);
+          background: rgba(12, 14, 18, 0.86);
+          backdrop-filter: blur(12px) saturate(150%);
+          -webkit-backdrop-filter: blur(12px) saturate(150%);
           color: #ECECF0;
           border-bottom-color: rgba(197, 160, 89, 0.16);
         }
         .mls-header.dark-theme.scrolled {
-          background: rgba(10, 11, 15, 0.98);
+          background: rgba(10, 11, 15, 0.94);
           border-bottom-color: rgba(197, 160, 89, 0.24);
           box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
         .mls-header.light-theme {
-          background: rgba(250, 249, 245, 0.95);
-          backdrop-filter: blur(16px);
-          -webkit-backdrop-filter: blur(16px);
+          background: rgba(250, 249, 245, 0.88);
+          backdrop-filter: blur(12px) saturate(150%);
+          -webkit-backdrop-filter: blur(12px) saturate(150%);
           color: #171A21;
           border-bottom-color: rgba(197, 160, 89, 0.2);
         }
         .mls-header.light-theme.scrolled {
-          background: rgba(255, 255, 255, 0.98);
+          background: rgba(255, 255, 255, 0.94);
           border-bottom-color: rgba(197, 160, 89, 0.28);
           box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
         }
@@ -224,19 +235,6 @@ const Navbar = () => {
           justify-content: space-between;
           gap: 0.75rem;
         }
-        @media (max-width: 768px) {
-          .mls-header { height: 64px; }
-          .mls-header-container { padding: 0 1rem; padding-left: max(1rem, var(--sal, 0px)); padding-right: max(1rem, var(--sar, 0px)); }
-          .mls-brand-title { font-size: 1.05rem; }
-          .mls-brand-sub { font-size: 0.56rem; letter-spacing: 0.18em; }
-          .mls-logo-frame { width: 36px; height: 36px; }
-          .mls-actions { gap: 0.5rem; }
-          .mls-action-btn { min-width: 40px; min-height: 40px; }
-        }
-        @media (max-width: 380px) {
-          .mls-brand-sub { display: none; }
-          .mls-brand-title { font-size: 1rem; }
-        }
         .mls-brand {
           display: flex;
           align-items: center;
@@ -244,8 +242,12 @@ const Navbar = () => {
           text-decoration: none;
           color: inherit;
           flex-shrink: 0;
+          min-width: 0;
           cursor: pointer;
           padding: 0.25rem 0;
+          background: none;
+          border: none;
+          font: inherit;
         }
         .mls-logo-frame {
           width: 44px;
@@ -254,10 +256,7 @@ const Navbar = () => {
           align-items: center;
           justify-content: center;
           flex-shrink: 0;
-          transition: transform 0.3s ease;
-        }
-        .mls-brand:hover .mls-logo-frame {
-          transform: scale(1.05);
+          transition: transform var(--dur-drop) var(--ease-out);
         }
         .mls-logo-img {
           width: 100%;
@@ -268,13 +267,14 @@ const Navbar = () => {
           display: flex;
           flex-direction: column;
           line-height: 1.15;
+          min-width: 0;
         }
         .mls-brand-title {
           font-family: 'Cinzel', serif;
           font-size: 1.28rem;
           font-weight: 700;
-          letter-spacing: 0.06em;
-          color: #C5A059;
+          letter-spacing: 0.04em;
+          white-space: nowrap;
         }
         .mls-header.dark-theme .mls-brand-title {
           background: linear-gradient(135deg, #F2E3C6 0%, #C5A059 60%, #9E7B38 100%);
@@ -291,17 +291,18 @@ const Navbar = () => {
         .mls-brand-sub {
           font-size: 0.65rem;
           font-weight: 700;
-          letter-spacing: 0.22em;
+          letter-spacing: 0.2em;
           opacity: 0.75;
           text-transform: uppercase;
           margin-top: 3px;
+          white-space: nowrap;
         }
         .mls-desktop-nav {
           display: none;
           align-items: center;
-          gap: 2rem;
+          gap: 1.75rem;
         }
-        @media (min-width: 1024px) {
+        @media (min-width: 1100px) {
           .mls-desktop-nav { display: flex; }
         }
         .mls-nav-item {
@@ -315,7 +316,7 @@ const Navbar = () => {
           color: inherit;
           font-size: 0.88rem;
           font-weight: 600;
-          letter-spacing: 0.03em;
+          letter-spacing: 0.02em;
           padding: 0.65rem 0.35rem;
           cursor: pointer;
           text-decoration: none;
@@ -323,8 +324,9 @@ const Navbar = () => {
           align-items: center;
           gap: 0.35rem;
           position: relative;
-          transition: color 0.2s ease;
+          transition: color var(--dur-pop) var(--ease-out);
           font-family: inherit;
+          white-space: nowrap;
         }
         .mls-nav-link::after {
           content: '';
@@ -334,38 +336,28 @@ const Navbar = () => {
           width: 0;
           height: 2px;
           background: #C5A059;
-          transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .mls-nav-link:hover::after,
-        .mls-nav-link.active::after {
-          width: 100%;
-        }
-        .mls-header.dark-theme .mls-nav-link:hover,
-        .mls-header.dark-theme .mls-nav-link.active {
-          color: #C5A059;
-        }
-        .mls-header.light-theme .mls-nav-link:hover,
-        .mls-header.light-theme .mls-nav-link.active {
-          color: #8C661D;
+          transition: width var(--dur-drop) var(--ease-out);
         }
         .mls-chevron {
-          transition: transform 0.25s ease;
+          transition: transform var(--dur-drop) var(--ease-out), opacity var(--dur-pop) var(--ease-out);
           opacity: 0.7;
         }
         .mls-chevron.open {
           transform: rotate(180deg);
           opacity: 1;
         }
+        /* Origin-aware dropdowns: scale from trigger, never from nothing */
         .mls-dropdown-panel {
           position: absolute;
           top: calc(100% + 0.6rem);
           z-index: 1200;
           border-radius: 10px;
-          animation: mlsFadeSlideDown 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+          transform-origin: top center;
+          animation: mlsDropIn var(--dur-drop) var(--ease-out);
         }
-        @keyframes mlsFadeSlideDown {
-          from { opacity: 0; transform: translateY(-6px); }
-          to { opacity: 1; transform: translateY(0); }
+        @keyframes mlsDropIn {
+          from { opacity: 0; transform: scale(0.95) translateY(-6px); }
+          to { opacity: 1; transform: scale(1) translateY(0); }
         }
         .mls-header.dark-theme .mls-dropdown-panel {
           background: #111319;
@@ -380,13 +372,21 @@ const Navbar = () => {
         .mls-dropdown-practice {
           left: 50%;
           transform: translateX(-50%);
-          width: 720px;
+          width: min(720px, calc(100vw - 2rem));
           padding: 1.5rem;
+        }
+        @keyframes mlsDropInCentered {
+          from { opacity: 0; transform: translateX(-50%) scale(0.95) translateY(-6px); }
+          to { opacity: 1; transform: translateX(-50%) scale(1) translateY(0); }
+        }
+        .mls-dropdown-practice {
+          animation-name: mlsDropInCentered;
         }
         .mls-dropdown-header {
           display: flex;
           align-items: center;
           justify-content: space-between;
+          gap: 1rem;
           padding-bottom: 0.9rem;
           margin-bottom: 0.9rem;
           border-bottom: 1px solid rgba(197, 160, 89, 0.15);
@@ -395,9 +395,10 @@ const Navbar = () => {
           font-family: 'Cinzel', serif;
           font-size: 0.85rem;
           font-weight: 700;
-          letter-spacing: 0.08em;
+          letter-spacing: 0.06em;
           text-transform: uppercase;
           color: #C5A059;
+          white-space: nowrap;
         }
         .mls-dropdown-view-all {
           background: none;
@@ -410,11 +411,9 @@ const Navbar = () => {
           align-items: center;
           gap: 0.35rem;
           opacity: 0.75;
-          transition: opacity 0.2s, color 0.2s;
-        }
-        .mls-dropdown-view-all:hover {
-          opacity: 1;
-          color: #C5A059;
+          transition: opacity var(--dur-pop) var(--ease-out), color var(--dur-pop) var(--ease-out);
+          font-family: inherit;
+          white-space: nowrap;
         }
         .mls-practice-grid {
           display: grid;
@@ -428,13 +427,8 @@ const Navbar = () => {
           padding: 0.65rem 0.75rem;
           border-radius: 8px;
           cursor: pointer;
-          transition: all 0.2s ease;
-        }
-        .mls-header.dark-theme .mls-practice-item:hover {
-          background: rgba(197, 160, 89, 0.1);
-        }
-        .mls-header.light-theme .mls-practice-item:hover {
-          background: rgba(197, 160, 89, 0.08);
+          transition: background-color var(--dur-pop) var(--ease-out);
+          min-width: 0;
         }
         .mls-practice-icon-box {
           width: 32px;
@@ -450,17 +444,13 @@ const Navbar = () => {
         .mls-practice-text {
           display: flex;
           flex-direction: column;
+          min-width: 0;
         }
         .mls-practice-name {
           font-size: 0.84rem;
           font-weight: 600;
           line-height: 1.25;
-        }
-        .mls-header.dark-theme .mls-practice-item:hover .mls-practice-name {
-          color: #E2C889;
-        }
-        .mls-header.light-theme .mls-practice-item:hover .mls-practice-name {
-          color: #8C661D;
+          transition: color var(--dur-pop) var(--ease-out);
         }
         .mls-practice-desc {
           font-size: 0.72rem;
@@ -475,6 +465,7 @@ const Navbar = () => {
           display: flex;
           flex-direction: column;
           gap: 0.35rem;
+          transform-origin: top left;
         }
         .mls-dropdown-link {
           display: flex;
@@ -484,13 +475,8 @@ const Navbar = () => {
           border-radius: 6px;
           text-decoration: none;
           color: inherit;
-          transition: all 0.2s ease;
-        }
-        .mls-header.dark-theme .mls-dropdown-link:hover {
-          background: rgba(197, 160, 89, 0.12);
-        }
-        .mls-header.light-theme .mls-dropdown-link:hover {
-          background: rgba(197, 160, 89, 0.08);
+          transition: background-color var(--dur-pop) var(--ease-out);
+          min-width: 0;
         }
         .mls-dropdown-link-icon {
           margin-top: 2px;
@@ -511,7 +497,8 @@ const Navbar = () => {
         .mls-actions {
           display: flex;
           align-items: center;
-          gap: 0.75rem;
+          gap: 0.6rem;
+          flex-shrink: 0;
         }
         .mls-action-btn {
           background: none;
@@ -520,15 +507,16 @@ const Navbar = () => {
           cursor: pointer;
           border-radius: 6px;
           padding: 0.5rem 0.65rem;
+          min-width: 40px;
+          min-height: 40px;
           display: inline-flex;
           align-items: center;
           justify-content: center;
           gap: 0.45rem;
-          transition: all 0.2s ease;
+          transition: transform var(--dur-press) var(--ease-out), border-color var(--dur-pop) var(--ease-out), color var(--dur-pop) var(--ease-out);
         }
-        .mls-action-btn:hover {
-          border-color: #C5A059;
-          color: #C5A059;
+        .mls-action-btn:active {
+          transform: scale(0.93);
         }
         .mls-search-shortcut {
           font-size: 0.7rem;
@@ -544,6 +532,7 @@ const Navbar = () => {
           border: none;
           border-radius: 6px;
           padding: 0.58rem 1.15rem;
+          min-height: 40px;
           font-size: 0.82rem;
           font-weight: 700;
           letter-spacing: 0.04em;
@@ -552,21 +541,18 @@ const Navbar = () => {
           display: inline-flex;
           align-items: center;
           gap: 0.45rem;
-          transition: all 0.25s ease;
+          transition: transform var(--dur-press) var(--ease-out), background-color var(--dur-pop) var(--ease-out), box-shadow 200ms var(--ease-out);
           box-shadow: 0 4px 14px rgba(197, 160, 89, 0.22);
+          font-family: inherit;
+          white-space: nowrap;
         }
-        .mls-cta-button:hover {
-          background: #D4AF37;
-          transform: translateY(-1px);
-          box-shadow: 0 6px 18px rgba(197, 160, 89, 0.32);
+        .mls-cta-button:active {
+          transform: scale(0.97);
         }
         .mls-cta-arrow {
-          transition: transform 0.2s ease;
+          transition: transform var(--dur-pop) var(--ease-out);
         }
-        .mls-cta-button:hover .mls-cta-arrow {
-          transform: translateX(3px);
-        }
-        @media (max-width: 1023px) {
+        @media (max-width: 1099px) {
           .mls-cta-button { display: none; }
         }
         .mls-mobile-toggle-btn {
@@ -577,27 +563,59 @@ const Navbar = () => {
           border: 1px solid rgba(197, 160, 89, 0.25);
           border-radius: 6px;
           padding: 0.48rem;
+          min-width: 40px;
+          min-height: 40px;
           color: inherit;
           cursor: pointer;
+          transition: transform var(--dur-press) var(--ease-out), border-color var(--dur-pop) var(--ease-out);
         }
-        @media (min-width: 1024px) {
+        .mls-mobile-toggle-btn:active {
+          transform: scale(0.93);
+        }
+        @media (min-width: 1100px) {
           .mls-mobile-toggle-btn { display: none; }
+        }
+        /* Hover gated to fine pointers — touch gets :active instead */
+        @media (hover: hover) and (pointer: fine) {
+          .mls-brand:hover .mls-logo-frame { transform: scale(1.05); }
+          .mls-nav-link:hover::after, .mls-nav-link.active::after { width: 100%; }
+          .mls-header.dark-theme .mls-nav-link:hover, .mls-header.dark-theme .mls-nav-link.active { color: #C5A059; }
+          .mls-header.light-theme .mls-nav-link:hover, .mls-header.light-theme .mls-nav-link.active { color: #8C661D; }
+          .mls-dropdown-view-all:hover { opacity: 1; color: #C5A059; }
+          .mls-header.dark-theme .mls-practice-item:hover { background: rgba(197, 160, 89, 0.1); }
+          .mls-header.light-theme .mls-practice-item:hover { background: rgba(197, 160, 89, 0.08); }
+          .mls-header.dark-theme .mls-practice-item:hover .mls-practice-name { color: #E2C889; }
+          .mls-header.light-theme .mls-practice-item:hover .mls-practice-name { color: #8C661D; }
+          .mls-header.dark-theme .mls-dropdown-link:hover { background: rgba(197, 160, 89, 0.12); }
+          .mls-header.light-theme .mls-dropdown-link:hover { background: rgba(197, 160, 89, 0.08); }
+          .mls-action-btn:hover { border-color: #C5A059; color: #C5A059; }
+          .mls-cta-button:hover { background: #D4AF37; transform: translateY(-1px); box-shadow: 0 6px 18px rgba(197, 160, 89, 0.32); }
+          .mls-cta-button:hover .mls-cta-arrow { transform: translateX(3px); }
+          .mls-header.dark-theme .mls-mobile-nav-item:hover { background: rgba(197, 160, 89, 0.12); color: #C5A059; }
+          .mls-header.light-theme .mls-mobile-nav-item:hover { background: rgba(197, 160, 89, 0.1); color: #8C661D; }
+          .mls-mobile-subitem:hover { opacity: 1; color: #C5A059; }
+          .mls-search-close-btn:hover { opacity: 1; color: #C5A059; }
+          .mls-header.dark-theme .mls-search-item:hover { background: rgba(197, 160, 89, 0.1); }
+          .mls-header.light-theme .mls-search-item:hover { background: rgba(197, 160, 89, 0.08); }
+          .mls-search-item:hover .mls-search-item-arrow { opacity: 1; transform: translateX(0); }
         }
         .mls-mobile-drawer {
           position: fixed;
-          top: 64px;
-          left: 0;
-          right: 0;
-          bottom: 0;
+          top: var(--nav-height, 64px);
+          left: 0; right: 0; bottom: 0;
           z-index: 1500;
           border-top: 1px solid rgba(197, 160, 89, 0.18);
-          padding: 1rem 1rem calc(1.5rem + var(--sab, 0px));
-          padding-left: max(1rem, var(--sal, 0px));
-          padding-right: max(1rem, var(--sar, 0px));
-          animation: mlsFadeSlideDown 0.25s ease;
+          padding: 1rem 1rem calc(1.5rem + var(--sab));
+          padding-left: max(1rem, var(--sal));
+          padding-right: max(1rem, var(--sar));
+          animation: mlsDrawerIn var(--dur-modal) var(--ease-drawer);
           overflow-y: auto;
           -webkit-overflow-scrolling: touch;
           overscroll-behavior: contain;
+        }
+        @keyframes mlsDrawerIn {
+          from { opacity: 0.4; transform: translateY(-12px); }
+          to { opacity: 1; transform: translateY(0); }
         }
         @media (min-width: 769px) {
           .mls-mobile-drawer {
@@ -605,6 +623,7 @@ const Navbar = () => {
             top: 100%;
             bottom: auto;
             max-height: calc(100vh - 80px);
+            max-height: calc(100svh - 80px);
             padding: 1.25rem 1.5rem 2rem;
           }
         }
@@ -626,6 +645,7 @@ const Navbar = () => {
           align-items: center;
           gap: 0.65rem;
           padding: 0.75rem 1rem;
+          min-height: 48px;
           border-radius: 8px;
           background: rgba(197, 160, 89, 0.08);
           border: 1px solid rgba(197, 160, 89, 0.22);
@@ -633,6 +653,15 @@ const Navbar = () => {
           font-size: 0.84rem;
           cursor: pointer;
           text-align: left;
+          font-family: inherit;
+          width: 100%;
+          overflow: hidden;
+        }
+        .mls-mobile-search-bar span {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          min-width: 0;
         }
         .mls-mobile-nav-list {
           display: flex;
@@ -654,16 +683,19 @@ const Navbar = () => {
           border-radius: 8px;
           cursor: pointer;
           text-align: left;
-          transition: all 0.2s ease;
+          transition: background-color var(--dur-pop) var(--ease-out), color var(--dur-pop) var(--ease-out);
           width: 100%;
+          font-family: inherit;
+          min-width: 0;
         }
-        .mls-header.dark-theme .mls-mobile-nav-item:hover {
-          background: rgba(197, 160, 89, 0.12);
-          color: #C5A059;
+        .mls-mobile-nav-item span {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          min-width: 0;
         }
-        .mls-header.light-theme .mls-mobile-nav-item:hover {
-          background: rgba(197, 160, 89, 0.1);
-          color: #8C661D;
+        .mls-mobile-nav-item svg {
+          flex-shrink: 0;
         }
         .mls-mobile-subgroup {
           display: flex;
@@ -676,7 +708,7 @@ const Navbar = () => {
         .mls-mobile-subgroup-title {
           font-size: 0.68rem;
           font-weight: 700;
-          letter-spacing: 0.08em;
+          letter-spacing: 0.06em;
           color: #C5A059;
           margin-bottom: 0.25rem;
         }
@@ -684,20 +716,23 @@ const Navbar = () => {
           display: flex;
           align-items: center;
           gap: 0.6rem;
-          padding: 0.45rem 0;
+          padding: 0.6rem 0;
+          min-height: 44px;
           font-size: 0.86rem;
           color: inherit;
           text-decoration: none;
           opacity: 0.85;
+          transition: opacity var(--dur-pop) var(--ease-out), color var(--dur-pop) var(--ease-out);
+          min-width: 0;
         }
-        .mls-mobile-subitem:hover {
-          opacity: 1;
-          color: #C5A059;
+        .mls-mobile-subitem svg {
+          flex-shrink: 0;
         }
         .mls-mobile-footer-action {
           margin-top: 0.5rem;
           padding-top: 0.75rem;
           border-top: 1px solid rgba(197, 160, 89, 0.15);
+          padding-bottom: var(--sab);
         }
         .mls-mobile-cta {
           width: 100%;
@@ -705,6 +740,7 @@ const Navbar = () => {
           display: flex;
           align-items: center;
           justify-content: space-between;
+          gap: 0.75rem;
           padding: 0.9rem 1.25rem;
           background: #C5A059;
           color: #0E1015;
@@ -715,14 +751,23 @@ const Navbar = () => {
           letter-spacing: 0.04em;
           text-transform: uppercase;
           cursor: pointer;
+          font-family: inherit;
+          transition: transform var(--dur-press) var(--ease-out), background-color var(--dur-pop) var(--ease-out);
+        }
+        .mls-mobile-cta:active {
+          transform: scale(0.98);
         }
         .mls-mobile-backdrop {
           position: fixed;
           inset: 0;
-          top: 64px;
+          top: var(--nav-height, 64px);
           background: rgba(0,0,0,0.45);
           z-index: 1400;
-          animation: mlsFadeSlideDown 0.2s ease;
+          animation: mlsFade 200ms var(--ease-out);
+        }
+        @keyframes mlsFade {
+          from { opacity: 0; }
+          to { opacity: 1; }
         }
         .mls-search-backdrop {
           position: fixed;
@@ -737,9 +782,11 @@ const Navbar = () => {
           padding-top: 8vh;
           padding-left: 1rem;
           padding-right: 1rem;
-          padding-bottom: max(1rem, var(--sab, 0px));
+          padding-bottom: max(1rem, var(--sab));
           overflow-y: auto;
           -webkit-overflow-scrolling: touch;
+          overscroll-behavior: contain;
+          animation: mlsFade 180ms var(--ease-out);
         }
         .mls-search-modal {
           width: 100%;
@@ -751,7 +798,12 @@ const Navbar = () => {
           border-radius: 12px;
           overflow: hidden;
           box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
-          animation: mlsFadeSlideDown 0.2s ease;
+          transform-origin: top center;
+          animation: mlsModalIn var(--dur-drop) var(--ease-out);
+        }
+        @keyframes mlsModalIn {
+          from { opacity: 0; transform: scale(0.95) translateY(-8px); }
+          to { opacity: 1; transform: scale(1) translateY(0); }
         }
         .mls-header.dark-theme .mls-search-modal {
           background: #12141B;
@@ -776,6 +828,7 @@ const Navbar = () => {
         }
         .mls-search-input {
           flex: 1;
+          min-width: 0;
           background: none;
           border: none;
           outline: none;
@@ -789,21 +842,29 @@ const Navbar = () => {
           color: inherit;
           opacity: 0.6;
           cursor: pointer;
-          padding: 0.25rem;
+          padding: 0.5rem;
+          min-width: 40px;
+          min-height: 40px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          transition: opacity var(--dur-pop) var(--ease-out), color var(--dur-pop) var(--ease-out), transform var(--dur-press) var(--ease-out);
         }
-        .mls-search-close-btn:hover {
-          opacity: 1;
-          color: #C5A059;
+        .mls-search-close-btn:active {
+          transform: scale(0.9);
         }
         .mls-search-results-pane {
           padding: 0.75rem 1rem 1.25rem;
           max-height: 380px;
           overflow-y: auto;
+          overscroll-behavior: contain;
+          -webkit-overflow-scrolling: touch;
         }
         .mls-search-pane-header {
           display: flex;
           align-items: center;
           justify-content: space-between;
+          gap: 0.75rem;
           padding: 0.4rem 0.5rem 0.6rem;
           font-size: 0.72rem;
           font-weight: 700;
@@ -816,6 +877,7 @@ const Navbar = () => {
           opacity: 0.6;
           font-weight: 500;
           text-transform: none;
+          white-space: nowrap;
         }
         .mls-search-list {
           display: flex;
@@ -827,29 +889,33 @@ const Navbar = () => {
           display: flex;
           align-items: center;
           justify-content: space-between;
+          gap: 0.75rem;
           padding: 0.75rem 0.85rem;
+          min-height: 52px;
           border-radius: 8px;
           background: none;
           border: none;
           color: inherit;
           cursor: pointer;
           text-align: left;
-          transition: all 0.2s ease;
-        }
-        .mls-header.dark-theme .mls-search-item:hover {
-          background: rgba(197, 160, 89, 0.1);
-        }
-        .mls-header.light-theme .mls-search-item:hover {
-          background: rgba(197, 160, 89, 0.08);
+          transition: background-color var(--dur-pop) var(--ease-out);
+          font-family: inherit;
+          min-width: 0;
         }
         .mls-search-item-info {
           display: flex;
           align-items: center;
           gap: 0.65rem;
+          min-width: 0;
+          flex: 1;
         }
         .mls-search-item-title {
           font-size: 0.88rem;
           font-weight: 600;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          min-width: 0;
         }
         .mls-search-item-badge {
           font-size: 0.66rem;
@@ -860,40 +926,48 @@ const Navbar = () => {
           background: rgba(197, 160, 89, 0.12);
           color: #C5A059;
           border: 1px solid rgba(197, 160, 89, 0.22);
+          white-space: nowrap;
+          flex-shrink: 0;
         }
         .mls-search-item-arrow {
           opacity: 0;
           transform: translateX(-4px);
-          transition: all 0.2s ease;
+          transition: opacity var(--dur-pop) var(--ease-out), transform var(--dur-pop) var(--ease-out);
           color: #C5A059;
-        }
-        .mls-search-item:hover .mls-search-item-arrow {
-          opacity: 1;
-          transform: translateX(0);
+          flex-shrink: 0;
         }
         .mls-search-empty {
           padding: 2rem 1rem;
           text-align: center;
           font-size: 0.86rem;
           opacity: 0.65;
+          overflow-wrap: anywhere;
+        }
+        @media (max-width: 1100px) {
+          .mls-header-container { padding: 0 1rem; padding-left: max(1rem, var(--sal)); padding-right: max(1rem, var(--sar)); }
+          .mls-brand-title { font-size: 1.05rem; }
+          .mls-brand-sub { font-size: 0.56rem; letter-spacing: 0.16em; }
+          .mls-logo-frame { width: 36px; height: 36px; }
+        }
+        @media (max-width: 380px) {
+          .mls-brand-sub { display: none; }
+          .mls-brand-title { font-size: 1rem; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .mls-dropdown-panel, .mls-mobile-drawer, .mls-search-backdrop, .mls-search-modal {
+            animation-duration: 0.01ms !important;
+          }
         }
       `}</style>
 
       <header
-        className={`mls-header ${isDarkTheme ? "dark-theme" : "light-theme"} ${
-          scrolled ? "scrolled" : ""
-        }`}
+        className={`mls-header ${isDarkTheme ? "dark-theme" : "light-theme"} ${scrolled ? "scrolled" : ""}`}
         ref={navContainerRef}
       >
         <div className="mls-header-container">
-          {/* Brand Identity */}
-          <Link to="/" className="mls-brand" onClick={() => setMobileMenuOpen(false)}>
+          <Link to="/" className="mls-brand" onClick={() => setMobileMenuOpen(false)} aria-label="MLS & Co. home">
             <div className="mls-logo-frame">
-              <img
-                src="/mls_logo_clean.svg"
-                alt="MLS & Co. Advocates & Solicitors"
-                className="mls-logo-img"
-              />
+              <img src="/mls_logo_clean.svg" alt="MLS & Co. Advocates & Solicitors" className="mls-logo-img" />
             </div>
             <div className="mls-brand-text">
               <span className="mls-brand-title">MLS & Co.</span>
@@ -901,22 +975,18 @@ const Navbar = () => {
             </div>
           </Link>
 
-          {/* Desktop Navigation Links — every option is an independent page */}
           <nav className="mls-desktop-nav" aria-label="Main Navigation">
-            <Link to="/about" className="mls-nav-link">
-              About
-            </Link>
+            <Link to="/about" className="mls-nav-link">About</Link>
 
-            {/* Practice Areas Menu */}
             <div
-              className="mls-nav-item mls-has-dropdown"
+              className="mls-nav-item"
               onMouseEnter={() => handleMouseEnter("practice")}
               onMouseLeave={handleMouseLeave}
             >
               <button
                 type="button"
                 className={`mls-nav-link ${openDropdown === "practice" ? "active" : ""}`}
-                onClick={() => navigate("/practice-areas")}
+                onClick={() => go("/practice-areas")}
                 onFocus={() => handleMouseEnter("practice")}
                 aria-expanded={openDropdown === "practice"}
                 aria-haspopup="true"
@@ -931,59 +1001,42 @@ const Navbar = () => {
                   onMouseEnter={() => handleMouseEnter("practice")}
                   onMouseLeave={handleMouseLeave}
                 >
-                  <div className="mls-dropdown-practice-inner">
-                    <div className="mls-dropdown-header">
-                      <span className="mls-dropdown-header-title">Core Legal Disciplines</span>
-                      <button
-                        type="button"
-                        className="mls-dropdown-view-all"
-                        onClick={() => { setOpenDropdown(null); navigate("/practice-areas"); }}
-                      >
-                        Explore All Practices <ArrowRight size={13} />
-                      </button>
-                    </div>
-
-                    <div className="mls-practice-grid">
-                      {PRACTICE_ITEMS.map((item, idx) => {
-                        const Icon = item.icon;
-                        return (
-                          <div
-                            key={idx}
-                            className="mls-practice-item"
-                            onClick={() => { setOpenDropdown(null); navigate(item.link); }}
-                            role="button"
-                            tabIndex={0}
-                            onKeyDown={(e) => { if (e.key === "Enter") { setOpenDropdown(null); navigate(item.link); } }}
-                          >
-                            <div className="mls-practice-icon-box">
-                              <Icon size={16} />
-                            </div>
-                            <div className="mls-practice-text">
-                              <span className="mls-practice-name">{item.name}</span>
-                              <span className="mls-practice-desc">{item.desc}</span>
-                            </div>
+                  <div className="mls-dropdown-header">
+                    <span className="mls-dropdown-header-title">Core Legal Disciplines</span>
+                    <button type="button" className="mls-dropdown-view-all" onClick={() => go("/practice-areas")}>
+                      Explore All Practices <ArrowRight size={13} />
+                    </button>
+                  </div>
+                  <div className="mls-practice-grid">
+                    {PRACTICE_ITEMS.map((item) => {
+                      const Icon = item.icon;
+                      return (
+                        <div
+                          key={item.name}
+                          className="mls-practice-item"
+                          onClick={() => go(item.link)}
+                          role="button"
+                          tabIndex={0}
+                          onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(item.link); } }}
+                        >
+                          <div className="mls-practice-icon-box"><Icon size={16} /></div>
+                          <div className="mls-practice-text">
+                            <span className="mls-practice-name">{item.name}</span>
+                            <span className="mls-practice-desc">{item.desc}</span>
                           </div>
-                        );
-                      })}
-                    </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               )}
             </div>
 
-            {/* Legacy Link */}
-            <Link to="/legacy" className="mls-nav-link">
-              Legacy
-            </Link>
+            <Link to="/legacy" className="mls-nav-link">Legacy</Link>
+            <Link to="/people" className="mls-nav-link">Our People</Link>
 
-            {/* Our People — independent page */}
-            <Link to="/people" className="mls-nav-link">
-              Our People
-            </Link>
-
-            {/* Insights & Academics Menu */}
             <div
-              className="mls-nav-item mls-has-dropdown"
+              className="mls-nav-item"
               onMouseEnter={() => handleMouseEnter("insights")}
               onMouseLeave={handleMouseLeave}
             >
@@ -1004,47 +1057,28 @@ const Navbar = () => {
                   onMouseEnter={() => handleMouseEnter("insights")}
                   onMouseLeave={handleMouseLeave}
                 >
-                  <Link
-                    to="/blogs"
-                    className="mls-dropdown-link"
-                    onClick={() => setOpenDropdown(null)}
-                  >
+                  <Link to="/blogs" className="mls-dropdown-link" onClick={() => setOpenDropdown(null)}>
                     <BookOpen size={16} className="mls-dropdown-link-icon" />
                     <div>
                       <span className="mls-dropdown-link-title">Legal Insights & Articles</span>
                       <span className="mls-dropdown-link-sub">Expert commentary & judicial analysis</span>
                     </div>
                   </Link>
-
-                  <Link
-                    to="/publications"
-                    className="mls-dropdown-link"
-                    onClick={() => setOpenDropdown(null)}
-                  >
+                  <Link to="/publications" className="mls-dropdown-link" onClick={() => setOpenDropdown(null)}>
                     <FileText size={16} className="mls-dropdown-link-icon" />
                     <div>
                       <span className="mls-dropdown-link-title">Publications & Research</span>
                       <span className="mls-dropdown-link-sub">Scholarly papers & law briefs</span>
                     </div>
                   </Link>
-
-                  <Link
-                    to="/events"
-                    className="mls-dropdown-link"
-                    onClick={() => setOpenDropdown(null)}
-                  >
+                  <Link to="/events" className="mls-dropdown-link" onClick={() => setOpenDropdown(null)}>
                     <Calendar size={16} className="mls-dropdown-link-icon" />
                     <div>
                       <span className="mls-dropdown-link-title">Conferences & Symposia</span>
                       <span className="mls-dropdown-link-sub">Chambers lectures & roundtables</span>
                     </div>
                   </Link>
-
-                  <Link
-                    to="/academic-collaborations"
-                    className="mls-dropdown-link"
-                    onClick={() => setOpenDropdown(null)}
-                  >
+                  <Link to="/academic-collaborations" className="mls-dropdown-link" onClick={() => setOpenDropdown(null)}>
                     <Users size={16} className="mls-dropdown-link-icon" />
                     <div>
                       <span className="mls-dropdown-link-title">Academic Collaborations</span>
@@ -1055,195 +1089,114 @@ const Navbar = () => {
               )}
             </div>
 
-            {/* Careers Link */}
-            <Link to="/careers" className="mls-nav-link">
-              Careers
-            </Link>
+            <Link to="/careers" className="mls-nav-link">Careers</Link>
           </nav>
 
-          {/* Right Action Bar */}
           <div className="mls-actions">
             <button
               type="button"
-              className="mls-action-btn mls-search-btn"
+              className="mls-action-btn"
               onClick={() => setSearchOpen(true)}
               aria-label="Open search directory"
-              title="Search Directory (⌘K)"
+              title="Search Directory (Ctrl/⌘K)"
             >
               <Search size={15} />
-              <span className="mls-search-shortcut">⌘K</span>
+              <span className="mls-search-shortcut">Ctrl K</span>
             </button>
 
             <button
               type="button"
               onClick={toggleTheme}
-              className="mls-action-btn mls-theme-btn"
-              aria-label="Toggle theme mode"
-              title={isDarkTheme ? "Switch to Light Theme" : "Switch to Dark Theme"}
+              className="mls-action-btn"
+              aria-label={isDarkTheme ? "Switch to light theme" : "Switch to dark theme"}
             >
               {isDarkTheme ? <Sun size={16} /> : <Moon size={16} />}
             </button>
 
-            <button
-              type="button"
-              className="mls-cta-button"
-              onClick={() => { setOpenDropdown(null); setMobileMenuOpen(false); navigate("/contact"); }}
-            >
+            <button type="button" className="mls-cta-button" onClick={() => go("/contact")}>
               <span>Consult Chambers</span>
               <ArrowRight size={13} className="mls-cta-arrow" />
             </button>
 
             <button
               type="button"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              onClick={() => setMobileMenuOpen((v) => !v)}
               className="mls-mobile-toggle-btn"
-              aria-label="Toggle Navigation Menu"
+              aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+              aria-expanded={mobileMenuOpen}
             >
               {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
           <>
-            <div
-              className="mls-mobile-backdrop"
-              onClick={() => setMobileMenuOpen(false)}
-              aria-hidden="true"
-            />
+            <div className="mls-mobile-backdrop" onClick={() => setMobileMenuOpen(false)} aria-hidden="true" />
             <div className="mls-mobile-drawer" role="dialog" aria-label="Mobile navigation">
-            <div className="mls-mobile-drawer-inner">
-              <button
-                type="button"
-                className="mls-mobile-search-bar"
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  setSearchOpen(true);
-                }}
-              >
-                <Search size={16} />
-                <span>Search practices, lawyers, publications...</span>
-              </button>
-
-              <div className="mls-mobile-nav-list">
-                <Link
-                  to="/about"
-                  className="mls-mobile-nav-item"
-                  onClick={() => setMobileMenuOpen(false)}
+              <div className="mls-mobile-drawer-inner">
+                <button
+                  type="button"
+                  className="mls-mobile-search-bar"
+                  onClick={() => { setMobileMenuOpen(false); setSearchOpen(true); }}
                 >
-                  <Compass size={18} />
-                  <span>About the Firm</span>
-                </Link>
+                  <Search size={16} style={{ flexShrink: 0 }} />
+                  <span>Search practices, lawyers, publications...</span>
+                </button>
 
-                <Link
-                  to="/practice-areas"
-                  className="mls-mobile-nav-item"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <Scale size={18} />
-                  <span>Practice Areas</span>
-                </Link>
-
-                <Link
-                  to="/legacy"
-                  className="mls-mobile-nav-item"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <Compass size={18} />
-                  <span>Chambers Legacy</span>
-                </Link>
-
-                <Link
-                  to="/people"
-                  className="mls-mobile-nav-item"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <Users size={18} />
-                  <span>Our People & Partners</span>
-                </Link>
-
-                <Link
-                  to="/testimonials"
-                  className="mls-mobile-nav-item"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <Shield size={18} />
-                  <span>Client Testimonials</span>
-                </Link>
-
-                <div className="mls-mobile-subgroup">
-                  <span className="mls-mobile-subgroup-title">RESEARCH & INSIGHTS</span>
-                  <Link
-                    to="/blogs"
-                    className="mls-mobile-subitem"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <BookOpen size={15} />
-                    <span>Blogs & Legal Insights</span>
+                <div className="mls-mobile-nav-list">
+                  <Link to="/about" className="mls-mobile-nav-item" onClick={() => setMobileMenuOpen(false)}>
+                    <Compass size={18} /><span>About the Firm</span>
                   </Link>
-                  <Link
-                    to="/publications"
-                    className="mls-mobile-subitem"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <FileText size={15} />
-                    <span>Publications & Briefs</span>
+                  <Link to="/practice-areas" className="mls-mobile-nav-item" onClick={() => setMobileMenuOpen(false)}>
+                    <Scale size={18} /><span>Practice Areas</span>
                   </Link>
-                  <Link
-                    to="/events"
-                    className="mls-mobile-subitem"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <Calendar size={15} />
-                    <span>Conferences & Events</span>
+                  <Link to="/legacy" className="mls-mobile-nav-item" onClick={() => setMobileMenuOpen(false)}>
+                    <Compass size={18} /><span>Chambers Legacy</span>
                   </Link>
-                  <Link
-                    to="/academic-collaborations"
-                    className="mls-mobile-subitem"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <Users size={15} />
-                    <span>Academic Collaborations</span>
+                  <Link to="/people" className="mls-mobile-nav-item" onClick={() => setMobileMenuOpen(false)}>
+                    <Users size={18} /><span>Our People & Partners</span>
+                  </Link>
+                  <Link to="/testimonials" className="mls-mobile-nav-item" onClick={() => setMobileMenuOpen(false)}>
+                    <Shield size={18} /><span>Client Testimonials</span>
+                  </Link>
+
+                  <div className="mls-mobile-subgroup">
+                    <span className="mls-mobile-subgroup-title">RESEARCH & INSIGHTS</span>
+                    <Link to="/blogs" className="mls-mobile-subitem" onClick={() => setMobileMenuOpen(false)}>
+                      <BookOpen size={15} /><span>Blogs & Legal Insights</span>
+                    </Link>
+                    <Link to="/publications" className="mls-mobile-subitem" onClick={() => setMobileMenuOpen(false)}>
+                      <FileText size={15} /><span>Publications & Briefs</span>
+                    </Link>
+                    <Link to="/events" className="mls-mobile-subitem" onClick={() => setMobileMenuOpen(false)}>
+                      <Calendar size={15} /><span>Conferences & Events</span>
+                    </Link>
+                    <Link to="/academic-collaborations" className="mls-mobile-subitem" onClick={() => setMobileMenuOpen(false)}>
+                      <Users size={15} /><span>Academic Collaborations</span>
+                    </Link>
+                  </div>
+
+                  <Link to="/careers" className="mls-mobile-nav-item" onClick={() => setMobileMenuOpen(false)}>
+                    <Briefcase size={18} /><span>Careers & Clerkships</span>
                   </Link>
                 </div>
 
-                <Link
-                  to="/careers"
-                  className="mls-mobile-nav-item"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <Briefcase size={18} />
-                  <span>Careers & Clerkships</span>
-                </Link>
-              </div>
-
-              <div className="mls-mobile-footer-action">
-                <button
-                  type="button"
-                  className="mls-mobile-cta"
-                  onClick={() => { setMobileMenuOpen(false); navigate("/contact"); }}
-                >
-                  <span>Chambers Consultation</span>
-                  <ArrowRight size={15} />
-                </button>
+                <div className="mls-mobile-footer-action">
+                  <button type="button" className="mls-mobile-cta" onClick={() => go("/contact")}>
+                    <span>Chambers Consultation</span>
+                    <ArrowRight size={15} />
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
           </>
         )}
       </header>
 
-      {/* Command Palette / Search Modal */}
       {searchOpen && (
-        <div
-          className="mls-search-backdrop"
-          onClick={() => setSearchOpen(false)}
-        >
-          <div
-            className="mls-search-modal"
-            onClick={(e) => e.stopPropagation()}
-          >
+        <div className="mls-search-backdrop" onClick={() => setSearchOpen(false)}>
+          <div className="mls-search-modal" onClick={(e) => e.stopPropagation()} role="dialog" aria-label="Site search">
             <div className="mls-search-input-box">
               <Search size={18} className="mls-search-modal-icon" />
               <input
@@ -1253,6 +1206,9 @@ const Navbar = () => {
                 placeholder="Search practice areas, partners, insights, or careers..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
+                enterKeyHint="search"
+                autoComplete="off"
+                aria-label="Search the site directory"
               />
               <button
                 type="button"
@@ -1272,13 +1228,13 @@ const Navbar = () => {
 
               {filteredResults.length === 0 ? (
                 <div className="mls-search-empty">
-                  No directory records matched &quot;{searchQuery}&quot;. Try searching &quot;Litigation&quot;, &quot;Arbitration&quot;, or &quot;People&quot;.
+                  No directory records matched &quot;{searchQuery}&quot;. Try &quot;Arbitration&quot;, &quot;Events&quot; or &quot;People&quot;.
                 </div>
               ) : (
                 <div className="mls-search-list">
-                  {filteredResults.map((item, idx) => (
+                  {filteredResults.map((item) => (
                     <button
-                      key={idx}
+                      key={item.title}
                       type="button"
                       className="mls-search-item"
                       onClick={() => handleSearchResultClick(item.link)}
