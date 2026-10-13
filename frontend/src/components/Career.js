@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast } from "sonner";
 import "../styles/Careers.css";
 import { useTheme } from "./ThemeContext";
 
@@ -49,6 +50,7 @@ const Careers = () => {
     setMessage("");
 
     if (!cvFile) {
+      toast.error("Please select a CV before submitting.");
       setMessage("Please select a CV before submitting.");
       setLoading(false);
       return;
@@ -63,9 +65,15 @@ const Careers = () => {
     if (marksSheet) data.append("marksSheet", marksSheet);
     if (draftSample) data.append("draftSample", draftSample);
 
+    const request = axios.post(`${process.env.REACT_APP_API_URL}/career`, data, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+
     try {
-      const res = await axios.post(`${process.env.REACT_APP_API_URL}/career`, data, {
-        headers: { "Content-Type": "multipart/form-data" },
+      const res = await toast.promise(request, {
+        loading: "Submitting your application…",
+        success: "Application submitted successfully!",
+        error: "Submission failed — please try again.",
       });
 
       console.log(res.data);
@@ -119,6 +127,7 @@ const Careers = () => {
                   onChange={handleChange}
                   placeholder="Enter your full name"
                   required
+                  autoComplete="name"
                 />
               </div>
               <div className="form-group">
@@ -130,6 +139,8 @@ const Careers = () => {
                   onChange={handleChange}
                   placeholder="example@gmail.com"
                   required
+                  autoComplete="email"
+                  inputMode="email"
                 />
               </div>
             </div>
@@ -144,6 +155,8 @@ const Careers = () => {
                   onChange={handleChange}
                   placeholder="Enter your phone number"
                   required
+                  autoComplete="tel"
+                  inputMode="tel"
                 />
               </div>
               <div className="form-group">
@@ -318,6 +331,7 @@ const Careers = () => {
                 onChange={handleChange}
                 placeholder="Write your cover letter here..."
                 rows="6"
+                enterKeyHint="send"
               />
             </div>
           </div>

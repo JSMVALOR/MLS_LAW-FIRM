@@ -12,21 +12,23 @@ body {
 /* Container */
 .internship-container {
   min-height: 100vh;
+  min-height: 100svh;
   padding-top: 20px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  transition: all 0.3s ease;
+  transition: background-color 0.4s ease, color 0.4s ease;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .internship-container.dark-theme {
-  background-color: #0a0a0a;
-  color: #ffffff;
+  background-color: #0C0D11;
+  color: #ECECF0;
 }
 
 .internship-container.light-theme {
-  background-color: #f8f9fa;
-  color: #212529;
+  background-color: #FAF9F5;
+  color: #171A21;
 }
 
 /* Form wrapper */
@@ -39,18 +41,24 @@ body {
 
 /* Form Titles */
 .form-title {
-  font-size: 3rem;
+  font-size: clamp(2rem, 4.5vw, 3rem);
   text-align: center;
   margin-bottom: 1rem;
-  font-family: 'Playfair Display', serif;
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-wrap: balance;
 }
 
 .internship-container.dark-theme .form-title {
-  color: #f4c542;
+  background: linear-gradient(135deg, #FFFFFF 35%, #F2E3C6 70%, #C5A059 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .internship-container.light-theme .form-title {
-  color: #d4af37;
+  color: #171A21;
 }
 
 .form-subtitle {
@@ -69,18 +77,21 @@ body {
 
 /* Form */
 .application-form {
-  border-radius: 8px;
+  border-radius: 12px;
   padding: 3rem;
-  transition: all 0.3s ease;
+  transition: background-color 0.4s ease, border-color 0.4s ease;
 }
 
 .internship-container.dark-theme .application-form {
-  background-color: #1a1a1a;
+  background: linear-gradient(160deg, rgba(23, 26, 34, 0.92), rgba(14, 16, 22, 0.88));
+  border: 1px solid rgba(197, 160, 89, 0.22);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
 }
 
 .internship-container.light-theme .application-form {
-  background-color: #ffffff;
-  border: 1px solid #e0e0e0;
+  background: #ffffff;
+  border: 1px solid rgba(197, 160, 89, 0.28);
+  box-shadow: 0 18px 44px rgba(140, 102, 29, 0.1);
 }
 
 .form-section {
@@ -108,15 +119,16 @@ body {
 .section-title {
   font-size: 1.5rem;
   margin-bottom: 1.5rem;
-  font-family: 'Playfair Display', serif;
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
 }
 
 .internship-container.dark-theme .section-title {
-  color: #f4c542;
+  color: #EAD9B8;
 }
 
 .internship-container.light-theme .section-title {
-  color: #d4af37;
+  color: #8C661D;
 }
 
 .form-row {
@@ -213,18 +225,28 @@ body {
 
 /* File upload */
 .file-input-label {
-  display: inline-block;
-  background-color: #0a0a0a;
-  border: 1px solid #333333;
-  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  background-color: rgba(197, 160, 89, 0.08);
+  border: 1px solid rgba(197, 160, 89, 0.3);
+  border-radius: 8px;
   padding: 0.75rem 1.5rem;
-  color: #ffffff;
+  color: inherit;
   cursor: pointer;
-  transition: background-color 0.3s;
+  font-weight: 600;
+  transition: transform var(--dur-press) var(--ease-out), background-color var(--dur-pop) var(--ease-out), border-color var(--dur-pop) var(--ease-out);
 }
 
-.file-input-label:hover {
-  background-color: #2a2a2a;
+.file-input-label:active {
+  transform: scale(0.97);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .file-input-label:hover {
+    background-color: rgba(197, 160, 89, 0.14);
+    border-color: #C5A059;
+  }
 }
 
 .file-input-label input[type="file"] {
@@ -263,23 +285,36 @@ textarea {
   border: 1px solid #7a2d2d;
 }
 
-/* Submit Button */
+/* Submit Button — lit gold gradient */
 .submit-btn {
   width: 100%;
-  background-color: #f4c542;
-  color: #0a0a0a;
-  border: none;
-  border-radius: 4px;
+  min-height: 52px;
+  background: linear-gradient(135deg, #E8CF9A 0%, #C5A059 48%, #9E7B38 100%);
+  color: #0E1015;
+  border: 1px solid rgba(242, 227, 198, 0.45);
+  border-radius: 8px;
   padding: 1rem 2rem;
-  font-size: 1.1rem;
-  font-weight: 600;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-family: inherit;
   cursor: pointer;
-  transition: background-color 0.3s;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 6px 20px rgba(197, 160, 89, 0.28);
+  transition: transform var(--dur-press) var(--ease-out), filter var(--dur-pop) var(--ease-out), box-shadow 200ms var(--ease-out);
   margin-top: 1rem;
 }
 
-.submit-btn:hover:not(:disabled) {
-  background-color: #e5b632;
+.submit-btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .submit-btn:hover:not(:disabled) {
+    filter: brightness(1.06);
+    transform: translateY(-1px);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 10px 28px rgba(197, 160, 89, 0.4);
+  }
 }
 
 .submit-btn:disabled {
@@ -296,17 +331,31 @@ textarea {
 
 .back-btn {
   padding: 0.75rem 1.5rem;
-  background-color: #C5A059;
-  color: #000;
-  font-weight: 500;
-  border-radius: 6px;
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  background: none;
+  border: 1px solid rgba(197, 160, 89, 0.35);
+  color: inherit;
+  font-weight: 600;
+  font-family: inherit;
+  font-size: 0.85rem;
+  border-radius: 8px;
   text-decoration: none;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  cursor: pointer;
+  transition: transform var(--dur-press) var(--ease-out), border-color var(--dur-pop) var(--ease-out), color var(--dur-pop) var(--ease-out);
 }
 
-.back-btn:hover {
-  background-color: #e0a800;
-  transform: translateY(-2px);
+.back-btn:active {
+  transform: scale(0.96);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .back-btn:hover {
+    border-color: #C5A059;
+    color: #C5A059;
+    transform: translateY(-2px);
+  }
 }
 
 /* Responsive */
